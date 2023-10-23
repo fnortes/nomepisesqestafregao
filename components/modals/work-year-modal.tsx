@@ -79,7 +79,13 @@ export default function WorkYearModal({ workYears }: Props) {
 
       window.location.assign(`/${response.data.id}`);
     } catch (error) {
-      toast.error("Algo ha ido mal :(");
+      let errorMessage = "Algo ha ido mal :(";
+
+      if (axios.isAxiosError(error)) {
+        errorMessage = error.response?.data.errorMessage;
+      }
+
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

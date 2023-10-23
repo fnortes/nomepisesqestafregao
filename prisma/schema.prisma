@@ -13,20 +13,20 @@ datasource db {
 
 model YearWork {
   id                      String    @id @default(uuid())
-  year                    String
+  year                    String    @unique
   createdAt               DateTime  @default(now())
   updatedAt               DateTime  @updatedAt
-  newClientPrice          Decimal   @default(20)
+  newClientPrice          Float     @default(20)
   previousAdults          Int       @default(0)
   previousChilds          Int       @default(0)
   firstPartyDay            DateTime  @default(now())
   lastPartyDay            DateTime  @default(now())
   previousFirstPartyDay   DateTime?
   previousLastPartyDay    DateTime?
-  unitFoodPrice           Decimal   @default(10)
-  previousYearWorkAmount  Decimal   @default(0)     // TODO: Por ahora lo dejamos a cero, pero en el futuro, este valor se podría auto-rellenar cuando se crea un nuevo año, tomandolo del saldo del año anterior.
-  awardsReward            Decimal   @default(0)
-  commissionHelp          Decimal   @default(0)
+  unitFoodPrice           Float     @default(10)
+  previousYearWorkAmount  Float     @default(0)                   // TODO: Por ahora lo dejamos a cero, pero en el futuro, este valor se podría auto-rellenar cuando se crea un nuevo año, tomandolo del saldo del año anterior.
+  awardsReward            Float     @default(0)
+  commissionHelp          Float     @default(0)
   clients                 Client[]  @relation("YearWorkToClient") // TODO: Está implentado el copiar los clientes del año anterior, cuando se selecciona, pero falta validar que los copia bien y con todos los datos.
 }
 
@@ -62,7 +62,7 @@ model BarGroup {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   name          String
-  clients     ClientsOnBarGroups[]
+  clients       ClientsOnBarGroups[]
 }
 
 model PriceType {
@@ -70,9 +70,9 @@ model PriceType {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   name          String
-  adultPrice    Decimal   @default(0)
-  childPrice    Decimal   @default(0)
-  BabyPrice     Decimal   @default(0)
+  adultPrice    Float     @default(0)
+  childPrice    Float     @default(0)
+  BabyPrice     Float     @default(0)
   meals         Boolean   @default(false)
   dinners       Boolean   @default(false)
   paradeSuit    Boolean   @default(false)
@@ -98,7 +98,7 @@ model Client {
   priceTypeId   String
   priceType     PriceType   @relation("PriceTypeToClient", fields: [priceTypeId], references: [id])
   shirtSize     ShirtSize?  
-  quotaPaid     Decimal     @default(0)
+  quotaPaid     Float       @default(0)
   comments      String?
 
   @@index([yearWorkId])

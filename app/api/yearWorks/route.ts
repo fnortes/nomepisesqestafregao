@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs";
-import { AgeGroup, Client, Prisma } from "@prisma/client";
+import { AgeGroup, Client } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 import prismadb from "@/lib/prismadb";
@@ -19,6 +19,22 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Year is required", { status: 400 });
     }
 
+    const currentYearWork = await prismadb.yearWork.findFirst({
+      where: {
+        year,
+      },
+    });
+
+    if (currentYearWork) {
+      return NextResponse.json(
+        {
+          errorMessage:
+            "El nuevo año de trabajo ya existe. Inténtalo de nuevo con otro año.",
+        },
+        { status: 400 }
+      );
+    }
+
     const lastPartyDay = new Date();
     lastPartyDay.setFullYear(year);
     lastPartyDay.setMonth(7);
@@ -29,13 +45,13 @@ export async function POST(req: NextRequest) {
     firstPartyDay.setMonth(7);
     firstPartyDay.setDate(11);
 
-    let newClientPrice = new Prisma.Decimal(20),
+    let newClientPrice = 20,
       previousAdults = 0,
       previousChilds = 0,
       previousFirstPartyDay = undefined,
       previousLastPartyDay = undefined,
-      unitFoodPrice = new Prisma.Decimal(10),
-      commissionHelp = new Prisma.Decimal(0),
+      unitFoodPrice = 10,
+      commissionHelp = 0,
       clients: Client[] = [];
 
     if (yearFromRestore) {

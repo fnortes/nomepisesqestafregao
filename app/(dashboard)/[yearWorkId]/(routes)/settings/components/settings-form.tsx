@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Trash } from "lucide-react";
+import { Euro, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import * as z from "zod";
 
 import Heading from "@/components/heading";
+import AlertModal from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,7 +24,6 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
 import type { YearWork } from "@prisma/client";
-import AlertModal from "@/components/modals/alert-modal";
 
 interface Props {
   initialData: YearWork;
@@ -31,6 +31,9 @@ interface Props {
 
 const formSchema = z.object({
   year: z.string().length(4),
+  newClientPrice: z.number().min(0).max(99),
+  previousAdults: z.number().int().min(1).max(99),
+  previousChilds: z.number().int().min(1).max(99),
 });
 
 type SettingsFormValues = z.infer<typeof formSchema>;
@@ -44,6 +47,9 @@ export default function SettingsForm({ initialData }: Props) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       year: initialData.year,
+      newClientPrice: initialData.newClientPrice,
+      previousAdults: initialData.previousAdults,
+      previousChilds: initialData.previousChilds,
     },
   });
 
@@ -124,7 +130,77 @@ export default function SettingsForm({ initialData }: Props) {
                     <Input
                       {...field}
                       disabled={loading}
-                      placeholder="Escribe el año con el que trabajar, de 4 cifras"
+                      placeholder="Año con el que trabajar, de 4 cifras"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="newClientPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cuota nuevos comparsistas</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        className="pr-6"
+                        disabled={loading}
+                        placeholder="Cantidad extra para nuevos comparsistas"
+                        type="number"
+                        onChange={(e) => {
+                          const newValue = e.target.value;
+                          field.onChange(newValue !== "" ? +newValue : null);
+                        }}
+                      />
+                      <Euro className="w-4 h-4 absolute top-3 right-1" />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="previousAdults"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Adultos año anterior</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={loading}
+                      placeholder="Número de adultos del año anterior"
+                      type="number"
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+                        field.onChange(newValue !== "" ? +newValue : null);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="previousChilds"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Niños con cuota año anterior</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={loading}
+                      placeholder="Número de niños del año anterior"
+                      type="number"
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+                        field.onChange(newValue !== "" ? +newValue : null);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />

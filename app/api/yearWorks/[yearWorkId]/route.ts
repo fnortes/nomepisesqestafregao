@@ -10,29 +10,34 @@ export async function PATCH(
     const { userId } = auth();
     const body = await req.json();
 
-    const { year } = body;
+    const { year, newClientPrice } = body;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!year) {
-      return new NextResponse("Year is required", { status: 400 });
+    if (!year || !newClientPrice) {
+      return new NextResponse(
+        "El año y la cuota de nuevos comparsistas son obligatorios",
+        { status: 400 }
+      );
     }
 
     if (!params.yearWorkId) {
-      return new NextResponse("Year Work ID is required", { status: 400 });
+      return new NextResponse("No se ha especificado el ID del año", {
+        status: 400,
+      });
     }
 
     const currentYearWork = await prismadb.yearWork.findFirst({
-      where: { year },
+      where: { year, id: { not: params.yearWorkId } },
     });
 
     if (currentYearWork !== null) {
       return NextResponse.json(
         {
           errorMessage:
-            "The new year to work already exist. Try with another one",
+            "El nuevo año de trabajo ya existe. Inténtalo de nuevo con otro año.",
         },
         { status: 400 }
       );
@@ -44,6 +49,7 @@ export async function PATCH(
       },
       data: {
         year,
+        newClientPrice,
       },
     });
 
@@ -66,7 +72,9 @@ export async function DELETE(
     }
 
     if (!params.yearWorkId) {
-      return new NextResponse("Year Work ID is required", { status: 400 });
+      return new NextResponse("No se ha especificado el ID del año", {
+        status: 400,
+      });
     }
 
     const yearWork = await prismadb.yearWork.deleteMany({
