@@ -1,10 +1,15 @@
 "use client";
 
+import { YearWork } from "@prisma/client";
 import { useEffect, useState } from "react";
 
 import WorkYearModal from "@/components/modals/work-year-modal";
 
-export const ModalProvider = () => {
+interface Props {
+  workYears: YearWork[];
+}
+
+export const ModalProvider = ({ workYears }: Props) => {
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -17,7 +22,7 @@ export const ModalProvider = () => {
 
   return (
     <>
-      <WorkYearModal />
+      <WorkYearModal workYears={workYears} />
     </>
   );
 };

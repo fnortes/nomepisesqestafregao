@@ -50,7 +50,6 @@ export default function WorkYearSwitcher({ items = [], className }: Props) {
 
   const handleSelectWorkYear = (value: string) => {
     setOpen(false);
-    console.log("value: ", value);
     router.push(`/${value}`);
   };
 

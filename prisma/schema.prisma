@@ -21,13 +21,13 @@ model YearWork {
   previousChilds          Int       @default(0)
   firstPartyDay            DateTime  @default(now())
   lastPartyDay            DateTime  @default(now())
-  previousFirstPartyDay   DateTime  @default(now())
-  previousLastPartyDay    DateTime  @default(now())
+  previousFirstPartyDay   DateTime?
+  previousLastPartyDay    DateTime?
   unitFoodPrice           Decimal   @default(10)
-  previousYearWorkAmount  Decimal   @default(0)
+  previousYearWorkAmount  Decimal   @default(0)     // TODO: Por ahora lo dejamos a cero, pero en el futuro, este valor se podría auto-rellenar cuando se crea un nuevo año, tomandolo del saldo del año anterior.
   awardsReward            Decimal   @default(0)
   commissionHelp          Decimal   @default(0)
-  clients                 Client[]  @relation("YearWorkToClient")
+  clients                 Client[]  @relation("YearWorkToClient") // TODO: Está implentado el copiar los clientes del año anterior, cuando se selecciona, pero falta validar que los copia bien y con todos los datos.
 }
 
 enum Gender {
