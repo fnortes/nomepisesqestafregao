@@ -10,21 +10,21 @@ export async function PATCH(
     const { userId } = auth();
     const body = await req.json();
 
-    const { year, newClientPrice } = body;
+    const { year, newClientPrice, previousAdults, previousChilds } = body;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!year || !newClientPrice) {
+    if (!year || !newClientPrice || !previousAdults || !previousChilds) {
       return new NextResponse(
-        "El año y la cuota de nuevos comparsistas son obligatorios",
+        "Alguno de los datos obligatorios no se han informado.",
         { status: 400 }
       );
     }
 
     if (!params.yearWorkId) {
-      return new NextResponse("No se ha especificado el ID del año", {
+      return new NextResponse("No se ha especificado el ID del año.", {
         status: 400,
       });
     }
@@ -37,7 +37,7 @@ export async function PATCH(
       return NextResponse.json(
         {
           errorMessage:
-            "El nuevo año de trabajo ya existe. Inténtalo de nuevo con otro año.",
+            "El año de trabajo informado ya existe. Inténtalo de nuevo con otro año.",
         },
         { status: 400 }
       );
@@ -50,6 +50,8 @@ export async function PATCH(
       data: {
         year,
         newClientPrice,
+        previousAdults,
+        previousChilds,
       },
     });
 
