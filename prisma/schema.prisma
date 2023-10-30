@@ -19,7 +19,7 @@ model YearWork {
   newClientPrice          Float     @default(20)
   previousAdults          Int       @default(0)
   previousChilds          Int       @default(0)
-  firstPartyDay            DateTime  @default(now())
+  firstPartyDay           DateTime  @default(now())
   lastPartyDay            DateTime  @default(now())
   previousFirstPartyDay   DateTime?
   previousLastPartyDay    DateTime?

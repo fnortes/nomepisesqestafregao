@@ -10,13 +10,39 @@ export async function PATCH(
     const { userId } = auth();
     const body = await req.json();
 
-    const { year, newClientPrice, previousAdults, previousChilds } = body;
+    const {
+      year,
+      newClientPrice,
+      previousAdults,
+      previousChilds,
+      firstPartyDay,
+      lastPartyDay,
+      previousFirstPartyDay,
+      previousLastPartyDay,
+      unitFoodPrice,
+      previousYearWorkAmount,
+      awardsReward,
+      commissionHelp,
+    } = body;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!year || !newClientPrice || !previousAdults || !previousChilds) {
+    if (
+      !year ||
+      !newClientPrice ||
+      !previousAdults ||
+      !previousChilds ||
+      !firstPartyDay ||
+      !lastPartyDay ||
+      !previousFirstPartyDay ||
+      !previousLastPartyDay ||
+      !unitFoodPrice ||
+      !previousYearWorkAmount ||
+      !awardsReward ||
+      !commissionHelp
+    ) {
       return new NextResponse(
         "Alguno de los datos obligatorios no se han informado.",
         { status: 400 }
@@ -52,6 +78,14 @@ export async function PATCH(
         newClientPrice,
         previousAdults,
         previousChilds,
+        firstPartyDay,
+        lastPartyDay,
+        previousFirstPartyDay,
+        previousLastPartyDay,
+        unitFoodPrice,
+        previousYearWorkAmount,
+        awardsReward,
+        commissionHelp,
       },
     });
 
