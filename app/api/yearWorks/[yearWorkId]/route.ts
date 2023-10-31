@@ -31,20 +31,22 @@ export async function PATCH(
 
     if (
       !year ||
-      !newClientPrice ||
+      (!newClientPrice && newClientPrice !== 0) ||
       !previousAdults ||
       !previousChilds ||
       !firstPartyDay ||
       !lastPartyDay ||
       !previousFirstPartyDay ||
       !previousLastPartyDay ||
-      !unitFoodPrice ||
+      (!unitFoodPrice && unitFoodPrice !== 0) ||
       !previousYearWorkAmount ||
       !awardsReward ||
       !commissionHelp
     ) {
-      return new NextResponse(
-        "Alguno de los datos obligatorios no se han informado.",
+      return NextResponse.json(
+        {
+          errorMessage: "Alguno de los datos obligatorios no se han informado.",
+        },
         { status: 400 }
       );
     }
