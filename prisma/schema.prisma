@@ -12,22 +12,23 @@ datasource db {
 }
 
 model YearWork {
-  id                      String    @id @default(uuid())
-  year                    String    @unique
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
-  newClientPrice          Float     @default(20)
-  previousAdults          Int       @default(0)
-  previousChilds          Int       @default(0)
-  firstPartyDay           DateTime  @default(now())
-  lastPartyDay            DateTime  @default(now())
+  id                      String      @id @default(uuid())
+  year                    String      @unique
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+  newClientPrice          Float       @default(20)
+  previousAdults          Int         @default(0)
+  previousChilds          Int         @default(0)
+  firstPartyDay           DateTime    @default(now())
+  lastPartyDay            DateTime    @default(now())
   previousFirstPartyDay   DateTime?
   previousLastPartyDay    DateTime?
-  unitFoodPrice           Float     @default(10)
-  previousYearWorkAmount  Float     @default(0)                   // TODO: Por ahora lo dejamos a cero, pero en el futuro, este valor se podría auto-rellenar cuando se crea un nuevo año, tomandolo del saldo del año anterior.
-  awardsReward            Float     @default(0)
-  commissionHelp          Float     @default(0)
-  clients                 Client[]  @relation("YearWorkToClient") // TODO: Está implentado el copiar los clientes del año anterior, cuando se selecciona, pero falta validar que los copia bien y con todos los datos.
+  unitFoodPrice           Float       @default(10)
+  previousYearWorkAmount  Float       @default(0)                   // TODO: Por ahora lo dejamos a cero, pero en el futuro, este valor se podría auto-rellenar cuando se crea un nuevo año, tomandolo del saldo del año anterior.
+  awardsReward            Float       @default(0)
+  commissionHelp          Float       @default(0)
+  clients                 Client[]    @relation("YearWorkToClient") // TODO: Está implentado el copiar los clientes del año anterior, cuando se selecciona, pero falta validar que los copia bien y con todos los datos.
+  barGroup                BarGroup[]  @relation("YearWorkToBarGroup")
 }
 
 enum Gender {
@@ -61,8 +62,12 @@ model BarGroup {
   id            String    @id @default(uuid())
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  name          String
+  name          String    @unique
+  yearWorkId    String
+  yearWork      YearWork    @relation("YearWorkToBarGroup", fields: [yearWorkId], references: [id])
   clients       ClientsOnBarGroups[]
+
+  @@index([yearWorkId])
 }
 
 model PriceType {

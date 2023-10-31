@@ -20,6 +20,10 @@ export default function MainNav({
       label: "General",
     },
     {
+      href: `/${params.yearWorkId}/barGroups`,
+      label: "Grupos de Barra",
+    },
+    {
       href: `/${params.yearWorkId}/settings`,
       label: "Configuración",
     },
