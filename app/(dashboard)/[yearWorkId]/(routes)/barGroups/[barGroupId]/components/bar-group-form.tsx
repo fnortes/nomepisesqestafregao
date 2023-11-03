@@ -35,7 +35,7 @@ export default function BarGroupForm({ initialData }: Props) {
           "Actualizar Grupo de Barra",
           "Edita la información del grupo de barra seleccionado",
           "Guardar cambios",
-          `/api/barGroups/${initialData.id}`,
+          `/api/${params.yearWorkId}/barGroups/${initialData.id}`,
           axios.patch<BarGroup>,
           "Grupo de barra actualizado.",
         ]
@@ -43,7 +43,7 @@ export default function BarGroupForm({ initialData }: Props) {
           "Crear nuevo Grupo de Barra",
           "Inserta un nuevo grupo de barra en el año de trabajo seleccionado",
           "Crear",
-          "/api/barGroups",
+          `/api/${params.yearWorkId}/barGroups`,
           axios.post<BarGroup>,
           "Nuevo grupo de barra creado.",
         ];
@@ -58,7 +58,7 @@ export default function BarGroupForm({ initialData }: Props) {
   const handleValid = async (values: BarGroupFormValues) => {
     try {
       setLoading(true);
-      await apiCall(saveApiUrl, { ...values, yearWorkId: params.yearWorkId });
+      await apiCall(saveApiUrl, { name: values.name });
 
       router.refresh();
       router.push(`/${params.yearWorkId}/barGroups`);
@@ -79,7 +79,9 @@ export default function BarGroupForm({ initialData }: Props) {
   const handleConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/barGroups/${initialData?.id}`);
+      await axios.delete(
+        `/api/${params.yearWorkId}/barGroups/${initialData?.id}`
+      );
 
       router.refresh();
       router.push(`/${params.yearWorkId}/barGroups`);

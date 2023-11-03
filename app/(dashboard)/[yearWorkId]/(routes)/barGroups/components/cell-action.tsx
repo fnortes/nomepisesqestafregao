@@ -35,7 +35,7 @@ export default function CellAction({ data }: Props) {
   const handleConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/barGroups/${data?.id}`);
+      await axios.delete(`/api/${params.yearWorkId}/barGroups/${data?.id}`);
 
       router.refresh();
       toast.success("Grupo de barra eliminado");

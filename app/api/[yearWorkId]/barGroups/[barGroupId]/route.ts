@@ -4,13 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { barGroupId: string } }
+  { params }: { params: { yearWorkId: string; barGroupId: string } }
 ) {
   try {
     const { userId } = auth();
     const body = await req.json();
 
-    const { name, yearWorkId } = body;
+    const { name } = body;
+    const { yearWorkId, barGroupId } = params;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -40,7 +41,7 @@ export async function PATCH(
     const currentBarGroup = await prismadb.barGroup.findFirst({
       where: {
         name,
-        id: { not: params.barGroupId },
+        id: { not: barGroupId },
       },
     });
 
@@ -56,7 +57,7 @@ export async function PATCH(
 
     const barGroup = await prismadb.barGroup.updateMany({
       where: {
-        id: params.barGroupId,
+        id: barGroupId,
       },
       data: {
         yearWorkId,
@@ -73,16 +74,18 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { barGroupId: string } }
+  { params }: { params: { yearWorkId: string; barGroupId: string } }
 ) {
   try {
     const { userId } = auth();
+
+    const { barGroupId } = params;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.barGroupId) {
+    if (!barGroupId) {
       return new NextResponse(
         "No se ha especificado el ID del grupo de barra",
         {
@@ -93,7 +96,7 @@ export async function DELETE(
 
     const barGroup = await prismadb.barGroup.deleteMany({
       where: {
-        id: params.barGroupId,
+        id: barGroupId,
       },
     });
 
