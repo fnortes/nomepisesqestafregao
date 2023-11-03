@@ -77,11 +77,11 @@ export default function BarGroupForm({ initialData }: Props) {
       await axios.delete(`/api/barGroups/${initialData?.id}`);
 
       router.refresh();
-      router.push("/");
-      toast.success("Año de trabajo eliminado");
+      router.push(`/${params.yearWorkId}/barGroups`);
+      toast.success("Grupo de barra eliminado");
     } catch (error) {
       toast.error(
-        "Asegúrate de que toda la información de este año de trabajado se haya eliminado previamente."
+        "Asegúrate de que toda la información de este grupo de barra se haya eliminado previamente."
       );
     } finally {
       setLoading(false);

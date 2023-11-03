@@ -5,12 +5,12 @@ import { useParams, useRouter } from "next/navigation";
 
 import Heading from "@/components/heading";
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
 import { Separator } from "@/components/ui/separator";
-
-import type { BarGroup } from "@prisma/client";
+import { columns, type BarGroupColumn } from "./columns";
 
 interface Props {
-  barGroups: BarGroup[];
+  readonly barGroups: BarGroupColumn[];
 }
 
 export default function BarGroupsClient({ barGroups }: Props) {
@@ -32,6 +32,7 @@ export default function BarGroupsClient({ barGroups }: Props) {
         </Button>
       </div>
       <Separator />
+      <DataTable columns={columns} data={barGroups} searchKey="name" />
     </>
   );
 }

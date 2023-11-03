@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { DATE_FORMAT } from "@/constants/date";
 import { cn } from "@/lib/utils";
 
 import type { CommonFieldProps } from "@/components/form/form.types";
@@ -55,7 +56,7 @@ export default function DateFormField<T extends FieldValues>({
                   variant={"outline"}
                 >
                   {field.value ? (
-                    format(field.value as Date, "dd/MM/yyyy")
+                    format(field.value as Date, DATE_FORMAT)
                   ) : (
                     <span>{emptyText}</span>
                   )}
