@@ -38,7 +38,6 @@ export default function CellAction({ data }: Props) {
       await axios.delete(`/api/barGroups/${data?.id}`);
 
       router.refresh();
-      router.push(`/${params.yearWorkId}/barGroups`);
       toast.success("Grupo de barra eliminado");
     } catch (error) {
       toast.error(
