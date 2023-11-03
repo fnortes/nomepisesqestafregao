@@ -1,8 +1,12 @@
 "use client";
 
+import axios from "axios";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
+import AlertModal from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,38 +19,64 @@ import {
 import type { BarGroupColumn } from "./columns";
 
 interface Props {
-  data: BarGroupColumn;
+  readonly data: BarGroupColumn;
 }
 
 export default function CellAction({ data }: Props) {
   const router = useRouter();
   const params = useParams();
+  const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleEditClick = () => {
+  const handleClickEdit = () => {
     router.push(`/${params.yearWorkId}/barGroups/${data.id}`);
   };
 
-  const handleDeleteClick = () => {};
+  const handleConfirm = async () => {
+    try {
+      setLoading(true);
+      await axios.delete(`/api/barGroups/${data?.id}`);
+
+      router.refresh();
+      router.push(`/${params.yearWorkId}/barGroups`);
+      toast.success("Grupo de barra eliminado");
+    } catch (error) {
+      toast.error(
+        "Asegúrate de que toda la información de este grupo de barra se haya eliminado previamente."
+      );
+    } finally {
+      setLoading(false);
+      setOpen(false);
+    }
+  };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Abrir menú</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-        <DropdownMenuItem onClick={handleEditClick}>
-          <Edit className="mr-2 h-4 w-4" />
-          Editar
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDeleteClick}>
-          <Trash className="mr-2 h-4 w-4" />
-          Eliminar
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <AlertModal
+        isOpen={open}
+        loading={loading}
+        onClose={() => setOpen(false)}
+        onConfirm={handleConfirm}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Abrir menú</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+          <DropdownMenuItem onClick={handleClickEdit}>
+            <Edit className="mr-2 h-4 w-4" />
+            Editar
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <Trash className="mr-2 h-4 w-4" />
+            Eliminar
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }

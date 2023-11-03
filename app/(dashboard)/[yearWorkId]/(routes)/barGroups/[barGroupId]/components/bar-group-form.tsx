@@ -20,7 +20,7 @@ import type { BarGroup } from "@prisma/client";
 import type { BarGroupFormValues } from "./bar-group-form.types";
 
 interface Props {
-  initialData: BarGroup | null;
+  readonly initialData: BarGroup | null;
 }
 
 export default function BarGroupForm({ initialData }: Props) {
@@ -29,21 +29,24 @@ export default function BarGroupForm({ initialData }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [title, description, action, saveApiUrl, apiCall] = initialData
-    ? [
-        "Actualizar Grupo de Barra",
-        "Edita la información del grupo de barra seleccionado",
-        "Guardar cambios",
-        `/api/barGroups/${initialData.id}`,
-        axios.patch<BarGroup>,
-      ]
-    : [
-        "Crear nuevo Grupo de Barra",
-        "Inserta un nuevo grupo de barra en el año de trabajo seleccionado",
-        "Crear",
-        "/api/barGroups",
-        axios.post<BarGroup>,
-      ];
+  const [title, description, action, saveApiUrl, apiCall, toastMessage] =
+    initialData
+      ? [
+          "Actualizar Grupo de Barra",
+          "Edita la información del grupo de barra seleccionado",
+          "Guardar cambios",
+          `/api/barGroups/${initialData.id}`,
+          axios.patch<BarGroup>,
+          "Grupo de barra actualizado.",
+        ]
+      : [
+          "Crear nuevo Grupo de Barra",
+          "Inserta un nuevo grupo de barra en el año de trabajo seleccionado",
+          "Crear",
+          "/api/barGroups",
+          axios.post<BarGroup>,
+          "Nuevo grupo de barra creado.",
+        ];
 
   const form = useForm<BarGroupFormValues>({
     resolver: zodResolver(formSchema),
@@ -52,12 +55,14 @@ export default function BarGroupForm({ initialData }: Props) {
     },
   });
 
-  const onSubmit = async (values: BarGroupFormValues) => {
+  const handleValid = async (values: BarGroupFormValues) => {
     try {
       setLoading(true);
       await apiCall(saveApiUrl, { ...values, yearWorkId: params.yearWorkId });
 
-      window.location.assign(`/${params.yearWorkId}/barGroups`);
+      router.refresh();
+      router.push(`/${params.yearWorkId}/barGroups`);
+      toast.success(toastMessage);
     } catch (error) {
       let errorMessage = "Algo ha ido mal :(";
 
@@ -71,7 +76,7 @@ export default function BarGroupForm({ initialData }: Props) {
     }
   };
 
-  const onDelete = async () => {
+  const handleConfirm = async () => {
     try {
       setLoading(true);
       await axios.delete(`/api/barGroups/${initialData?.id}`);
@@ -95,7 +100,7 @@ export default function BarGroupForm({ initialData }: Props) {
         isOpen={open}
         loading={loading}
         onClose={() => setOpen(false)}
-        onConfirm={onDelete}
+        onConfirm={handleConfirm}
       />
       <div className="flex items-center justify-between">
         <Heading description={description} title={title} />
@@ -114,7 +119,7 @@ export default function BarGroupForm({ initialData }: Props) {
       <Form {...form}>
         <form
           className="space-y-8 w-full"
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(handleValid)}
         >
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
             <TextFormField
