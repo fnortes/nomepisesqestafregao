@@ -8,7 +8,7 @@ import type {
 import type { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 
 interface Props<T extends FieldValues> extends CommonFieldProps<T> {
-  input: InputProps;
+  readonly input: InputProps;
 }
 
 export default function TextFormField<T extends FieldValues>({

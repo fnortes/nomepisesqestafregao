@@ -5,12 +5,10 @@ import { useParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-interface Props {}
-
 export default function MainNav({
   className,
   ...props
-}: React.HTMLAttributes<HTMLElement>) {
+}: Readonly<React.HTMLAttributes<HTMLElement>>) {
   const pathname = usePathname();
   const params = useParams<{ yearWorkId: string }>();
 
@@ -18,6 +16,10 @@ export default function MainNav({
     {
       href: `/${params.yearWorkId}`,
       label: "General",
+    },
+    {
+      href: `/${params.yearWorkId}/priceTypes`,
+      label: "Cuotas",
     },
     {
       href: `/${params.yearWorkId}/barGroups`,

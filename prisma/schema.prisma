@@ -28,7 +28,8 @@ model YearWork {
   awardsReward            Float       @default(0)
   commissionHelp          Float       @default(0)
   clients                 Client[]    @relation("YearWorkToClient") // TODO: Está implentado el copiar los clientes del año anterior, cuando se selecciona, pero falta validar que los copia bien y con todos los datos.
-  barGroup                BarGroup[]  @relation("YearWorkToBarGroup")
+  barGroups               BarGroup[]  @relation("YearWorkToBarGroup")
+  priceTypes              PriceType[] @relation("YearWorkToPriceType")
 }
 
 enum Gender {
@@ -64,7 +65,7 @@ model BarGroup {
   updatedAt     DateTime  @updatedAt
   name          String    @unique
   yearWorkId    String
-  yearWork      YearWork    @relation("YearWorkToBarGroup", fields: [yearWorkId], references: [id])
+  yearWork      YearWork  @relation("YearWorkToBarGroup", fields: [yearWorkId], references: [id])
   clients       ClientsOnBarGroups[]
 
   @@index([yearWorkId])
@@ -77,13 +78,17 @@ model PriceType {
   name          String
   adultPrice    Float     @default(0)
   childPrice    Float     @default(0)
-  BabyPrice     Float     @default(0)
+  babyPrice     Float     @default(0)
   meals         Boolean   @default(false)
   dinners       Boolean   @default(false)
   paradeSuit    Boolean   @default(false)
   paradeWater   Boolean   @default(false)
   drinkTickets  Boolean   @default(false)
+  yearWorkId    String
+  yearWork      YearWork  @relation("YearWorkToPriceType", fields: [yearWorkId], references: [id])
   clients       Client[]  @relation("PriceTypeToClient")
+
+  @@index([yearWorkId])
 }
 
 model Client {
@@ -92,7 +97,7 @@ model Client {
   yearWork      YearWork    @relation("YearWorkToClient", fields: [yearWorkId], references: [id])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  firstName      String
+  firstName     String
   lastName      String?
   email         String      @unique
   phone         String?
