@@ -1,5 +1,7 @@
 "use client";
 
+import { BadgeX, Check } from "lucide-react";
+
 import CellAction from "./cell-action";
 
 import type { ColumnDef } from "@tanstack/react-table";
@@ -39,22 +41,52 @@ export const columns: ColumnDef<PriceTypeColumn>[] = [
   {
     accessorKey: "meals",
     header: "Comidas",
+    cell: ({ row }) =>
+      row.original.meals ? (
+        <Check className="w-4 h-4 text-green-700" />
+      ) : (
+        <BadgeX className="w-4 h-4 text-red-700" />
+      ),
   },
   {
     accessorKey: "dinners",
     header: "Cenas",
+    cell: ({ row }) =>
+      row.original.dinners ? (
+        <Check className="w-4 h-4 text-green-700" />
+      ) : (
+        <BadgeX className="w-4 h-4 text-red-700" />
+      ),
   },
   {
     accessorKey: "paradeSuit",
     header: "Desfile Traje",
+    cell: ({ row }) =>
+      row.original.paradeSuit ? (
+        <Check className="w-4 h-4 text-green-700" />
+      ) : (
+        <BadgeX className="w-4 h-4 text-red-700" />
+      ),
   },
   {
     accessorKey: "paradeWater",
     header: "Desfile Agua",
+    cell: ({ row }) =>
+      row.original.paradeWater ? (
+        <Check className="w-4 h-4 text-green-700" />
+      ) : (
+        <BadgeX className="w-4 h-4 text-red-700" />
+      ),
   },
   {
     accessorKey: "drinkTickets",
     header: "Tickets Bebida",
+    cell: ({ row }) =>
+      row.original.drinkTickets ? (
+        <Check className="w-4 h-4 text-green-700" />
+      ) : (
+        <BadgeX className="w-4 h-4 text-red-700" />
+      ),
   },
   {
     accessorKey: "createdAt",

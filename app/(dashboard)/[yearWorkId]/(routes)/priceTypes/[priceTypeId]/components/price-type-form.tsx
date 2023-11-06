@@ -8,6 +8,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
+import CheckboxFormField from "@/components/form/checkbox-form-field";
+import NumberFormField from "@/components/form/number-form-field";
 import TextFormField from "@/components/form/text-form-field";
 import Heading from "@/components/heading";
 import AlertModal from "@/components/modals/alert-modal";
@@ -18,8 +20,6 @@ import { formSchema } from "./price-type-form.constants";
 
 import type { PriceType } from "@prisma/client";
 import type { PriceTypeFormValues } from "./price-type-form.types";
-import NumberFormField from "@/components/form/number-form-field";
-import CheckboxFormField from "@/components/form/checkbox-form-field";
 
 interface Props {
   readonly initialData: PriceType | null;
@@ -54,13 +54,21 @@ export default function PriceTypeForm({ initialData }: Props) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: initialData?.name ?? "",
+      adultPrice: initialData?.adultPrice ?? 0,
+      childPrice: initialData?.childPrice ?? 0,
+      babyPrice: initialData?.babyPrice ?? 0,
+      meals: initialData?.meals ?? false,
+      dinners: initialData?.dinners ?? false,
+      paradeSuit: initialData?.paradeSuit ?? false,
+      paradeWater: initialData?.paradeWater ?? false,
+      drinkTickets: initialData?.drinkTickets ?? false,
     },
   });
 
   const handleValid = async (values: PriceTypeFormValues) => {
     try {
       setLoading(true);
-      await apiCall(saveApiUrl, { name: values.name });
+      await apiCall(saveApiUrl, values);
 
       router.refresh();
       router.push(`/${params.yearWorkId}/priceTypes`);
