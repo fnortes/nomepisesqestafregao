@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }) {
   const workYears = await prismadb.yearWork.findMany();
 

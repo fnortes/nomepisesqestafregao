@@ -23,9 +23,9 @@ import type { CommonFieldProps } from "@/components/form/form.types";
 import type { FieldValues } from "react-hook-form";
 
 interface Props<T extends FieldValues> extends CommonFieldProps<T> {
-  description: string;
-  emptyText: string;
-  validateYear: string;
+  readonly description: string;
+  readonly emptyText: string;
+  readonly validateYear: string;
 }
 
 export default function DateFormField<T extends FieldValues>({
