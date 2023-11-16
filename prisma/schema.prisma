@@ -99,7 +99,7 @@ model Client {
   updatedAt     DateTime    @updatedAt
   firstName     String
   lastName      String?
-  email         String      @unique
+  email         String?      @unique
   phone         String?
   gender        Gender      @default(MAN)
   ageGroup      AgeGroup    @default(ADULT)

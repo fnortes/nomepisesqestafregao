@@ -14,18 +14,16 @@ import {
   SelectValue,
 } from "../ui/select";
 
-import type { CommonFieldProps } from "@/components/form/form.types";
+import type {
+  CommonFieldProps,
+  CommonFormFieldData,
+} from "@/components/form/form.types";
 import type { FieldValues } from "react-hook-form";
 
-export interface SelectFormFieldDataItem {
-  label?: string;
-  value: string;
-}
-export type SelectFormFieldData = SelectFormFieldDataItem[];
-
 interface Props<T extends FieldValues> extends CommonFieldProps<T> {
-  readonly data: SelectFormFieldData;
-  readonly description: string;
+  readonly data: CommonFormFieldData;
+  readonly description?: string;
+  readonly placeholder?: string;
 }
 
 export default function SelectFormField<T extends FieldValues>({
@@ -35,6 +33,7 @@ export default function SelectFormField<T extends FieldValues>({
   label,
   loading,
   name,
+  placeholder,
 }: Props<T>) {
   return (
     <FormField
@@ -50,7 +49,7 @@ export default function SelectFormField<T extends FieldValues>({
           >
             <FormControl>
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
@@ -61,7 +60,7 @@ export default function SelectFormField<T extends FieldValues>({
               ))}
             </SelectContent>
           </Select>
-          <FormDescription>{description}</FormDescription>
+          {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
         </FormItem>
       )}

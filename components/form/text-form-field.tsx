@@ -12,6 +12,7 @@ interface Props<T extends FieldValues> extends CommonFieldProps<T> {
 }
 
 export default function TextFormField<T extends FieldValues>({
+  description,
   form,
   input,
   label,
@@ -33,6 +34,12 @@ export default function TextFormField<T extends FieldValues>({
   };
 
   return (
-    <FormFieldBase form={form} name={name} label={label} input={renderInput} />
+    <FormFieldBase
+      form={form}
+      name={name}
+      label={label}
+      input={renderInput}
+      description={description}
+    />
   );
 }

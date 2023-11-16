@@ -22,6 +22,10 @@ export default function MainNav({
       label: "Cuotas",
     },
     {
+      href: `/${params.yearWorkId}/clients`,
+      label: "Comparsistas",
+    },
+    {
       href: `/${params.yearWorkId}/barGroups`,
       label: "Grupos de Barra",
     },

@@ -1,5 +1,6 @@
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,6 +17,7 @@ interface Props<T extends FieldValues>
 }
 
 export default function FormFieldBase<T extends FieldValues>({
+  description,
   form,
   input,
   label,
@@ -29,6 +31,7 @@ export default function FormFieldBase<T extends FieldValues>({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>{input(field)}</FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
         </FormItem>
       )}
