@@ -8,7 +8,7 @@ export const formSchema = z.object({
   firstName: z.string().min(1).max(50),
   lastName: z.string().max(50).optional().nullable(),
   phone: z.string().length(9).optional().nullable(),
-  email: z.string().email().optional(),
+  email: z.string().email().optional().nullable(),
   gender: z.nativeEnum(Gender),
   ageGroup: z.nativeEnum(AgeGroup),
   isNew: z.boolean().default(false),

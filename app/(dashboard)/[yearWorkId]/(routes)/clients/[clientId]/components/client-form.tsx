@@ -149,7 +149,7 @@ export default function ClientForm({
       let errorMessage = "Algo ha ido mal :(";
 
       if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data.errorMessage;
+        errorMessage = error.response?.data.errorMessage ?? error.message;
       }
 
       toast.error(errorMessage);
