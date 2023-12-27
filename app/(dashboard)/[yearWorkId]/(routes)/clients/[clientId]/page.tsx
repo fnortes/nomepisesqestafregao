@@ -25,6 +25,9 @@ export default async function ClientPage({
     where: { yearWorkId },
     orderBy: { name: "asc" },
   });
+  const yearWork = await prismadb.yearWork.findFirst({
+    where: { id: yearWorkId },
+  });
 
   return (
     <div className="flex-col">
@@ -33,6 +36,7 @@ export default async function ClientPage({
           initialData={client}
           barGroups={barGroups}
           priceTypes={priceTypes}
+          yearWork={yearWork}
         />
       </div>
     </div>

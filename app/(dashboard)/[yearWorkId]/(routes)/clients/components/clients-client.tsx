@@ -32,7 +32,7 @@ export default function ClientsClient({ clients }: Props) {
         </Button>
       </div>
       <Separator />
-      <DataTable columns={columns} data={clients} searchKey="name" />
+      <DataTable columns={columns} data={clients} searchKey="firstName" />
     </>
   );
 }

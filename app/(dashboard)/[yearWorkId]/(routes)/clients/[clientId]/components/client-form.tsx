@@ -28,19 +28,21 @@ import {
 } from "./client-form.constants";
 
 import type { CommonFormFieldData } from "@/components/form/form.types";
-import type { BarGroup, PriceType } from "@prisma/client";
+import type { BarGroup, PriceType, YearWork } from "@prisma/client";
 import type { ClientFormValues, CustomClient } from "./client-form.types";
 
 interface Props {
   readonly initialData: CustomClient | null;
   readonly barGroups: BarGroup[];
   readonly priceTypes: PriceType[];
+  readonly yearWork: YearWork;
 }
 
 export default function ClientForm({
   initialData,
   barGroups,
   priceTypes,
+  yearWork,
 }: Props) {
   const router = useRouter();
   const params = useParams();
@@ -112,18 +114,28 @@ export default function ClientForm({
         const ageGroupSelected = ageGroupOptionsData.find(
           (ageGroup) => ageGroup.value === value.ageGroup
         );
+        let newCalculatedQuote = 0;
 
-        setCalculatedQuote(
-          (ageGroupSelected?.value === AgeGroup.ADULT
-            ? priceTypeSelected?.adultPrice
-            : ageGroupSelected?.value === AgeGroup.CHILD
-            ? priceTypeSelected?.childPrice
-            : priceTypeSelected?.babyPrice) ?? 0
-        );
+        if (priceTypeSelected && ageGroupSelected) {
+          const pricesMapping: { [key in AgeGroup]: number } = {
+            [AgeGroup.ADULT]: priceTypeSelected.adultPrice,
+            [AgeGroup.CHILD]: priceTypeSelected.childPrice,
+            [AgeGroup.BABY]: priceTypeSelected.babyPrice,
+          };
+
+          newCalculatedQuote =
+            pricesMapping[ageGroupSelected.value as AgeGroup];
+
+          if (ageGroupSelected.value === AgeGroup.ADULT && value.isNew) {
+            newCalculatedQuote += yearWork.newClientPrice;
+          }
+        }
+
+        setCalculatedQuote(newCalculatedQuote);
       }
     });
     return () => subscription.unsubscribe();
-  }, [form, ageGroupOptionsData, priceTypes]);
+  }, [form, ageGroupOptionsData, priceTypes, yearWork.newClientPrice]);
 
   const handleValid = async (values: ClientFormValues) => {
     try {

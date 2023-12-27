@@ -45,7 +45,7 @@ export default function CheckboxFormField<T extends FieldValues>({
               onCheckedChange={(checked) =>
                 onCheckedChange
                   ? onCheckedChange(field, checked)
-                  : field.onChange
+                  : field.onChange(checked)
               }
             />
           </FormControl>
