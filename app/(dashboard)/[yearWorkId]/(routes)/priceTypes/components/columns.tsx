@@ -5,6 +5,7 @@ import { BadgeX, Check } from "lucide-react";
 import CellAction from "./cell-action";
 
 import type { ColumnDef } from "@tanstack/react-table";
+import { formatCurrency } from "@/lib/utils";
 
 export type PriceTypeColumn = {
   adultPrice: number;
@@ -29,14 +30,17 @@ export const columns: ColumnDef<PriceTypeColumn>[] = [
   {
     accessorKey: "adultPrice",
     header: "Adulto",
+    cell: ({ row }) => formatCurrency(row.original.adultPrice),
   },
   {
     accessorKey: "childPrice",
     header: "Niño",
+    cell: ({ row }) => formatCurrency(row.original.childPrice),
   },
   {
     accessorKey: "babyPrice",
     header: "Bebé",
+    cell: ({ row }) => formatCurrency(row.original.babyPrice),
   },
   {
     accessorKey: "meals",

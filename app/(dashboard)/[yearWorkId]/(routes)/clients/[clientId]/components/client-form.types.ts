@@ -2,7 +2,7 @@ import * as z from "zod";
 
 import { formSchema } from "./client-form.constants";
 
-import type { Client } from "@prisma/client";
+import type { Client, PriceType } from "@prisma/client";
 
 export type ClientFormValues = z.infer<typeof formSchema>;
 
@@ -13,4 +13,5 @@ export type CustomClient = Client & {
     startDate: Date;
     endDate: Date;
   }[];
+  priceType: PriceType;
 };

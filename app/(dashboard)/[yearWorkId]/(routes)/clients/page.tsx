@@ -4,6 +4,11 @@ import { DATE_TIME_FORMAT } from "@/constants/date";
 import prismadb from "@/lib/prismadb";
 import ClientsClient from "./components/clients-client";
 
+import {
+  AGE_GROUPS_LITERALS,
+  GENDER_LITERALS,
+  SHIRT_SIZE_LITERALS,
+} from "./clients.constants";
 import type { ClientColumn } from "./components/columns";
 
 interface Props {
@@ -14,6 +19,7 @@ interface Props {
 
 export default async function ClientPage({ params: { yearWorkId } }: Props) {
   const clients = await prismadb.client.findMany({
+    include: { priceType: true, yearWork: true },
     where: { yearWorkId },
     orderBy: { createdAt: "desc" },
   });
@@ -30,10 +36,11 @@ export default async function ClientPage({ params: { yearWorkId } }: Props) {
       isNew,
       lastName,
       phone,
-      priceTypeId,
+      priceType,
       quotaPaid,
       shirtSize,
       updatedAt,
+      yearWork,
     }) => ({
       ageGroup,
       comments,
@@ -45,10 +52,11 @@ export default async function ClientPage({ params: { yearWorkId } }: Props) {
       isNew,
       lastName,
       phone,
-      priceTypeId,
+      priceType,
       quotaPaid,
       shirtSize,
       updatedAt: format(updatedAt, DATE_TIME_FORMAT),
+      yearWork,
     })
   );
 

@@ -3,6 +3,11 @@ import * as z from "zod";
 import { AgeGroup, Gender, ShirtSize } from "@prisma/client";
 
 import type { CommonFormFieldData } from "@/components/form/form.types";
+import {
+  AGE_GROUPS_LITERALS,
+  GENDER_LITERALS,
+  SHIRT_SIZE_LITERALS,
+} from "../../clients.constants";
 
 export const formSchema = z.object({
   firstName: z.string().min(1).max(50),
@@ -20,28 +25,28 @@ export const formSchema = z.object({
 });
 
 export const shirtSizeOptionsData: CommonFormFieldData = [
-  { value: ShirtSize.M_6, label: "6 Meses" },
-  { value: ShirtSize.A_2, label: "2 años" },
-  { value: ShirtSize.A_3_4, label: "3-4 años" },
-  { value: ShirtSize.A_6, label: "6 años" },
-  { value: ShirtSize.A_8, label: "8 años" },
-  { value: ShirtSize.A_12, label: "12 años" },
-  { value: ShirtSize.A_16, label: "16 años" },
-  { value: ShirtSize.S, label: "S" },
-  { value: ShirtSize.M, label: "M" },
-  { value: ShirtSize.L, label: "L" },
-  { value: ShirtSize.XL, label: "XL" },
-  { value: ShirtSize.XXL, label: "XXL" },
-  { value: ShirtSize.XXXL, label: "3XL" },
+  { value: ShirtSize.M_6, label: SHIRT_SIZE_LITERALS[ShirtSize.M_6] },
+  { value: ShirtSize.A_2, label: SHIRT_SIZE_LITERALS[ShirtSize.A_2] },
+  { value: ShirtSize.A_3_4, label: SHIRT_SIZE_LITERALS[ShirtSize.A_3_4] },
+  { value: ShirtSize.A_6, label: SHIRT_SIZE_LITERALS[ShirtSize.A_6] },
+  { value: ShirtSize.A_8, label: SHIRT_SIZE_LITERALS[ShirtSize.A_8] },
+  { value: ShirtSize.A_12, label: SHIRT_SIZE_LITERALS[ShirtSize.A_12] },
+  { value: ShirtSize.A_16, label: SHIRT_SIZE_LITERALS[ShirtSize.A_16] },
+  { value: ShirtSize.S, label: SHIRT_SIZE_LITERALS[ShirtSize.S] },
+  { value: ShirtSize.M, label: SHIRT_SIZE_LITERALS[ShirtSize.M] },
+  { value: ShirtSize.L, label: SHIRT_SIZE_LITERALS[ShirtSize.L] },
+  { value: ShirtSize.XL, label: SHIRT_SIZE_LITERALS[ShirtSize.XL] },
+  { value: ShirtSize.XXL, label: SHIRT_SIZE_LITERALS[ShirtSize.XXL] },
+  { value: ShirtSize.XXXL, label: SHIRT_SIZE_LITERALS[ShirtSize.XXXL] },
 ];
 
 export const ageGroupData = [
-  { value: AgeGroup.ADULT, label: "Adulto" },
-  { value: AgeGroup.CHILD, label: "Niño con cuota" },
-  { value: AgeGroup.BABY, label: "bebé sin cuota" },
+  { value: AgeGroup.ADULT, label: AGE_GROUPS_LITERALS[AgeGroup.ADULT] },
+  { value: AgeGroup.CHILD, label: AGE_GROUPS_LITERALS[AgeGroup.CHILD] },
+  { value: AgeGroup.BABY, label: AGE_GROUPS_LITERALS[AgeGroup.BABY] },
 ];
 
 export const genderOptionsData: CommonFormFieldData = [
-  { value: Gender.MAN, label: "Hombre" },
-  { value: Gender.WOMAN, label: "Mujer" },
+  { value: Gender.MAN, label: GENDER_LITERALS[Gender.MAN] },
+  { value: Gender.WOMAN, label: GENDER_LITERALS[Gender.WOMAN] },
 ];

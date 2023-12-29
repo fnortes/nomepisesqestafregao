@@ -30,6 +30,7 @@ import {
 import type { CommonFormFieldData } from "@/components/form/form.types";
 import type { BarGroup, PriceType, YearWork } from "@prisma/client";
 import type { ClientFormValues, CustomClient } from "./client-form.types";
+import { calculateQuote } from "@/lib/utils";
 
 interface Props {
   readonly initialData: CustomClient | null;
@@ -48,7 +49,16 @@ export default function ClientForm({
   const params = useParams();
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [calculatedQuote, setCalculatedQuote] = useState<number>(0);
+  const [calculatedQuote, setCalculatedQuote] = useState<number>(
+    initialData
+      ? calculateQuote({
+          ageGroup: initialData.ageGroup,
+          isNew: initialData.isNew,
+          newClientPrice: yearWork.newClientPrice,
+          priceType: initialData.priceType,
+        })
+      : 0
+  );
 
   const [title, description, action, saveApiUrl, apiCall, toastMessage] =
     initialData
@@ -111,24 +121,16 @@ export default function ClientForm({
         const priceTypeSelected = priceTypes.find(
           (priceType) => priceType.id === value.priceTypeId
         );
-        const ageGroupSelected = ageGroupOptionsData.find(
-          (ageGroup) => ageGroup.value === value.ageGroup
-        );
+
         let newCalculatedQuote = 0;
 
-        if (priceTypeSelected && ageGroupSelected) {
-          const pricesMapping: { [key in AgeGroup]: number } = {
-            [AgeGroup.ADULT]: priceTypeSelected.adultPrice,
-            [AgeGroup.CHILD]: priceTypeSelected.childPrice,
-            [AgeGroup.BABY]: priceTypeSelected.babyPrice,
-          };
-
-          newCalculatedQuote =
-            pricesMapping[ageGroupSelected.value as AgeGroup];
-
-          if (ageGroupSelected.value === AgeGroup.ADULT && value.isNew) {
-            newCalculatedQuote += yearWork.newClientPrice;
-          }
+        if (priceTypeSelected && value.ageGroup) {
+          newCalculatedQuote = calculateQuote({
+            ageGroup: value.ageGroup,
+            isNew: value.isNew || false,
+            newClientPrice: yearWork.newClientPrice,
+            priceType: priceTypeSelected,
+          });
         }
 
         setCalculatedQuote(newCalculatedQuote);

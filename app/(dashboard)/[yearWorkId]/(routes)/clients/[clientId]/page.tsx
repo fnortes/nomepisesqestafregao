@@ -15,7 +15,7 @@ export default async function ClientPage({
     where: {
       id: clientId,
     },
-    include: { barGroups: true },
+    include: { barGroups: true, priceType: true },
   });
   const barGroups = await prismadb.barGroup.findMany({
     where: { yearWorkId },
@@ -28,6 +28,10 @@ export default async function ClientPage({
   const yearWork = await prismadb.yearWork.findFirst({
     where: { id: yearWorkId },
   });
+
+  if (!yearWork) {
+    return null;
+  }
 
   return (
     <div className="flex-col">

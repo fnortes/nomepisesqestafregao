@@ -1,11 +1,10 @@
+import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
-import prismadb from "@/lib/prismadb";
-
-export async function POST(
+export async function PATCH(
   req: NextRequest,
-  { params }: { params: { yearWorkId: string } }
+  { params }: { params: { yearWorkId: string; clientId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -25,7 +24,7 @@ export async function POST(
       quotaPaid,
       comments,
     } = body;
-    const { yearWorkId } = params;
+    const { yearWorkId, clientId } = params;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -46,7 +45,7 @@ export async function POST(
       return NextResponse.json(
         {
           errorMessage:
-            "El año de trabajo informado no existe. Para poder crear un nuevo comparsista se debe informar el año.",
+            "El año de trabajo informado no existe. Para poder actualizar el comparsista se debe informar un año de trabajo que exista.",
         },
         { status: 400 }
       );
@@ -56,6 +55,7 @@ export async function POST(
       where: {
         firstName,
         lastName,
+        id: { not: clientId },
       },
     });
 
@@ -69,7 +69,13 @@ export async function POST(
       );
     }
 
-    const client = await prismadb.client.create({
+    await prismadb.clientsOnBarGroups.deleteMany({
+      where: { clientId },
+    });
+    const client = await prismadb.client.update({
+      where: {
+        id: clientId,
+      },
       data: {
         yearWorkId,
         firstName,
@@ -93,7 +99,42 @@ export async function POST(
 
     return NextResponse.json(client);
   } catch (error) {
-    console.log("[CLIENT_POST]: ", error);
+    console.log("[CLIENT_PATCH]: ", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { yearWorkId: string; clientId: string } }
+) {
+  try {
+    const { userId } = auth();
+
+    const { clientId } = params;
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    if (!clientId) {
+      return new NextResponse(
+        "No se ha especificado el ID del grupo de barra",
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const barGroup = await prismadb.barGroup.deleteMany({
+      where: {
+        id: clientId,
+      },
+    });
+
+    return NextResponse.json(barGroup);
+  } catch (error) {
+    console.log("[BAR_GROUP_DELETE]: ", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
