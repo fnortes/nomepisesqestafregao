@@ -119,22 +119,22 @@ export async function DELETE(
 
     if (!clientId) {
       return new NextResponse(
-        "No se ha especificado el ID del grupo de barra",
+        "No se ha especificado el ID del comparsista a eliminar.",
         {
           status: 400,
         }
       );
     }
 
-    const barGroup = await prismadb.barGroup.deleteMany({
+    const client = await prismadb.client.deleteMany({
       where: {
         id: clientId,
       },
     });
 
-    return NextResponse.json(barGroup);
+    return NextResponse.json(client);
   } catch (error) {
-    console.log("[BAR_GROUP_DELETE]: ", error);
+    console.log("[CLIENT_DELETE]: ", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
