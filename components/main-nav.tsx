@@ -22,12 +22,28 @@ export default function MainNav({
       label: "Cuotas",
     },
     {
+      href: `/${params.yearWorkId}/barGroups`,
+      label: "Grupos de Barra",
+    },
+    {
+      href: `/${params.yearWorkId}/turns`,
+      label: "Turnos de Barra",
+    },
+    {
+      href: `/${params.yearWorkId}/foods`,
+      label: "Comidas",
+    },
+    {
       href: `/${params.yearWorkId}/clients`,
       label: "Comparsistas",
     },
     {
-      href: `/${params.yearWorkId}/barGroups`,
-      label: "Grupos de Barra",
+      href: `/${params.yearWorkId}/expenseCategories`,
+      label: "Categorías de Gastos",
+    },
+    {
+      href: `/${params.yearWorkId}/expenses`,
+      label: "Gastos",
     },
     {
       href: `/${params.yearWorkId}/settings`,

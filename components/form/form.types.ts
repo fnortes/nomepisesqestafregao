@@ -6,6 +6,7 @@ import type { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 export type InputProps = ComponentProps<typeof Input>;
 
 export interface CommonFieldProps<T extends FieldValues> {
+  readonly className?: string;
   readonly description?: string;
   readonly form: UseFormReturn<T>;
   readonly label: string;

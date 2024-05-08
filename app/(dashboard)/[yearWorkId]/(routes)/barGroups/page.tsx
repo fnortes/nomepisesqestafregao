@@ -15,13 +15,19 @@ interface Props {
 export default async function BarGroupsPage({ params: { yearWorkId } }: Props) {
   const barGroups = await prismadb.barGroup.findMany({
     where: { yearWorkId },
+    include: {
+      clients: {
+        include: { client: true },
+      },
+    },
     orderBy: { createdAt: "desc" },
   });
 
   const formattedBarGroups: BarGroupColumn[] = barGroups.map(
-    ({ id, name, createdAt, updatedAt }) => ({
+    ({ clients, id, name, createdAt, updatedAt }) => ({
       id,
       name,
+      clients,
       createdAt: format(createdAt, DATE_TIME_FORMAT),
       updatedAt: format(updatedAt, DATE_TIME_FORMAT),
     })

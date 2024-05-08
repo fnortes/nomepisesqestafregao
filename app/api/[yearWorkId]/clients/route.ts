@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
 import prismadb from "@/lib/prismadb";
+import { ClientsOnFoods } from "@prisma/client";
 
 export async function POST(
   req: NextRequest,
@@ -12,18 +13,19 @@ export async function POST(
     const body = await req.json();
 
     const {
+      ageGroup,
+      barGroups,
+      comments,
+      email,
       firstName,
+      foods,
+      gender,
+      isNew,
       lastName,
       phone,
-      email,
-      gender,
-      ageGroup,
-      isNew,
-      barGroups,
       priceTypeId,
-      shirtSize,
       quotaPaid,
-      comments,
+      shirtSize,
     } = body;
     const { yearWorkId } = params;
 
@@ -56,6 +58,7 @@ export async function POST(
       where: {
         firstName,
         lastName,
+        yearWorkId,
       },
     });
 
@@ -82,6 +85,13 @@ export async function POST(
         barGroups: {
           create: barGroups.map((barGroup: string) => ({
             barGroup: { connect: { id: barGroup } },
+          })),
+        },
+        foods: {
+          create: (foods as ClientsOnFoods[]).map((food) => ({
+            food: { connect: { id: food.foodId } },
+            quantity: food.quantity,
+            attend: food.attend,
           })),
         },
         priceTypeId,

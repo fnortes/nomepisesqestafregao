@@ -1,0 +1,75 @@
+import { auth } from "@clerk/nextjs";
+import { NextRequest, NextResponse } from "next/server";
+
+import prismadb from "@/lib/prismadb";
+
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { yearWorkId: string } }
+) {
+  try {
+    const { userId } = auth();
+    const body = await req.json();
+
+    const { startDate, endDate, barGroupId } = body;
+    const { yearWorkId } = params;
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    if (!startDate || !endDate || !barGroupId || !yearWorkId) {
+      return new NextResponse(
+        "Algunos de los campos obligatorios no han sido enviados.",
+        { status: 400 }
+      );
+    }
+
+    const currentYearWork = await prismadb.yearWork.findFirst({
+      where: { id: yearWorkId },
+    });
+
+    if (currentYearWork === null) {
+      return NextResponse.json(
+        {
+          errorMessage:
+            "El año de trabajo informado no existe. Para poder crear un nuevo turno se debe informar el año.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const currentTurn = await prismadb.turn.findFirst({
+      where: {
+        startDate,
+        endDate,
+        barGroup: {
+          yearWorkId,
+        },
+      },
+    });
+
+    if (currentTurn) {
+      return NextResponse.json(
+        {
+          errorMessage:
+            "Ya existe otro turno para el mismo horario y el mismo año de trabajo. Inténtalo de nuevo con otros distintos.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const turn = await prismadb.turn.create({
+      data: {
+        endDate,
+        startDate,
+        barGroupId,
+      },
+    });
+
+    return NextResponse.json(turn);
+  } catch (error) {
+    console.log("[TURN_POST]: ", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}

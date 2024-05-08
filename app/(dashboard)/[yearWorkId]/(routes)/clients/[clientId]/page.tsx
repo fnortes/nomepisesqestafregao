@@ -15,16 +15,28 @@ export default async function ClientPage({
     where: {
       id: clientId,
     },
-    include: { barGroups: true, priceType: true },
+    include: {
+      barGroups: true,
+      priceType: true,
+      foods: { orderBy: { food: { date: "asc" } } },
+    },
   });
+
   const barGroups = await prismadb.barGroup.findMany({
     where: { yearWorkId },
     orderBy: { name: "asc" },
   });
+
+  const foods = await prismadb.food.findMany({
+    where: { yearWorkId },
+    orderBy: { date: "asc" },
+  });
+
   const priceTypes = await prismadb.priceType.findMany({
     where: { yearWorkId },
     orderBy: { name: "asc" },
   });
+
   const yearWork = await prismadb.yearWork.findFirst({
     where: { id: yearWorkId },
   });
@@ -39,6 +51,7 @@ export default async function ClientPage({
         <ClientForm
           initialData={client}
           barGroups={barGroups}
+          foods={foods}
           priceTypes={priceTypes}
           yearWork={yearWork}
         />

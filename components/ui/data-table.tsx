@@ -22,16 +22,27 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+interface DataTableSearchField {
+  key: string;
+  placeholder?: string;
+}
+
+interface DataTableSearchConfig {
+  searchFields: DataTableSearchField[];
+}
+
 interface DataTableProps<TData, TValue> {
   readonly columns: ColumnDef<TData, TValue>[];
   readonly data: TData[];
-  readonly searchKey: string;
+  readonly searchConfig: DataTableSearchConfig;
+  readonly pageSize?: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  searchKey,
+  searchConfig,
+  pageSize = 20,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -45,19 +56,29 @@ export function DataTable<TData, TValue>({
     state: {
       columnFilters,
     },
+    initialState: {
+      pagination: {
+        pageSize,
+      },
+    },
   });
 
   return (
     <div>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Buscar. .."
-          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(searchKey)?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 py-4">
+        {searchConfig.searchFields.map(({ key, placeholder }) => (
+          <Input
+            key={key}
+            placeholder={placeholder ?? "Buscar ..."}
+            value={(table.getColumn(key)?.getFilterValue() as string) ?? ""}
+            onChange={(event) => {
+              return table.getColumn(key)?.setFilterValue(() => {
+                return event.target.value;
+              });
+            }}
+            className="max-w-sm"
+          />
+        ))}
       </div>
       <div className="rounded-md border">
         <Table>

@@ -5,6 +5,7 @@ import CellAction from "./cell-action";
 
 import type {
   AgeGroup,
+  ClientsOnFoods,
   Gender,
   PriceType,
   ShirtSize,
@@ -21,7 +22,6 @@ import {
 export type ClientColumn = {
   ageGroup: AgeGroup;
   comments: string | null;
-  createdAt: string;
   email: string | null;
   firstName: string;
   gender: Gender;
@@ -32,8 +32,8 @@ export type ClientColumn = {
   priceType: PriceType;
   quotaPaid: number;
   shirtSize: ShirtSize | null;
-  updatedAt: string;
   yearWork: YearWork;
+  foods: ClientsOnFoods[];
 };
 
 export const columns: ColumnDef<ClientColumn>[] = [
@@ -95,7 +95,8 @@ export const columns: ColumnDef<ClientColumn>[] = [
           ageGroup: row.original.ageGroup,
           isNew: row.original.isNew,
           priceType: row.original.priceType,
-          newClientPrice: row.original.yearWork.newClientPrice,
+          yearWork: row.original.yearWork,
+          foodQuantities: row.original.foods.map((f) => f.quantity),
         })
       ),
   },
@@ -107,14 +108,6 @@ export const columns: ColumnDef<ClientColumn>[] = [
   {
     accessorKey: "comments",
     header: "Comentarios",
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Creado",
-  },
-  {
-    accessorKey: "updatedAt",
-    header: "Actualizado",
   },
   {
     id: "actions",

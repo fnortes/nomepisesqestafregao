@@ -32,7 +32,22 @@ export default function ClientsClient({ clients }: Props) {
         </Button>
       </div>
       <Separator />
-      <DataTable columns={columns} data={clients} searchKey="firstName" />
+      <DataTable
+        columns={columns}
+        data={clients}
+        searchConfig={{
+          searchFields: [
+            {
+              key: "firstName",
+              placeholder: "Buscar por nombre...",
+            },
+            {
+              key: "ageGroup",
+              placeholder: "Buscar por grupo de edad...",
+            },
+          ],
+        }}
+      />
     </>
   );
 }

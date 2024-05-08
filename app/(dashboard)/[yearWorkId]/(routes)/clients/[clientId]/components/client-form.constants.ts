@@ -18,6 +18,13 @@ export const formSchema = z.object({
   ageGroup: z.nativeEnum(AgeGroup),
   isNew: z.boolean().default(false),
   barGroups: z.array(z.string()),
+  foods: z.array(
+    z.object({
+      attend: z.boolean().default(false),
+      foodId: z.string(),
+      quantity: z.number().min(0).max(99),
+    })
+  ),
   priceTypeId: z.string(),
   shirtSize: z.nativeEnum(ShirtSize).optional().nullable(),
   quotaPaid: z.number().min(0).max(999),

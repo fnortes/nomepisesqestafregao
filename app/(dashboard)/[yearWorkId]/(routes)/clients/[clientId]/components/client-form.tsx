@@ -2,10 +2,11 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { format } from "date-fns";
 import { Calculator, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 import CheckboxFormField from "@/components/form/checkbox-form-field";
@@ -19,7 +20,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
-import { AgeGroup } from "@prisma/client";
 import {
   ageGroupData,
   formSchema,
@@ -28,20 +28,23 @@ import {
 } from "./client-form.constants";
 
 import type { CommonFormFieldData } from "@/components/form/form.types";
-import type { BarGroup, PriceType, YearWork } from "@prisma/client";
+import { DATE_FORMAT } from "@/constants/date";
+import { calculateQuote, formatCurrency } from "@/lib/utils";
+import type { BarGroup, Food, PriceType, YearWork } from "@prisma/client";
 import type { ClientFormValues, CustomClient } from "./client-form.types";
-import { calculateQuote } from "@/lib/utils";
 
 interface Props {
-  readonly initialData: CustomClient | null;
   readonly barGroups: BarGroup[];
+  readonly foods: Food[];
+  readonly initialData: CustomClient | null;
   readonly priceTypes: PriceType[];
   readonly yearWork: YearWork;
 }
 
 export default function ClientForm({
-  initialData,
   barGroups,
+  foods,
+  initialData,
   priceTypes,
   yearWork,
 }: Props) {
@@ -54,8 +57,9 @@ export default function ClientForm({
       ? calculateQuote({
           ageGroup: initialData.ageGroup,
           isNew: initialData.isNew,
-          newClientPrice: yearWork.newClientPrice,
+          yearWork,
           priceType: initialData.priceType,
+          foodQuantities: initialData.foods.map((f) => f.quantity),
         })
       : 0
   );
@@ -91,11 +95,25 @@ export default function ClientForm({
       isNew: initialData?.isNew ?? false,
       barGroups:
         initialData?.barGroups.map((barGroup) => barGroup.barGroupId) ?? [],
+      foods: foods.map(({ id }) => {
+        const initialFood = initialData?.foods.find((f) => f.foodId === id);
+
+        return {
+          attend: initialFood?.attend ?? false,
+          foodId: id,
+          quantity: initialFood?.quantity ?? 0,
+        };
+      }),
       priceTypeId: initialData?.priceTypeId ?? "",
       shirtSize: initialData?.shirtSize,
       quotaPaid: initialData?.quotaPaid ?? 0,
       comments: initialData?.comments,
     },
+  });
+
+  const { fields } = useFieldArray({
+    name: "foods",
+    control: form.control,
   });
 
   const ageGroupOptionsData: CommonFormFieldData = useMemo(
@@ -116,8 +134,12 @@ export default function ClientForm({
   );
 
   useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => {
-      if (name && ["priceTypeId", "ageGroup", "isNew"].indexOf(name) !== -1) {
+    const subscription = form.watch((value, { name }) => {
+      if (
+        name &&
+        (["priceTypeId", "ageGroup", "isNew", "foods"].indexOf(name) !== -1 ||
+          name.includes("quantity"))
+      ) {
         const priceTypeSelected = priceTypes.find(
           (priceType) => priceType.id === value.priceTypeId
         );
@@ -128,8 +150,9 @@ export default function ClientForm({
           newCalculatedQuote = calculateQuote({
             ageGroup: value.ageGroup,
             isNew: value.isNew || false,
-            newClientPrice: yearWork.newClientPrice,
+            yearWork,
             priceType: priceTypeSelected,
+            foodQuantities: value.foods?.map((f) => f?.quantity ?? 0) ?? [],
           });
         }
 
@@ -137,7 +160,7 @@ export default function ClientForm({
       }
     });
     return () => subscription.unsubscribe();
-  }, [form, ageGroupOptionsData, priceTypes, yearWork.newClientPrice]);
+  }, [form, ageGroupOptionsData, priceTypes, yearWork]);
 
   const handleValid = async (values: ClientFormValues) => {
     try {
@@ -312,6 +335,41 @@ export default function ClientForm({
               loading={loading}
               name="barGroups"
             />
+          </div>
+          <Separator />
+          <h3 className="text-2xl font-bold tracking-tight">
+            Comidas (Precio comidas extra por persona:{" "}
+            {formatCurrency(yearWork.unitFoodPrice)})
+          </h3>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            {fields.map((field, index) => {
+              const foodExtraData = foods.find((f) => f.id === field.foodId)!;
+
+              return (
+                <Alert key={field.id} className="col-span-2">
+                  <CheckboxFormField
+                    form={form}
+                    label={`${format(foodExtraData.date, DATE_FORMAT)} - ${
+                      foodExtraData.title
+                    }`}
+                    loading={loading}
+                    name={`foods.${index}.attend`}
+                  />
+                  <NumberFormField
+                    form={form}
+                    input={{
+                      placeholder:
+                        "Introduce la cantidad de comidas extra a pagar",
+                    }}
+                    label="Comidas extra a pagar"
+                    loading={loading}
+                    name={`foods.${index}.quantity`}
+                    showCurrency
+                    description="Esta es la cantidad de comidas extra a pagar por el comparsista para la comida en cuestión. Se utiliza cuando se invita a gente de fuera de la comparsa o cuando al comparsista no le entran las comidas, pero quiere venir a alguna suelta."
+                  />
+                </Alert>
+              );
+            })}
           </div>
           <Button type="submit" disabled={loading} className="ml-auto">
             {action}

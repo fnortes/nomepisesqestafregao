@@ -52,6 +52,7 @@ export async function PATCH(
       where: {
         name,
         id: { not: priceTypeId },
+        yearWorkId,
       },
     });
 
@@ -59,7 +60,7 @@ export async function PATCH(
       return NextResponse.json(
         {
           errorMessage:
-            "El nuevo tipo de cuota ya existe. Inténtalo de nuevo con otro nombre.",
+            "Ya existe este tipo de cuota para el año actual. Inténtalo de nuevo con otro nombre.",
         },
         { status: 400 }
       );

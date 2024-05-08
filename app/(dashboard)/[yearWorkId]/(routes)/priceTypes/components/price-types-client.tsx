@@ -32,7 +32,17 @@ export default function PriceTypesClient({ priceTypes }: Props) {
         </Button>
       </div>
       <Separator />
-      <DataTable columns={columns} data={priceTypes} searchKey="name" />
+      <DataTable
+        columns={columns}
+        data={priceTypes}
+        searchConfig={{
+          searchFields: [
+            {
+              key: "name",
+            },
+          ],
+        }}
+      />
     </>
   );
 }

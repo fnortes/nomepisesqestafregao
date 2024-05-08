@@ -39,10 +39,6 @@ export default function SettingsForm({ initialData }: Props) {
       previousChilds: initialData.previousChilds,
       firstPartyDay: initialData.firstPartyDay,
       lastPartyDay: initialData.lastPartyDay,
-      previousFirstPartyDay:
-        initialData.previousFirstPartyDay ?? initialData.firstPartyDay,
-      previousLastPartyDay:
-        initialData.previousLastPartyDay ?? initialData.lastPartyDay,
       unitFoodPrice: initialData.unitFoodPrice,
       previousYearWorkAmount: initialData.previousYearWorkAmount,
       awardsReward: initialData.awardsReward,
@@ -167,7 +163,6 @@ export default function SettingsForm({ initialData }: Props) {
               label="Comienzo fiestas"
               loading={loading}
               name="firstPartyDay"
-              validateYear={initialData.year}
             />
             <DateFormField
               description="Este día se usará para calcular cuantas noches de fiestas hay."
@@ -176,29 +171,6 @@ export default function SettingsForm({ initialData }: Props) {
               label="Final fiestas"
               loading={loading}
               name="lastPartyDay"
-              validateYear={initialData.year}
-            />
-            <DateFormField
-              description="Este día se usará para calcular cuantas noches de fiestas hubieron el año anterior y poder obtener cálculos en proporción para el año actual."
-              emptyText="Selecciona una fecha"
-              form={form}
-              label="Comienzo fiestas año anterior"
-              loading={loading}
-              name="previousFirstPartyDay"
-              validateYear={(initialData.previousFirstPartyDay ?? new Date())
-                .getFullYear()
-                .toString()}
-            />
-            <DateFormField
-              description="Este día se usará para calcular cuantas noches de fiestas hubieron el año anterior y poder obtener cálculos en proporción para el año actual."
-              emptyText="Selecciona una fecha"
-              form={form}
-              label="Final fiestas año anterior"
-              loading={loading}
-              name="previousLastPartyDay"
-              validateYear={(initialData.previousFirstPartyDay ?? new Date())
-                .getFullYear()
-                .toString()}
             />
             <NumberFormField
               form={form}

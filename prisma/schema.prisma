@@ -19,18 +19,17 @@ model YearWork {
   newClientPrice          Float       @default(20)
   previousAdults          Int         @default(0)
   previousChilds          Int         @default(0)
-  firstPartyDay           DateTime    @default(now())
+  firstPartyDay            DateTime    @default(now())
   lastPartyDay            DateTime    @default(now())
-  previousFirstPartyDay   DateTime?
-  previousLastPartyDay    DateTime?
   unitFoodPrice           Float       @default(10)
-  previousYearWorkAmount  Float       @default(0)                   // TODO: Por ahora lo dejamos a cero, pero en el futuro, este valor se podría auto-rellenar cuando se crea un nuevo año, tomandolo del saldo del año anterior.
+  previousYearWorkAmount  Float       @default(0)
   awardsReward            Float       @default(0)
   commissionHelp          Float       @default(0)
-  clients                 Client[]    @relation("YearWorkToClient") // TODO: Está implentado el copiar los clientes del año anterior, cuando se selecciona, pero falta validar que los copia bien y con todos los datos.
+  clients                 Client[]    @relation("YearWorkToClient")
   barGroups               BarGroup[]  @relation("YearWorkToBarGroup")
   priceTypes              PriceType[] @relation("YearWorkToPriceType")
   expenses                Expense[]   @relation("YearWorkToExpense")
+  foods                   Food[]      @relation("YearWorkToFood")
 }
 
 enum Gender {
@@ -64,12 +63,25 @@ model BarGroup {
   id            String                @id @default(uuid())
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
-  name          String                @unique
+  name          String                
   yearWorkId    String
   yearWork      YearWork              @relation("YearWorkToBarGroup", fields: [yearWorkId], references: [id])
   clients       ClientsOnBarGroups[]
+  turns         Turn[]                @relation("BarGroupToTurn")
 
   @@index([yearWorkId])
+}
+
+model Turn {
+  id            String                @id @default(uuid())
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  startDate     DateTime              @default(now())
+  endDate       DateTime              @default(now())
+  barGroupId    String
+  barGroup      BarGroup              @relation("BarGroupToTurn", fields: [barGroupId], references: [id])
+
+  @@index([barGroupId])
 }
 
 model PriceType {
@@ -98,7 +110,7 @@ model Client {
   yearWork      YearWork              @relation("YearWorkToClient", fields: [yearWorkId], references: [id])
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
-  firstName     String
+  firstName      String
   lastName      String?
   email         String?     
   phone         String?
@@ -106,6 +118,7 @@ model Client {
   ageGroup      AgeGroup              @default(ADULT)
   isNew         Boolean               @default(false)
   barGroups     ClientsOnBarGroups[]
+  foods         ClientsOnFoods[]
   priceTypeId   String
   priceType     PriceType             @relation("PriceTypeToClient", fields: [priceTypeId], references: [id])
   shirtSize     ShirtSize?  
@@ -121,8 +134,6 @@ model ClientsOnBarGroups {
   barGroup      BarGroup  @relation(fields: [barGroupId], references: [id], onDelete: Cascade)
   clientId      String
   client        Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  startDate     DateTime  @default(now())
-  endDate       DateTime  @default(now())
 
   @@id([barGroupId, clientId])
   @@index([barGroupId])
@@ -151,79 +162,11 @@ model ExpenseCategory {
   updatedAt                     DateTime      @updatedAt
   family                        ExpenseFamily
   name                          String
-  previousYearWorkUnitsConsumed Int           @default(0) // cantidad de unidades consumidas en el año anterior para todos los registros de esta categoría. Se calcula al crear un nuevo año.
+  previousYearWorkUnitsConsumed Int           @default(0) // Este campo no se está usando ahora mismo. Valorar si interesa tener calculado todas las unidades pedidas del año anterior para una categoría de gastos.
   comments                      String?
 
   expenses                      Expense[]     @relation("ExpenseCategoryToExpense")
 }
-// SHIRTS --> Camisetas general --> 28
-// DECORATION --> Decoración general --> 0
-// TOOLS --> Herramientas general --> 0
-// TOOLS --> Tickets --> 0
-// ICE_CUBES --> Cubitos tamaño normal --> 0
-// ICE_CUBES --> Cubitos picado --> 0
-// ICE_CUBES --> Bloques de hielo --> 0
-// FLOWER_OFFERING --> Ramos de flores --> 0
-// MUSIC --> Charanga desfiles --> 0
-// MUSIC --> Equipo música desfiles --> 0
-// VEHICLES --> Vehículo para desfiles --> 0
-// VEHICLES --> Vehículo para montar y desmontar --> 0
-// EXTRA_EXPENSES --> Cena de desmontaje --> 0
-// PLASTIC --> Vaso Refresco 300ml --> 250
-// PLASTIC --> Vaso Tubo (1 caja = 500 unidades) --> 350
-// PLASTIC --> Mantel (100m) --> 1
-// PLASTIC --> Tenedores --> 150
-// PLASTIC --> Cuchillos --> 0
-// PLASTIC --> Cucharas (Postre) --> 50
-// PLASTIC --> Cucharas  (Grandes) --> 200
-// PLASTIC --> Plato 220mm (Grande) --> 250
-// PLASTIC --> Plato 170mm (Postre) --> 100
-// TABLES_AND_CHAIRS --> Alquiler de sillas --> 30
-// TABLES_AND_CHAIRS --> Alquiler de mesas pequeñas --> 6
-// TABLES_AND_CHAIRS --> Alquiler de mesas largas (tablones) --> 2
-// FOODS --> Comida domingo 12 --> 0
-// FOODS --> Cena domingo 12 --> 0
-// FOODS --> Comida lunes 13 --> 0
-// FOODS --> Cena lunes 13 --> 0
-// FOODS --> Comida martes 14 --> 0
-// FOODS --> Cena martes 14 --> 0
-// FOODS --> Cena miércoles 15 --> 0
-// FOODS --> Cena jueves 16 --> 0
-// FOODS --> Aperitivos y postres --> 0
-// SUITS --> Trajes de desfile --> 0
-// DRINK --> Barras --> 4
-// DRINK --> Botelleros --> 3
-// DRINK --> Cerveza Sin Gluten (paquetes de 6) --> 2
-// DRINK --> Cerveza Sin Alcohol (paquetes de 6) --> 2
-// DRINK --> Cerveza Estrella Levante pack 4 (24 botellines) --> 40 --> Faltó para el último día
-// DRINK --> Martini Rojo --> 1
-// DRINK --> Martini Blanco --> 1
-// DRINK --> Ginebra Beefeater --> 1 --> Faltó 1 o 2 botellas
-// DRINK --> Tequila Rosa --> 2
-// DRINK --> Seegram --> 12
-// DRINK --> Puerto de Indias Fresa --> 1
-// DRINK --> Puerto de Indias Mora --> 1
-// DRINK --> Vodka Smirnoff --> 1 --> Faltó 1 o 2 botellas
-// DRINK --> Vodka Absolut --> 7
-// DRINK --> Whisky White Label --> 4
-// DRINK --> Ron Brugal Añejo --> 5
-// DRINK --> Ron Legendario --> 2
-// DRINK --> Orujo Hiervas Ruavieja --> 2
-// DRINK --> Orujo Crema Ruavieja --> 2
-// DRINK --> Tinto de verano La Casera (1,5L) --> 6
-// DRINK --> Licor de Mora Sin Alcohol --> 1
-// DRINK --> Cocacola (1L) --> 36
-// DRINK --> Cocacola Zero Sin Cafeína (2L) --> 18
-// DRINK --> Fanta Naranja (1L) --> 24
-// DRINK --> Fanta Limón (1L) --> 36
-// DRINK --> Sprite (2,25L) --> 12
-// DRINK --> Schweppes Tónica (1L) --> 48
-// DRINK --> Agua botellín --> 192
-// DRINK --> Zumo Piña --> 48
-// DRINK --> Red Bull --> 72
-// DRINK --> Choleck betellín --> 96
-// DRINK --> Choleck (1L) --> 2
-// DRINK --> Paquetes de Agua de 6 (1,5L) --> 8
 
 model Expense {
   id                        String          @id @default(uuid())
@@ -236,100 +179,42 @@ model Expense {
   title                     String
   comments                  String?
   description               String?
-  previousYearWorkUnits     Int             @default(1) // cantidad de unidades sobrantes del año anterior para este registro. Se calcula al crear un nuevo año.
-  units                     Int             @default(1) // unidades pedidas o estimadas para pedir en el año actual.
-  unitPrice                 Float           @default(0) // precio unitario de la unidad pedida o estimada para pedir en el año actual.
-  total                     Float           @default(0) // total calculado a partir de la unidades pedidas en el año acual y su precio unitario. También se puede modificar manualmente (para los casos en los que no se dispone de precio por unidad, el cual se recalculara en base a este total).
-  paid                      Float           @default(0) // cantidad pagada hasta el momento para este gasto.
+  previousYearWorkUnits     Int             @default(1)
+  estimatedUnits            Int             @default(1)
+  units                     Int             @default(1)
+  unitPrice                 Float           @default(0)
+  total                     Float           @default(0)
+  paid                      Float           @default(0)
 
   @@index([yearWorkId])
   @@index([expenseCategoryId])
 }
-// 2023 --> Camisetas general --> Gasto camisetas a precio único --> 50 --> 50 --> 4,85 --> 242,50 --> 242,50
-// 2023 --> Decoración general --> Acuarelas --> 1 --> 1 --> 10 --> 10 --> 10
-// 2023 --> Herramientas general --> Bridas --> 1 --> 1 --> 1,20 --> 1,20 --> 1,20
-// 2023 --> Herramientas general --> Cinta adhesiva --> 1--> 1 --> 1,50 --> 1,50 --> 1,50
-// 2023 --> Tickets --> Cartulinas --> 5 --> 5 -> 0,20 --> 1 --> 1
-// 2023 --> Tickets --> Cartuchos de tinta --> 2 --> 2 --> 13,45 --> 26,90 --> 26,90
-// 2023 --> Cubitos tamaño normal --> Primer ticket llenado de cámara  --> 5  --> 5 --> 4,80 --> 24 --> 24
-// 2023 --> Cubitos picados --> Primer ticket llenado de cámara --> 2 --> 2 --> 5,10 --> 10,20 --> 10,20
-// 2023 --> Bloques de hielo --> Primer ticket llenado de cámara --> 12 --> 12 --> 0,40 --> 4,80 --> 4,80
-// 2023 --> Cubitos tamaño normal --> Segundo ticket rellenado de cámara  --> 3  --> 3 --> 4,80 --> 14,40 --> 14,40
-// 2023 --> Cubitos picados --> Segundo ticket rellenado de cámara --> 2 --> 2 --> 5,10 --> 10,20 --> 10,20
-// 2023 --> Ramos de flores --> Ramos para ofrenda --> 4 --> 4 --> 15 --> 60 --> 60
-// 2023 --> Charanga desfiles --> Contratar charanga para desfile de disfraces --> 1 --> 1 --> 450 --> 450 --> 450
-// 2023 --> Equipo música desfiles --> Alquiler pickup para desfile agua --> 1 --> 1 --> 250 --> 250 --> 250
-// 2023 --> Vehículo para desfiles --> Alquiler tractor para desfiles --> 2 --> 2 --> 40 --> 80 --> 80
-// 2023 --> Cena de desmontaje --> Cena pagada en la Esquina --> 1 --> 1 --> 240 --> 240 --> 240
-// 2023 --> Vaso Refresco 300ml --> Primer pedido --> 250 --> 1 --> 50 --> 50
-// 2023 --> Vaso Tubo (1 caja = 500 unidades) --> Primer pedido --> 350 --> 1 --> 50 --> 50
-// 2023 --> Mantel (100m) --> Primer pedido --> 1 --> 1 --> 50 --> 50
-// 2023 --> Tenedores --> Primer pedido --> 150 --> 1 --> 50 --> 50
-// 2023 --> Cuchillos --> Primer pedido --> 0 --> 1 --> 50 --> 50
-// 2023 --> Cucharas (Postre) --> Primer pedido --> 50 --> 1 --> 50 --> 50
-// 2023 --> Cucharas  (Grandes) --> Primer pedido --> 200 --> 1 --> 50 --> 50
-// 2023 --> Plato 220mm (Grande) --> Primer pedido --> 250 --> 1 --> 50 --> 50
-// 2023 --> Plato 170mm (Postre) --> Primer pedido --> 100 --> 1 --> 50 --> 50
-// 2023 --> Alquiler de sillas --> Primer pedido --> 30 --> 30 --> 1,20 --> 36 --> 36
-// 2023 --> Alquiler de mesas pequeñas --> Primer pedido --> 6 --> 6 --> 8 --> 48 --> 48
-// 2023 --> Alquiler de mesas largas (tablones) --> Primer pedido --> 2 --> 2 --> 12 --> 24 --> 24
-// 2023 --> Comida domingo 12 --> Primer pedido --> 0 --> 39 --> 7,78 --> 303,42 --> 303,42
-// 2023 --> Cena domingo 12 --> Primer pedido --> 0 --> 35 --> 5,71 --> 199,85 --> 199,85
-// 2023 --> Comida lunes 13 --> Primer pedido --> 0 --> 24 --> 9,60 --> 230,40 --> 230,40
-// 2023 --> Cena lunes 13 --> Primer pedido --> 0 --> 40 --> 4,90 --> 196 --> 196
-// 2023 --> Comida martes 14 --> Primer pedido --> 0 --> 20 --> 7,45 --> 149 --> 149
-// 2023 --> Cena martes 14 --> Primer pedido --> 0 --> 40 --> 4,03 --> 161,20 --> 161,20
-// 2023 --> Cena miércoles 15 --> Primer pedido --> 0 --> 40 --> 7,26 --> 290,40 --> 290,40
-// 2023 --> Cena jueves 16 --> Primer pedido --> 0 --> 36 --> 5 --> 180 --> 180
-// 2023 --> Aperitivos y postres --> Pipas --> 0 --> 3 --> 2,60 --> 7,80 --> 7,80
-// 2023 --> Aperitivos y postres --> Mezcla cumpleaños --> 0 --> 3 --> 1,50 --> 4,50 --> 4,50
-// 2023 --> Aperitivos y postres --> Patatas --> 0 --> 4 --> 1,75 --> 7 --> 7
-// 2023 --> Aperitivos y postres --> Olivas --> 0 --> 2 --> 3,80 --> 7,60 --> 7,60
-// 2023 --> Aperitivos y postres --> Golosinas --> 0 --> 2 --> 4,92 --> 9,84 --> 9,84
-// 2023 --> Aperitivos y postres --> Sandía --> 0 --> 1 --> 8,97 --> 8,97 --> 8,97
-// 2023 --> Trajes de desfile --> Chico adulto --> 0 --> 13 --> 65 --> 845 --> 845
-// 2023 --> Trajes de desfile --> Chica adulta --> 0 --> 15 --> 60 --> 900 --> 900
-// 2023 --> Trajes de desfile --> Niñ@ --> 0 --> 21 --> 50 --> 1050 --> 1050
-// 2023 --> Trajes de desfile --> Bebé --> 0 --> 6 --> 35 --> 210 --> 210
-// 2023 --> Barras --> Comercial Medina Redován --> 0 --> 4 --> 0 --> 0 --> 0
-// 2023 --> Botelleros --> Comercial Medina Redován --> 0 --> 3 --> 0 --> 0 --> 0
-// 2023 --> Cerveza Sin Gluten (paquetes de 6) --> Hiperber --> 0 --> 2 --> 3,84 --> 7,68 --> 7,68
-// 2023 --> Cerveza Sin Alcohol (paquetes de 6) --> Hiperber --> 0 --> 2 --> 3 --> 6 --> 6
-// 2023 --> Cerveza Estrella Levante pack 4 (24 botellines) --> Comercial Medina Redován --> 0 --> 40 --> 3,6058 --> 144,23 --> 144,23
-// 2023 --> Martini Rojo --> Comercial Medina Redován --> 0 --> 1 --> 8,074 --> 8,07 --> 8,07
-// 2023 --> Martini Blanco --> Comercial Medina Redován --> 0 --> 1 --> 7,975 --> 7,98 --> 7,98
-// 2023 --> Ginebra Beefeater --> Comercial Medina Redován --> 0 --> 1 --> 16,456 --> 16,46 --> 16,46
-// 2023 --> Tequila Rosa --> Comercial Medina Redován --> 0 --> 2 --> 8,3127 --> 16,63 --> 16,63
-// 2023 --> Seegram --> Comercial Medina Redován --> 8 --> 1 --> 17,6902 --> 17,69 --> 17,69
-// 2023 --> Seegram --> Otro --> 0 --> 3 --> 17,500 --> 52,50 --> 52,50
-// 2023 --> Puerto de Indias Fresa --> Comercial Medina Redován --> 0 --> 1 --> 15,3065 --> 15,31 --> 15,31
-// 2023 --> Puerto de Indias Mora --> Comercial Medina Redován --> 0 --> 1 --> 15,3065 --> 15,31 --> 15,31
-// 2023 --> Vodka Smirnoff --> Comercial Medina Redován --> 0 --> 1 --> 14,7741 --> 14,77 --> 14,77
-// 2023 --> Vodka Absolut --> Comercial Medina Redován --> 0 --> 5 --> 14,9314 --> 74,66 --> 74,66
-// 2023 --> Vodka Absolut --> Otro --> 0 --> 2 > 15,35 --> 30,70 --> 30,70
-// 2023 --> Whisky White Label --> Comercial Medina Redován --> 0 --> 2 --> 12,4388 --> 24,88 --> 24,88
-// 2023 --> Whisky White Label --> Otro --> 0 --> 2 --> 13,900 --> 27,80 --> 27,80
-// 2023 --> Ron Brugal Añejo --> Comercial Medina Redován --> 0 --> 5 --> 14,2175 --> 71,09 --> 71,09
-// 2023 --> Ron Legendario --> Comercial Medina Redován --> 0 --> 1 --> 15,6937 --> 15,69 --> 15,69
-// 2023 --> Ron Legendario --> Otro --> 0 --> 1 --> 16,10 --> 16,10 --> 16,10
-// 2023 --> Orujo Hiervas Ruavieja --> Comercial Medina Redován --> 1 --> 1 --> 9,8978 --> 9,90 --> 9,90
-// 2023 --> Orujo Crema Ruavieja --> Comercial Medina Redován --> 1 --> 1 --> 12,1726 --> 12,17 --> 12,17
-// 2023 --> Tinto de verano La Casera (1,5L) --> Comercial Medina Redován --> 0 --> 6 --> 1,7908 --> 10,74 --> 10,74
-// 2023 --> Licor de Mora Sin Alcohol --> Comercial Medina Redován --> 0 --> 1 --> 4,6585 --> 4,66 --> 4,66
-// 2023 --> Cocacola (1L) --> Comercial Medina Redován --> 0 --> 36 --> 1,2826 --> 46,17 --> 46,17
-// 2023 --> Cocacola Zero Sin Cafeína (2L) --> Comercial Medina Redován --> 0 --> 18 --> 1,54 --> 27,72 --> 27,72
-// 2023 --> Fanta Naranja (1L) --> Comercial Medina Redován --> 0 --> 24 --> 1,232 --> 29,57 --> 29,57
-// 2023 --> Fanta Limón (1L) --> Comercial Medina Redován --> 0 --> 36 --> 1,3552 --> 48,79 --> 48,79
-// 2023 --> Sprite (2,25L) --> Comercial Medina Redován --> 0 --> 12 --> 1,375 --> 16,50 --> 16,50
-// 2023 --> Schweppes Tónica (1L) --> Comercial Medina Redován --> 0 --> 48 --> 1,4762 --> 70,89 --> 70,89
-// 2023 --> Agua botellín --> Comercial Medina Redován --> 0 --> 192 --> 0,253 --> 48,62 --> 48,62
-// 2023 --> Zumo Piña --> Comercial Medina Redován --> 0 --> 48 --> 0,5566 --> 26,72 --> 26,72
-// 2023 --> Red Bull --> Comercial Medina Redován --> 0 --> 72 --> 1,1374 --> 81,86 --> 81,86
-// 2023 --> Choleck betellín --> Comercial Medina Redován --> 0 --> 72 --> 1,0001 --> 72,01 --> 72,01
-// 2023 --> Choleck betellín --> Otro --> 0 --> 24 --> 0,83 --> 19,92 --> 19,92
-// 2023 --> Choleck (1L) --> Hiperber --> 0 --> 2 --> 1,20 --> 2,40 --> 2,40
-// 2023 --> Paquetes de Agua de 6 (1,5L) --> Comercial Medina Redován --> 0 --> 8 --> 2,046 --> 16,37 --> 16,37
 
+model Food {
+  id             String             @id @default(uuid())
+  yearWorkId     String
+  yearWork       YearWork           @relation("YearWorkToFood", fields: [yearWorkId], references: [id])
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  title          String
+  comments       String?
+  description    String?
+  date           DateTime           @default(now())
+  price          Float              @default(0)
+  clients        ClientsOnFoods[]
 
+  @@index([yearWorkId])
+}
 
+model ClientsOnFoods {
+  foodId        String
+  food          Food      @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  clientId      String
+  client        Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  quantity      Int       @default(0)
+  attend        Boolean   @default(true)
 
+  @@id([foodId, clientId])
+  @@index([foodId])
+  @@index([clientId])
+}

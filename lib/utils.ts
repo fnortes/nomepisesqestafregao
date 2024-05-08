@@ -1,5 +1,5 @@
 import { AgeGroup, Client, PriceType, YearWork } from "@prisma/client";
-import { type ClassValue, clsx } from "clsx";
+import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -14,14 +14,16 @@ export const formatCurrency = (value: number) =>
 
 interface CalculateQuoteParams extends Pick<Client, "ageGroup" | "isNew"> {
   priceType: PriceType;
-  newClientPrice: YearWork["newClientPrice"];
+  yearWork: YearWork;
+  foodQuantities: number[];
 }
 
 export const calculateQuote = ({
   ageGroup,
   isNew,
   priceType,
-  newClientPrice,
+  yearWork,
+  foodQuantities,
 }: CalculateQuoteParams): number => {
   let newCalculatedQuote = 0;
 
@@ -34,8 +36,17 @@ export const calculateQuote = ({
   newCalculatedQuote = pricesMapping[ageGroup];
 
   if (ageGroup === AgeGroup.ADULT && isNew) {
-    newCalculatedQuote += newClientPrice;
+    newCalculatedQuote += yearWork.newClientPrice;
   }
 
-  return newCalculatedQuote;
+  const foodPriceTotal =
+    foodQuantities.length > 0
+      ? foodQuantities
+          .map((quantity) => {
+            return quantity * yearWork.unitFoodPrice;
+          })
+          .reduce((a, b) => a + b)
+      : 0;
+
+  return newCalculatedQuote + foodPriceTotal;
 };

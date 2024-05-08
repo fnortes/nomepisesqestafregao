@@ -27,6 +27,7 @@ interface Props<T extends FieldValues> extends CommonFieldProps<T> {
 }
 
 export default function SelectFormField<T extends FieldValues>({
+  className,
   data,
   description,
   form,
@@ -40,7 +41,7 @@ export default function SelectFormField<T extends FieldValues>({
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className={className}>
           <FormLabel>{label}</FormLabel>
           <Select
             onValueChange={field.onChange}
@@ -52,7 +53,7 @@ export default function SelectFormField<T extends FieldValues>({
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>
-            <SelectContent>
+            <SelectContent className="max-h-[250px]">
               {data.map(({ value, label }) => (
                 <SelectItem key={value} value={value}>
                   {label ?? value}

@@ -17,8 +17,6 @@ export async function PATCH(
       previousChilds,
       firstPartyDay,
       lastPartyDay,
-      previousFirstPartyDay,
-      previousLastPartyDay,
       unitFoodPrice,
       previousYearWorkAmount,
       awardsReward,
@@ -33,14 +31,12 @@ export async function PATCH(
       !year ||
       (!newClientPrice && newClientPrice !== 0) ||
       !previousAdults ||
-      !previousChilds ||
+      (!previousChilds && previousChilds !== 0) ||
       !firstPartyDay ||
       !lastPartyDay ||
-      !previousFirstPartyDay ||
-      !previousLastPartyDay ||
       (!unitFoodPrice && unitFoodPrice !== 0) ||
       !previousYearWorkAmount ||
-      !awardsReward ||
+      (!awardsReward && awardsReward !== 0) ||
       !commissionHelp
     ) {
       return NextResponse.json(
@@ -82,8 +78,6 @@ export async function PATCH(
         previousChilds,
         firstPartyDay,
         lastPartyDay,
-        previousFirstPartyDay,
-        previousLastPartyDay,
         unitFoodPrice,
         previousYearWorkAmount,
         awardsReward,

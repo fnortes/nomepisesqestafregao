@@ -32,7 +32,17 @@ export default function BarGroupsClient({ barGroups }: Props) {
         </Button>
       </div>
       <Separator />
-      <DataTable columns={columns} data={barGroups} searchKey="name" />
+      <DataTable
+        columns={columns}
+        data={barGroups}
+        searchConfig={{
+          searchFields: [
+            {
+              key: "name",
+            },
+          ],
+        }}
+      />
     </>
   );
 }

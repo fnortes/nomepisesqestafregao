@@ -1,5 +1,6 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs";
+import { ClientsOnFoods } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
@@ -11,18 +12,19 @@ export async function PATCH(
     const body = await req.json();
 
     const {
+      ageGroup,
+      barGroups,
+      comments,
+      email,
       firstName,
+      foods,
+      gender,
+      isNew,
       lastName,
       phone,
-      email,
-      gender,
-      ageGroup,
-      isNew,
-      barGroups,
       priceTypeId,
-      shirtSize,
       quotaPaid,
-      comments,
+      shirtSize,
     } = body;
     const { yearWorkId, clientId } = params;
 
@@ -55,6 +57,7 @@ export async function PATCH(
       where: {
         firstName,
         lastName,
+        yearWorkId,
         id: { not: clientId },
       },
     });
@@ -72,6 +75,10 @@ export async function PATCH(
     await prismadb.clientsOnBarGroups.deleteMany({
       where: { clientId },
     });
+    await prismadb.clientsOnFoods.deleteMany({
+      where: { clientId },
+    });
+
     const client = await prismadb.client.update({
       where: {
         id: clientId,
@@ -88,6 +95,13 @@ export async function PATCH(
         barGroups: {
           create: barGroups.map((barGroup: string) => ({
             barGroup: { connect: { id: barGroup } },
+          })),
+        },
+        foods: {
+          create: (foods as ClientsOnFoods[]).map((food) => ({
+            food: { connect: { id: food.foodId } },
+            quantity: food.quantity,
+            attend: food.attend,
           })),
         },
         priceTypeId,

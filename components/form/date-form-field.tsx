@@ -25,7 +25,7 @@ import type { FieldValues } from "react-hook-form";
 interface Props<T extends FieldValues> extends CommonFieldProps<T> {
   readonly description: string;
   readonly emptyText: string;
-  readonly validateYear: string;
+  readonly validateYear?: string;
 }
 
 export default function DateFormField<T extends FieldValues>({
@@ -64,12 +64,15 @@ export default function DateFormField<T extends FieldValues>({
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
+            <PopoverContent className="w-auto p-0 h-96" align="start">
               <Calendar
                 defaultMonth={field.value as Date}
-                disabled={(date) =>
-                  date < new Date(`${validateYear}-01-01`) ||
-                  date > new Date(`${validateYear}-12-31`)
+                disabled={
+                  validateYear
+                    ? (date) =>
+                        date < new Date(`${validateYear}-01-01`) ||
+                        date > new Date(`${validateYear}-12-31`)
+                    : false
                 }
                 initialFocus
                 mode="single"

@@ -22,7 +22,7 @@ export default function NumberFormField<T extends FieldValues>({
   loading,
   name,
   showCurrency = false,
-}: Props<T>) {
+}: Readonly<Props<T>>) {
   const [currencyFormControlContainerClassName, currencyInputClassName] =
     showCurrency ? ["relative", "pr-6"] : ["", ""];
 
@@ -31,7 +31,7 @@ export default function NumberFormField<T extends FieldValues>({
       <div className={currencyFormControlContainerClassName}>
         <Input
           className={currencyInputClassName}
-          disabled={loading}
+          disabled={loading || input.disabled}
           name={field.name}
           onBlur={field.onBlur}
           onChange={(e) => {
