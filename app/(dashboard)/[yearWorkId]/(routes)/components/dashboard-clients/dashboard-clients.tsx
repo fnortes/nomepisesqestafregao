@@ -65,6 +65,14 @@ export default function DashboardClients({ clients }: Props) {
       withBar: 0,
       resume: 0,
     },
+    {
+      type: DashboardType.ALL,
+      withFoods: 0,
+      withSuits: 0,
+      withWater: 0,
+      withBar: 0,
+      resume: 0,
+    },
   ];
 
   const updateDashboardItem = (client: CustomClient, type: string) => {
@@ -92,6 +100,17 @@ export default function DashboardClients({ clients }: Props) {
       clientMapperToDashboard[client.ageGroup][client.gender]
     );
   });
+
+  const totals = dashboardData.find((d) => d.type === DashboardType.ALL)!;
+  dashboardData
+    .filter((d) => d.type !== DashboardType.ALL)
+    .forEach((d) => {
+      totals.withBar += d.withBar;
+      totals.resume += d.resume;
+      totals.withFoods += d.withFoods;
+      totals.withSuits += d.withSuits;
+      totals.withWater += d.withWater;
+    });
 
   return (
     <>

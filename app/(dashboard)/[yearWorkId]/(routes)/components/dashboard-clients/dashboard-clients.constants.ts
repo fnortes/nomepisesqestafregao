@@ -7,6 +7,7 @@ export const DashboardType = {
   GIRLS_WITH_QUOTA: "Niñas con Cuota",
   CHILDREN_WITHOUT_QUOTA: "Niños sin Cuota",
   GIRLS_WITHOUT_QUOTA: "Niñas sin Cuota",
+  ALL: "Totales",
 } as const;
 
 export const clientMapperToDashboard = {
