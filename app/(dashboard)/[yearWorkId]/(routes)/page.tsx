@@ -69,6 +69,7 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
           expenses={expenses.filter(
             (e) => e.expenseCategory.family === ExpenseFamily.TABLES_AND_CHAIRS
           )}
+          clients={clients}
         />
         <DashboardFoods clients={clients} foods={foods} />
         <DashboardAppetizers
@@ -77,6 +78,7 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
               e.expenseCategory.family === ExpenseFamily.FOODS &&
               e.expenseCategory.name === "Aperitivos y postres"
           )}
+          clients={clients}
         />
         <DashboardSuits
           expenses={expenses.filter(

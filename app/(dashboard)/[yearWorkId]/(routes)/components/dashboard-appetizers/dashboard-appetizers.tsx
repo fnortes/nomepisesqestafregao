@@ -6,14 +6,16 @@ import { DataTable } from "@/components/ui/data-table";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils";
 import { Calculator } from "lucide-react";
-import { GeneralExpense } from "../common.types";
+import { GeneralClient, GeneralExpense } from "../common.types";
 import { DashboardAppetizersColumn, columns } from "./columns";
+import { AgeGroup } from "@prisma/client";
 
 interface Props {
   readonly expenses: GeneralExpense[];
+  readonly clients: GeneralClient[];
 }
 
-export default function DashboardAppetizers({ expenses }: Props) {
+export default function DashboardAppetizers({ expenses, clients }: Props) {
   const dashboardData: DashboardAppetizersColumn[] = expenses.map(
     ({
       comments,
@@ -42,6 +44,19 @@ export default function DashboardAppetizers({ expenses }: Props) {
     }
   );
 
+  const totalCost = dashboardData
+    .map((d) => d.total)
+    .reduce((a, b) => a + b, 0);
+
+  const costByAdult =
+    totalCost / clients.filter((c) => c.ageGroup === AgeGroup.ADULT).length;
+
+  const costByAdultAndChild =
+    totalCost /
+    clients.filter(
+      (c) => c.ageGroup === AgeGroup.ADULT || c.ageGroup === AgeGroup.CHILD
+    ).length;
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -59,17 +74,35 @@ export default function DashboardAppetizers({ expenses }: Props) {
           searchFields: [],
         }}
       />
-      <Alert>
-        <Calculator className="h-4 w-4" />
-        <AlertTitle className="text-red-700">
-          {formatCurrency(
-            dashboardData.map((d) => d.total).reduce((a, b) => a + b, 0)
-          )}
-        </AlertTitle>
-        <AlertDescription className="text-sm text-muted-foreground">
-          Total a pagar del pedido de aperitivos y postres.
-        </AlertDescription>
-      </Alert>
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            {formatCurrency(totalCost)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total a pagar del pedido de aperitivos y postres.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-green-700">
+            {formatCurrency(costByAdult)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Coste por persona (contando sólo a adultos).
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-green-700">
+            {formatCurrency(costByAdultAndChild)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Coste por persona (contando sólo a adultos y niños con cuota).
+          </AlertDescription>
+        </Alert>
+      </div>
     </>
   );
 }
