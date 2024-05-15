@@ -63,6 +63,7 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
           expenses={expenses.filter(
             (e) => e.expenseCategory.family === ExpenseFamily.PLASTIC
           )}
+          clients={clients}
         />
         <DashboardChairs
           expenses={expenses.filter(
