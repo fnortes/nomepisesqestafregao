@@ -70,8 +70,16 @@ export default function DashboardFoods({ clients, foods }: Props) {
     .map((d) => d.price)
     .reduce((a, b) => a + b, 0);
 
+  const allFoodsCostByClientWithExtra = dashboardData
+    .map((d) => d.price)
+    .reduce(
+      (a, b) =>
+        a + extraDrinkCostByClientAndFood + extraPlasticCostByClientAndFood + b,
+      0
+    );
+
   const mediumPriceByClientAndFood =
-    allFoodsCostByClient / dashboardData.length;
+    allFoodsCostByClientWithExtra / dashboardData.length;
 
   return (
     <>
@@ -103,15 +111,6 @@ export default function DashboardFoods({ clients, foods }: Props) {
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-green-700">
-            {formatCurrency(mediumPriceByClientAndFood)}
-          </AlertTitle>
-          <AlertDescription className="text-sm text-muted-foreground">
-            Precio medio por persona y comida.
-          </AlertDescription>
-        </Alert>
-        <Alert>
-          <Calculator className="h-4 w-4" />
-          <AlertTitle className="text-green-700">
             {formatCurrency(allFoodsCostByClient)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
@@ -121,14 +120,21 @@ export default function DashboardFoods({ clients, foods }: Props) {
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-green-700">
-            {formatCurrency(
-              dashboardData.map((d) => d.price).reduce((a, b) => a + b, 0)
-            )}
+            {formatCurrency(allFoodsCostByClientWithExtra)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Coste de todas las comidas por persona (incluyendo extra de bebida{" "}
             {formatCurrency(extraDrinkCostByClientAndFood)} y extra de plástico{" "}
             {formatCurrency(extraPlasticCostByClientAndFood)}).
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-green-700">
+            {formatCurrency(mediumPriceByClientAndFood)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Precio medio por persona y comida (teniendo en cuenta los extras).
           </AlertDescription>
         </Alert>
       </div>
