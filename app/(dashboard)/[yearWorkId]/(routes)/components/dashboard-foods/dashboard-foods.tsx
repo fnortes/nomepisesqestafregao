@@ -37,7 +37,7 @@ export default function DashboardFoods({ clients, foods }: Props) {
         return 0;
       });
 
-    return count.length > 0 ? count.reduce((a, b) => a + b) : 0;
+    return count.length > 0 ? count.reduce((a, b) => a + b, 0) : 0;
   };
 
   const dashboardData: DashboardFoodsColumn[] = foods.map((food) => {
@@ -58,6 +58,21 @@ export default function DashboardFoods({ clients, foods }: Props) {
     };
   });
 
+  // Se calcula un coste estimado extra (sobre el precio del menú) de 2€ para bebida y 1€ para plástico
+  const extraDrinkCostByClientAndFood = 2;
+  const extraPlasticCostByClientAndFood = 1;
+
+  const allFoodsTotalCost = dashboardData
+    .map((d) => d.totalPrice)
+    .reduce((a, b) => a + b, 0);
+
+  const allFoodsCostByClient = dashboardData
+    .map((d) => d.price)
+    .reduce((a, b) => a + b, 0);
+
+  const mediumPriceByClientAndFood =
+    allFoodsCostByClient / dashboardData.length;
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -75,17 +90,48 @@ export default function DashboardFoods({ clients, foods }: Props) {
           searchFields: [],
         }}
       />
-      <Alert>
-        <Calculator className="h-4 w-4" />
-        <AlertTitle className="text-red-700">
-          {formatCurrency(
-            dashboardData.map((d) => d.totalPrice).reduce((a, b) => a + b)
-          )}
-        </AlertTitle>
-        <AlertDescription className="text-sm text-muted-foreground">
-          Total a pagar por las comidas.
-        </AlertDescription>
-      </Alert>
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            {formatCurrency(allFoodsTotalCost)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total a pagar por las comidas.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-green-700">
+            {formatCurrency(mediumPriceByClientAndFood)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Precio medio por persona y comida.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-green-700">
+            {formatCurrency(allFoodsCostByClient)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Coste de todas las comidas por persona (Sólo precio menú).
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-green-700">
+            {formatCurrency(
+              dashboardData.map((d) => d.price).reduce((a, b) => a + b, 0)
+            )}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Coste de todas las comidas por persona (incluyendo extra de bebida{" "}
+            {formatCurrency(extraDrinkCostByClientAndFood)} y extra de plástico{" "}
+            {formatCurrency(extraPlasticCostByClientAndFood)}).
+          </AlertDescription>
+        </Alert>
+      </div>
     </>
   );
 }

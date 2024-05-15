@@ -182,7 +182,7 @@ export default function DashboardShirts({ clients }: Props) {
           description="Ver el resumen de camisetas de todas la comparsa para el año de trabajo seleccionado"
           title={`Desglose camisetas (${dashboardData
             .map((d) => d.resume)
-            .reduce((a, b) => a + b)})`}
+            .reduce((a, b) => a + b, 0)})`}
         />
       </div>
       <Separator />

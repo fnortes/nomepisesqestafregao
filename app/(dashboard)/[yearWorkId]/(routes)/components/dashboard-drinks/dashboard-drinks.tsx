@@ -63,7 +63,7 @@ export default function DashboardDrinks({ expenses }: Props) {
         <Calculator className="h-4 w-4" />
         <AlertTitle className="text-red-700">
           {formatCurrency(
-            dashboardData.map((d) => d.total).reduce((a, b) => a + b)
+            dashboardData.map((d) => d.total).reduce((a, b) => a + b, 0)
           )}
         </AlertTitle>
         <AlertDescription className="text-sm text-muted-foreground">

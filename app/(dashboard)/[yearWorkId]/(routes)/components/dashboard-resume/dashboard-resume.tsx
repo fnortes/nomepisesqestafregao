@@ -4,7 +4,7 @@ import Heading from "@/components/heading";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { calculateQuote, formatCurrency } from "@/lib/utils";
-import { Expense, YearWork } from "@prisma/client";
+import { Expense, Food, YearWork } from "@prisma/client";
 import { Calculator, CopyMinus, Wallet } from "lucide-react";
 import { GeneralClient } from "../common.types";
 
@@ -33,12 +33,12 @@ export default function DashboardResume({
               foodQuantities: client.foods.map((f) => f.quantity),
             })
           )
-          .reduce((a, b) => a + b)
+          .reduce((a, b) => a + b, 0)
       : 0;
 
   const totalExpenses =
     expenses.length > 0
-      ? expenses.map((expense) => expense.total).reduce((a, b) => a + b)
+      ? expenses.map((expense) => expense.total).reduce((a, b) => a + b, 0)
       : 0;
 
   const countClients = (clients: GeneralClient[], foodId: string) =>
@@ -55,14 +55,14 @@ export default function DashboardResume({
 
         return 0;
       })
-      .reduce((a, b) => a + b);
+      .reduce((a, b) => a + b, 0);
 
   const totalFoods = foods
     .map((food) => {
       const total = countClients(clients, food.id);
       return total * food.price;
     })
-    .reduce((a, b) => a + b);
+    .reduce((a, b) => a + b, 0);
 
   const total =
     totalClientsToPaid -
