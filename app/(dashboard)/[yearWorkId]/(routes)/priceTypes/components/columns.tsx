@@ -4,14 +4,13 @@ import { BadgeX, Check } from "lucide-react";
 
 import CellAction from "./cell-action";
 
-import type { ColumnDef } from "@tanstack/react-table";
 import { formatCurrency } from "@/lib/utils";
+import type { ColumnDef } from "@tanstack/react-table";
 
 export type PriceTypeColumn = {
   adultPrice: number;
   babyPrice: number;
   childPrice: number;
-  createdAt: string;
   dinners: boolean;
   drinkTickets: boolean;
   id: string;
@@ -19,7 +18,6 @@ export type PriceTypeColumn = {
   name: string;
   paradeSuit: boolean;
   paradeWater: boolean;
-  updatedAt: string;
 };
 
 export const columns: ColumnDef<PriceTypeColumn>[] = [
@@ -91,14 +89,6 @@ export const columns: ColumnDef<PriceTypeColumn>[] = [
       ) : (
         <BadgeX className="w-4 h-4 text-red-700" />
       ),
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Creado",
-  },
-  {
-    accessorKey: "updatedAt",
-    header: "Actualizado",
   },
   {
     id: "actions",

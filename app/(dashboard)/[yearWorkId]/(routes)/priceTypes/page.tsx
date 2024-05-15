@@ -1,6 +1,3 @@
-import { format } from "date-fns";
-
-import { DATE_TIME_FORMAT } from "@/constants/date";
 import prismadb from "@/lib/prismadb";
 import PriceTypesClient from "./components/price-types-client";
 
@@ -25,7 +22,6 @@ export default async function PriceTypesPage({
       adultPrice,
       babyPrice,
       childPrice,
-      createdAt,
       dinners,
       drinkTickets,
       id,
@@ -33,12 +29,10 @@ export default async function PriceTypesPage({
       name,
       paradeSuit,
       paradeWater,
-      updatedAt,
     }) => ({
       adultPrice,
       babyPrice,
       childPrice,
-      createdAt: format(createdAt, DATE_TIME_FORMAT),
       dinners,
       drinkTickets,
       id,
@@ -46,7 +40,6 @@ export default async function PriceTypesPage({
       name,
       paradeSuit,
       paradeWater,
-      updatedAt: format(updatedAt, DATE_TIME_FORMAT),
     })
   );
 
