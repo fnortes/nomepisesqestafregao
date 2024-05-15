@@ -8,7 +8,7 @@ import { DashboardShirtsColumn, columns } from "./columns";
 import {
   DashboardType,
   clientMapperToDashboard,
-} from "./dashboard-shirts.constants";
+} from "../dashboard-clients/dashboard-clients.constants";
 
 interface Props {
   readonly clients: GeneralClient[];
@@ -118,6 +118,23 @@ export default function DashboardShirts({ clients }: Props) {
       XXXL: 0,
       resume: 0,
     },
+    {
+      type: DashboardType.ALL,
+      M_6: 0,
+      A_2: 0,
+      A_3_4: 0,
+      A_6: 0,
+      A_8: 0,
+      A_12: 0,
+      A_16: 0,
+      S: 0,
+      M: 0,
+      L: 0,
+      XL: 0,
+      XXL: 0,
+      XXXL: 0,
+      resume: 0,
+    },
   ];
 
   const updateDashboardItem = (client: GeneralClient, type: string) => {
@@ -136,6 +153,26 @@ export default function DashboardShirts({ clients }: Props) {
         client,
         clientMapperToDashboard[client.ageGroup][client.gender]
       );
+    });
+
+  const totals = dashboardData.find((d) => d.type === DashboardType.ALL)!;
+  dashboardData
+    .filter((d) => d.type !== DashboardType.ALL)
+    .forEach((d) => {
+      totals.A_12 += d.A_12;
+      totals.A_16 += d.A_16;
+      totals.A_2 += d.A_2;
+      totals.A_3_4 += d.A_3_4;
+      totals.A_6 += d.A_6;
+      totals.A_8 += d.A_8;
+      totals.L += d.L;
+      totals.M += d.M;
+      totals.M_6 += d.M_6;
+      totals.S += d.S;
+      totals.XL += d.XL;
+      totals.XXL += d.XXL;
+      totals.XXXL += d.XXXL;
+      totals.resume += d.resume;
     });
 
   return (
