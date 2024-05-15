@@ -48,6 +48,16 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
     return null;
   }
 
+  const otherExpenseFamilies = [
+    ExpenseFamily.DECORATION,
+    ExpenseFamily.EXTRA_EXPENSES,
+    ExpenseFamily.FLOWER_OFFERING,
+    ExpenseFamily.ICE_CUBES,
+    ExpenseFamily.MUSIC,
+    ExpenseFamily.TOOLS,
+    ExpenseFamily.VEHICLES,
+  ];
+
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
@@ -89,6 +99,16 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
           expenses={expenses.filter(
             (e) => e.expenseCategory.family === ExpenseFamily.DRINK
           )}
+          clients={clients}
+        />
+        <DashboardDrinks
+          expenses={expenses.filter(
+            (e) =>
+              otherExpenseFamilies.findIndex(
+                (o) => o === e.expenseCategory.family
+              ) !== -1
+          )}
+          clients={clients}
         />
       </div>
     </div>

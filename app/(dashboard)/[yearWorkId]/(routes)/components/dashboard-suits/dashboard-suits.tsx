@@ -59,17 +59,19 @@ export default function DashboardSuits({ expenses }: Props) {
           searchFields: [],
         }}
       />
-      <Alert>
-        <Calculator className="h-4 w-4" />
-        <AlertTitle className="text-red-700">
-          {formatCurrency(
-            dashboardData.map((d) => d.total).reduce((a, b) => a + b, 0)
-          )}
-        </AlertTitle>
-        <AlertDescription className="text-sm text-muted-foreground">
-          Total a pagar del pedido de aperitivos y postres.
-        </AlertDescription>
-      </Alert>
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            {formatCurrency(
+              dashboardData.map((d) => d.total).reduce((a, b) => a + b, 0)
+            )}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total a pagar del pedido de aperitivos y postres.
+          </AlertDescription>
+        </Alert>
+      </div>
     </>
   );
 }
