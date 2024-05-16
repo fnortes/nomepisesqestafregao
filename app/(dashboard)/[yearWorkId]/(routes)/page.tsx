@@ -1,14 +1,15 @@
 import prismadb from "@/lib/prismadb";
 import { ExpenseFamily } from "@prisma/client";
+import DashboardAppetizers from "./components/dashboard-appetizers/dashboard-appetizers";
 import DashboardChairs from "./components/dashboard-chairs/dashboard-chairs";
 import DashboardClients from "./components/dashboard-clients/dashboard-clients";
+import DashboardDrinks from "./components/dashboard-drinks/dashboard-drinks";
+import DashboardExtra from "./components/dashboard-extra/dashboard-extra";
 import DashboardFoods from "./components/dashboard-foods/dashboard-foods";
 import DashboardPlastic from "./components/dashboard-plastic/dashboard-plastic";
 import DashboardResume from "./components/dashboard-resume/dashboard-resume";
 import DashboardShirts from "./components/dashboard-shirts/dashboard-shirts";
-import DashboardAppetizers from "./components/dashboard-appetizers/dashboard-appetizers";
 import DashboardSuits from "./components/dashboard-suits/dashboard-suits";
-import DashboardDrinks from "./components/dashboard-drinks/dashboard-drinks";
 
 interface Props {
   readonly params: { yearWorkId: string };
@@ -101,7 +102,7 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
           )}
           clients={clients}
         />
-        <DashboardDrinks
+        <DashboardExtra
           expenses={expenses.filter(
             (e) =>
               otherExpenseFamilies.findIndex(
