@@ -50,6 +50,22 @@ export default function DashboardClients({ clients }: Props) {
       resume: 0,
     },
     {
+      type: DashboardType.CHILDREN_HALF_PORTION_WITH_QUOTA,
+      withFoods: 0,
+      withSuits: 0,
+      withWater: 0,
+      withBar: 0,
+      resume: 0,
+    },
+    {
+      type: DashboardType.GIRLS_HALF_PORTION_WITH_QUOTA,
+      withFoods: 0,
+      withSuits: 0,
+      withWater: 0,
+      withBar: 0,
+      resume: 0,
+    },
+    {
       type: DashboardType.CHILDREN_WITHOUT_QUOTA,
       withFoods: 0,
       withSuits: 0,

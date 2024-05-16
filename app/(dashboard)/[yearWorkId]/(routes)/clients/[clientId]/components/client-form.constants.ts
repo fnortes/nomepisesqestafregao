@@ -50,6 +50,10 @@ export const shirtSizeOptionsData: CommonFormFieldData = [
 export const ageGroupData = [
   { value: AgeGroup.ADULT, label: AGE_GROUPS_LITERALS[AgeGroup.ADULT] },
   { value: AgeGroup.CHILD, label: AGE_GROUPS_LITERALS[AgeGroup.CHILD] },
+  {
+    value: AgeGroup.CHILD_HALF_PORTION,
+    label: AGE_GROUPS_LITERALS[AgeGroup.CHILD_HALF_PORTION],
+  },
   { value: AgeGroup.BABY, label: AGE_GROUPS_LITERALS[AgeGroup.BABY] },
 ];
 

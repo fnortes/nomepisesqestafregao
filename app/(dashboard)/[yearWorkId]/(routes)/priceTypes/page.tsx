@@ -21,6 +21,7 @@ export default async function PriceTypesPage({
     ({
       adultPrice,
       babyPrice,
+      childHalfPortionPrice,
       childPrice,
       dinners,
       drinkTickets,
@@ -32,6 +33,7 @@ export default async function PriceTypesPage({
     }) => ({
       adultPrice,
       babyPrice,
+      childHalfPortionPrice,
       childPrice,
       dinners,
       drinkTickets,

@@ -53,15 +53,16 @@ export default function PriceTypeForm({ initialData }: Props) {
   const form = useForm<PriceTypeFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: initialData?.name ?? "",
       adultPrice: initialData?.adultPrice ?? 0,
-      childPrice: initialData?.childPrice ?? 0,
       babyPrice: initialData?.babyPrice ?? 0,
-      meals: initialData?.meals ?? false,
+      childHalfPortionPrice: initialData?.childHalfPortionPrice ?? 0,
+      childPrice: initialData?.childPrice ?? 0,
       dinners: initialData?.dinners ?? false,
+      drinkTickets: initialData?.drinkTickets ?? false,
+      meals: initialData?.meals ?? false,
+      name: initialData?.name ?? "",
       paradeSuit: initialData?.paradeSuit ?? false,
       paradeWater: initialData?.paradeWater ?? false,
-      drinkTickets: initialData?.drinkTickets ?? false,
     },
   });
 
@@ -158,6 +159,17 @@ export default function PriceTypeForm({ initialData }: Props) {
               label="Cuota para niños"
               loading={loading}
               name="childPrice"
+              showCurrency
+            />
+            <NumberFormField
+              form={form}
+              input={{
+                placeholder:
+                  "Cantidad de cuota para los niños con media ración",
+              }}
+              label="Cuota para niños 50 ración"
+              loading={loading}
+              name="childHalfPortionPrice"
               showCurrency
             />
             <NumberFormField

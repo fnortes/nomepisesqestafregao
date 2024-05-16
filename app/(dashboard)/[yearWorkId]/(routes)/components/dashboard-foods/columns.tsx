@@ -6,13 +6,14 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
 export type DashboardFoodsColumn = {
-  title: string;
   date: Date;
   price: number;
-  totalAdult: number;
-  totalChild: number;
-  totalBaby: number;
+  title: string;
   total: number;
+  totalAdult: number;
+  totalBaby: number;
+  totalChild: number;
+  totalChildHalfPortion: number;
   totalPrice: number;
 };
 
@@ -38,6 +39,10 @@ export const columns: ColumnDef<DashboardFoodsColumn>[] = [
   {
     accessorKey: "totalChild",
     header: "Niños con cuota",
+  },
+  {
+    accessorKey: "totalChildHalfPortion",
+    header: "Niños con cuota 50% Ración",
   },
   {
     accessorKey: "totalBaby",

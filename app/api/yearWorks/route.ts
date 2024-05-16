@@ -130,7 +130,9 @@ export async function POST(req: NextRequest) {
 
         // Se calcula el número de niños con cuota del año anterior
         previousChields = clients.filter(
-          (client) => client.ageGroup === AgeGroup.CHILD
+          (client) =>
+            client.ageGroup === AgeGroup.CHILD ||
+            client.ageGroup === AgeGroup.CHILD_HALF_PORTION
         ).length;
 
         // Se obtiene de BD el listado de todas las cuotas del año anterior.

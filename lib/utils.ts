@@ -30,6 +30,7 @@ export const calculateQuote = ({
   const pricesMapping: { [key in AgeGroup]: number } = {
     [AgeGroup.ADULT]: priceType.adultPrice,
     [AgeGroup.CHILD]: priceType.childPrice,
+    [AgeGroup.CHILD_HALF_PORTION]: priceType.childHalfPortionPrice,
     [AgeGroup.BABY]: priceType.babyPrice,
   };
 
@@ -45,7 +46,7 @@ export const calculateQuote = ({
           .map((quantity) => {
             return quantity * yearWork.unitFoodPrice;
           })
-          .reduce((a, b) => a + b)
+          .reduce((a, b) => a + b, 0)
       : 0;
 
   return newCalculatedQuote + foodPriceTotal;

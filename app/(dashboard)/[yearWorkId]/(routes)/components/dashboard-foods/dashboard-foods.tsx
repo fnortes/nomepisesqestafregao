@@ -31,7 +31,12 @@ export default function DashboardFoods({ clients, foods }: Props) {
         const clientFood = client.foods.find((f) => f.foodId === foodId);
 
         if (clientFood) {
-          return clientFood.quantity + (clientFood.attend ? 1 : 0);
+          const foodPercentage =
+            client.ageGroup === AgeGroup.CHILD_HALF_PORTION ||
+            client.ageGroup === AgeGroup.BABY
+              ? 0.5
+              : 1;
+          return clientFood.quantity + (clientFood.attend ? foodPercentage : 0);
         }
 
         return 0;
@@ -43,17 +48,23 @@ export default function DashboardFoods({ clients, foods }: Props) {
   const dashboardData: DashboardFoodsColumn[] = foods.map((food) => {
     const totalAdult = countClients(clients, AgeGroup.ADULT, food.id);
     const totalChild = countClients(clients, AgeGroup.CHILD, food.id);
+    const totalChildHalfPortion = countClients(
+      clients,
+      AgeGroup.CHILD_HALF_PORTION,
+      food.id
+    );
     const totalBaby = countClients(clients, AgeGroup.BABY, food.id);
-    const total = totalAdult + totalChild + totalBaby;
+    const total = totalAdult + totalChild + totalChildHalfPortion + totalBaby;
 
     return {
-      title: food.title,
       date: food.date,
       price: food.price,
-      totalAdult,
-      totalChild,
-      totalBaby,
+      title: food.title,
       total,
+      totalAdult,
+      totalBaby,
+      totalChild,
+      totalChildHalfPortion,
       totalPrice: total * food.price,
     };
   });
@@ -111,7 +122,8 @@ export default function DashboardFoods({ clients, foods }: Props) {
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-green-700">
-            {formatCurrency(allFoodsCostByClient)}
+            {formatCurrency(allFoodsCostByClient)} (50% Ración{" "}
+            {formatCurrency(allFoodsCostByClient * 0.5)})
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Coste de todas las comidas por persona (Sólo precio menú).
@@ -120,7 +132,8 @@ export default function DashboardFoods({ clients, foods }: Props) {
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-green-700">
-            {formatCurrency(allFoodsCostByClientWithExtra)}
+            {formatCurrency(allFoodsCostByClientWithExtra)} (50% Ración{" "}
+            {formatCurrency(allFoodsCostByClientWithExtra * 0.5)})
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Coste de todas las comidas por persona (incluyendo extra de bebida{" "}

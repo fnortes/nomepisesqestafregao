@@ -54,7 +54,10 @@ export default function DashboardChairs({ expenses, clients }: Props) {
   const costByAdultAndChild =
     totalCost /
     clients.filter(
-      (c) => c.ageGroup === AgeGroup.ADULT || c.ageGroup === AgeGroup.CHILD
+      (c) =>
+        c.ageGroup === AgeGroup.ADULT ||
+        c.ageGroup === AgeGroup.CHILD ||
+        c.ageGroup === AgeGroup.CHILD_HALF_PORTION
     ).length;
 
   return (

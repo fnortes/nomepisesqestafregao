@@ -19,6 +19,7 @@ export const SHIRT_SIZE_LITERALS = {
 export const AGE_GROUPS_LITERALS = {
   [AgeGroup.ADULT]: "Adulto",
   [AgeGroup.CHILD]: "Niño con cuota",
+  [AgeGroup.CHILD_HALF_PORTION]: "Niño con cuota 50% ración",
   [AgeGroup.BABY]: "Bebé sin cuota",
 };
 

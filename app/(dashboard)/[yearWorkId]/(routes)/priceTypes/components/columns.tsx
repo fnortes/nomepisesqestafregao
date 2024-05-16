@@ -10,6 +10,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 export type PriceTypeColumn = {
   adultPrice: number;
   babyPrice: number;
+  childHalfPortionPrice: number;
   childPrice: number;
   dinners: boolean;
   drinkTickets: boolean;
@@ -34,6 +35,11 @@ export const columns: ColumnDef<PriceTypeColumn>[] = [
     accessorKey: "childPrice",
     header: "Niño",
     cell: ({ row }) => formatCurrency(row.original.childPrice),
+  },
+  {
+    accessorKey: "childHalfPortionPrice",
+    header: "Niño 50% Ración",
+    cell: ({ row }) => formatCurrency(row.original.childHalfPortionPrice),
   },
   {
     accessorKey: "babyPrice",

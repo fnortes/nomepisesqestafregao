@@ -4,7 +4,7 @@ import Heading from "@/components/heading";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { calculateQuote, formatCurrency } from "@/lib/utils";
-import { Expense, Food, YearWork } from "@prisma/client";
+import { AgeGroup, Expense, Food, YearWork } from "@prisma/client";
 import { Calculator, CopyMinus, Wallet } from "lucide-react";
 import { GeneralClient } from "../common.types";
 
@@ -50,7 +50,12 @@ export default function DashboardResume({
         const clientFood = client.foods.find((f) => f.foodId === foodId);
 
         if (clientFood) {
-          return clientFood.quantity + (clientFood.attend ? 1 : 0);
+          const foodPercentage =
+            client.ageGroup === AgeGroup.CHILD_HALF_PORTION ||
+            client.ageGroup === AgeGroup.BABY
+              ? 0.5
+              : 1;
+          return clientFood.quantity + (clientFood.attend ? foodPercentage : 0);
         }
 
         return 0;

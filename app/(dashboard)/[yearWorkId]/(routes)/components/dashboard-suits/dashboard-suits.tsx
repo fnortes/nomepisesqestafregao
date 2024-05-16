@@ -14,26 +14,36 @@ interface Props {
 }
 
 export default function DashboardSuits({ expenses }: Props) {
+  let suitAdultClientPrice = 0;
+  let suitAdultClientUnits = 0;
+  let suitChildClientPrice = 0;
+  let suitChildClientUnits = 0;
+  let suitBabyClientPrice = 0;
+  let suitBabyClientUnits = 0;
+
   const dashboardData: DashboardSuitsColumn[] = expenses.map(
-    ({
-      comments,
-      description,
-      expenseCategory,
-      estimatedUnits,
-      paid,
-      previousYearWorkUnits,
-      title,
-      total,
-      unitPrice,
-      units,
-    }) => {
+    ({ comments, description, paid, title, total, unitPrice, units }) => {
+      switch (title.substring(0, 5)) {
+        case "Bebés":
+          suitBabyClientPrice += total;
+          suitBabyClientUnits += units;
+          break;
+        case "Niñas":
+        case "Niños":
+          suitChildClientPrice += total;
+          suitChildClientUnits += units;
+          break;
+        case "Chico":
+        case "Chica":
+          suitAdultClientPrice += total;
+          suitAdultClientUnits += units;
+          break;
+      }
+
       return {
         comments,
         description,
-        category: expenseCategory,
-        estimatedUnits,
         paid,
-        previousYearWorkUnits,
         title,
         total,
         unitPrice,
@@ -69,6 +79,33 @@ export default function DashboardSuits({ expenses }: Props) {
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Total a pagar del pedido de aperitivos y postres.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-green-700">
+            {formatCurrency(suitAdultClientPrice / suitAdultClientUnits)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Coste medio de traje para adultos.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-green-700">
+            {formatCurrency(suitChildClientPrice / suitChildClientUnits)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Coste medio de traje para niños.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-green-700">
+            {formatCurrency(suitBabyClientPrice / suitBabyClientUnits)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Coste medio de traje para bebés.
           </AlertDescription>
         </Alert>
       </div>

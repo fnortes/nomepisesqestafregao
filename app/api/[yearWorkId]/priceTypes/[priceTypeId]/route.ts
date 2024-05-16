@@ -11,15 +11,16 @@ export async function PATCH(
     const body = await req.json();
 
     const {
-      name,
       adultPrice,
-      childPrice,
       babyPrice,
-      meals,
+      childHalfPortionPrice,
+      childPrice,
       dinners,
+      drinkTickets,
+      meals,
+      name,
       paradeSuit,
       paradeWater,
-      drinkTickets,
     } = body;
     const { yearWorkId, priceTypeId } = params;
 
@@ -71,16 +72,17 @@ export async function PATCH(
         id: priceTypeId,
       },
       data: {
-        yearWorkId,
-        name,
         adultPrice: adultPrice || 0,
-        childPrice: childPrice || 0,
         babyPrice: babyPrice || 0,
-        meals,
+        childHalfPortionPrice: childHalfPortionPrice || 0,
+        childPrice: childPrice || 0,
         dinners,
+        drinkTickets,
+        meals,
+        name,
         paradeSuit,
         paradeWater,
-        drinkTickets,
+        yearWorkId,
       },
     });
 

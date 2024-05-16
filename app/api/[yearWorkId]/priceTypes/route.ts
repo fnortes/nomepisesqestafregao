@@ -12,15 +12,16 @@ export async function POST(
     const body = await req.json();
 
     const {
-      name,
       adultPrice,
-      childPrice,
       babyPrice,
-      meals,
+      childHalfPortionPrice,
+      childPrice,
       dinners,
+      drinkTickets,
+      meals,
+      name,
       paradeSuit,
       paradeWater,
-      drinkTickets,
     } = body;
     const { yearWorkId } = params;
 
@@ -68,16 +69,17 @@ export async function POST(
 
     const priceType = await prismadb.priceType.create({
       data: {
-        name,
-        yearWorkId,
         adultPrice: adultPrice || 0,
-        childPrice: childPrice || 0,
         babyPrice: babyPrice || 0,
-        meals,
+        childHalfPortionPrice: childHalfPortionPrice || 0,
+        childPrice: childPrice || 0,
         dinners,
+        drinkTickets,
+        meals,
+        name,
         paradeSuit,
         paradeWater,
-        drinkTickets,
+        yearWorkId,
       },
     });
 
