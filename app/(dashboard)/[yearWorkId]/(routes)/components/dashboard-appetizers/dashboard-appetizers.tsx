@@ -7,15 +7,20 @@ import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils";
 import { Calculator } from "lucide-react";
 import { GeneralClient, GeneralExpense } from "../common.types";
+import { countAdultAndChildClients, countAdultClients } from "../common.utils";
 import { DashboardAppetizersColumn, columns } from "./columns";
-import { AgeGroup } from "@prisma/client";
 
 interface Props {
   readonly expenses: GeneralExpense[];
   readonly clients: GeneralClient[];
+  readonly totalCost: number;
 }
 
-export default function DashboardAppetizers({ expenses, clients }: Props) {
+export default function DashboardAppetizers({
+  expenses,
+  clients,
+  totalCost,
+}: Props) {
   const dashboardData: DashboardAppetizersColumn[] = expenses.map(
     ({
       comments,
@@ -44,21 +49,8 @@ export default function DashboardAppetizers({ expenses, clients }: Props) {
     }
   );
 
-  const totalCost = dashboardData
-    .map((d) => d.total)
-    .reduce((a, b) => a + b, 0);
-
-  const costByAdult =
-    totalCost / clients.filter((c) => c.ageGroup === AgeGroup.ADULT).length;
-
-  const costByAdultAndChild =
-    totalCost /
-    clients.filter(
-      (c) =>
-        c.ageGroup === AgeGroup.ADULT ||
-        c.ageGroup === AgeGroup.CHILD ||
-        c.ageGroup === AgeGroup.CHILD_HALF_PORTION
-    ).length;
+  const costByAdult = totalCost / countAdultClients(clients);
+  const costByAdultAndChild = totalCost / countAdultAndChildClients(clients);
 
   return (
     <>

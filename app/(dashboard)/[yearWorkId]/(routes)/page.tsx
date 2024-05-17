@@ -1,5 +1,14 @@
 import prismadb from "@/lib/prismadb";
-import { ExpenseFamily } from "@prisma/client";
+import {
+  calculateTotalExpensesCurrentPaid,
+  calculateTotalExpensesToPaid,
+  getAppetizersExpenses,
+  getChairsExpenses,
+  getDrinksExpenses,
+  getPlasticExpenses,
+  getSuitsExpenses,
+  getVariousExpenses,
+} from "./components/common.utils";
 import DashboardAppetizers from "./components/dashboard-appetizers/dashboard-appetizers";
 import DashboardChairs from "./components/dashboard-chairs/dashboard-chairs";
 import DashboardClients from "./components/dashboard-clients/dashboard-clients";
@@ -49,15 +58,40 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
     return null;
   }
 
-  const otherExpenseFamilies = [
-    ExpenseFamily.DECORATION,
-    ExpenseFamily.EXTRA_EXPENSES,
-    ExpenseFamily.FLOWER_OFFERING,
-    ExpenseFamily.ICE_CUBES,
-    ExpenseFamily.MUSIC,
-    ExpenseFamily.TOOLS,
-    ExpenseFamily.VEHICLES,
-  ];
+  const variousExpenses = getVariousExpenses(expenses);
+  const totalVariousExpensesToPaid =
+    calculateTotalExpensesToPaid(variousExpenses);
+  const totalVariousExpensesCurrentPaid =
+    calculateTotalExpensesCurrentPaid(variousExpenses);
+
+  const plasticExpenses = getPlasticExpenses(expenses);
+  const totalPlasticExpensesToPaid =
+    calculateTotalExpensesToPaid(plasticExpenses);
+  const totalPlasticExpensesCurrentPaid =
+    calculateTotalExpensesCurrentPaid(plasticExpenses);
+
+  const chairsExpenses = getChairsExpenses(expenses);
+  const totalChairsExpensesToPaid =
+    calculateTotalExpensesToPaid(chairsExpenses);
+  const totalChairsExpensesCurrentPaid =
+    calculateTotalExpensesCurrentPaid(chairsExpenses);
+
+  const appetizersExpenses = getAppetizersExpenses(expenses);
+  const totalAppetizersExpensesToPaid =
+    calculateTotalExpensesToPaid(appetizersExpenses);
+  const totalAppetizersExpensesCurrentPaid =
+    calculateTotalExpensesCurrentPaid(appetizersExpenses);
+
+  const suitsExpenses = getSuitsExpenses(expenses);
+  const totalSuitsExpensesToPaid = calculateTotalExpensesToPaid(suitsExpenses);
+  const totalSuitsExpensesCurrentPaid =
+    calculateTotalExpensesCurrentPaid(suitsExpenses);
+
+  const drinksExpenses = getDrinksExpenses(expenses);
+  const totalDrinksExpensesToPaid =
+    calculateTotalExpensesToPaid(drinksExpenses);
+  const totalDrinksExpensesCurrentPaid =
+    calculateTotalExpensesCurrentPaid(drinksExpenses);
 
   return (
     <div className="flex-col">
@@ -67,49 +101,52 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
           expenses={expenses}
           yearWork={yearWork}
           foods={foods}
+          totalVariousExpensesToPaid={totalVariousExpensesToPaid}
+          totalPlasticExpensesToPaid={totalPlasticExpensesToPaid}
+          totalChairsExpensesToPaid={totalChairsExpensesToPaid}
+          totalAppetizersExpensesToPaid={totalAppetizersExpensesToPaid}
+          totalSuitsExpensesToPaid={totalSuitsExpensesToPaid}
+          totalDrinksExpensesToPaid={totalDrinksExpensesToPaid}
+          totalVariousExpensesCurrentPaid={totalVariousExpensesCurrentPaid}
+          totalPlasticExpensesCurrentPaid={totalPlasticExpensesCurrentPaid}
+          totalChairsExpensesCurrentPaid={totalChairsExpensesCurrentPaid}
+          totalAppetizersExpensesCurrentPaid={
+            totalAppetizersExpensesCurrentPaid
+          }
+          totalSuitsExpensesCurrentPaid={totalSuitsExpensesCurrentPaid}
+          totalDrinksExpensesCurrentPaid={totalDrinksExpensesCurrentPaid}
         />
         <DashboardClients clients={clients} />
         <DashboardShirts clients={clients} />
+        <DashboardExtra
+          expenses={variousExpenses}
+          totalCost={totalVariousExpensesToPaid}
+          clients={clients}
+        />
         <DashboardPlastic
-          expenses={expenses.filter(
-            (e) => e.expenseCategory.family === ExpenseFamily.PLASTIC
-          )}
+          expenses={plasticExpenses}
+          totalCost={totalPlasticExpensesToPaid}
           clients={clients}
         />
         <DashboardChairs
-          expenses={expenses.filter(
-            (e) => e.expenseCategory.family === ExpenseFamily.TABLES_AND_CHAIRS
-          )}
+          expenses={chairsExpenses}
+          totalCost={totalChairsExpensesToPaid}
           clients={clients}
         />
         <DashboardFoods clients={clients} foods={foods} />
         <DashboardAppetizers
-          expenses={expenses.filter(
-            (e) =>
-              e.expenseCategory.family === ExpenseFamily.FOODS &&
-              e.expenseCategory.name === "Aperitivos y postres"
-          )}
+          expenses={appetizersExpenses}
+          totalCost={totalAppetizersExpensesToPaid}
           clients={clients}
         />
         <DashboardSuits
-          expenses={expenses.filter(
-            (e) => e.expenseCategory.family === ExpenseFamily.SUITS
-          )}
+          expenses={suitsExpenses}
+          totalCost={totalSuitsExpensesToPaid}
         />
         <DashboardDrinks
-          expenses={expenses.filter(
-            (e) => e.expenseCategory.family === ExpenseFamily.DRINK
-          )}
           clients={clients}
-        />
-        <DashboardExtra
-          expenses={expenses.filter(
-            (e) =>
-              otherExpenseFamilies.findIndex(
-                (o) => o === e.expenseCategory.family
-              ) !== -1
-          )}
-          clients={clients}
+          expenses={drinksExpenses}
+          totalCost={totalDrinksExpensesToPaid}
         />
       </div>
     </div>

@@ -11,9 +11,10 @@ import { DashboardSuitsColumn, columns } from "./columns";
 
 interface Props {
   readonly expenses: GeneralExpense[];
+  readonly totalCost: number;
 }
 
-export default function DashboardSuits({ expenses }: Props) {
+export default function DashboardSuits({ expenses, totalCost }: Props) {
   let suitAdultClientPrice = 0;
   let suitAdultClientUnits = 0;
   let suitChildClientPrice = 0;
@@ -73,9 +74,7 @@ export default function DashboardSuits({ expenses }: Props) {
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-red-700">
-            {formatCurrency(
-              dashboardData.map((d) => d.total).reduce((a, b) => a + b, 0)
-            )}
+            {formatCurrency(totalCost)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Total a pagar del pedido de aperitivos y postres.
