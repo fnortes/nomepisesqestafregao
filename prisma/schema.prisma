@@ -203,6 +203,7 @@ model Food {
   description    String?
   date           DateTime           @default(now())
   price          Float              @default(0)
+  paid           Float              @default(0)
   clients        ClientsOnFoods[]
 
   @@index([yearWorkId])

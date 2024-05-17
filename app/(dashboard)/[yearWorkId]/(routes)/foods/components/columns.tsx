@@ -10,6 +10,7 @@ export type FoodColumn = {
   date: string;
   description: string;
   id: string;
+  paid: number;
   price: number;
   title: string;
 };
@@ -27,6 +28,11 @@ export const columns: ColumnDef<FoodColumn>[] = [
     accessorKey: "price",
     header: "Precio por persona",
     cell: ({ row }) => formatCurrency(row.original.price),
+  },
+  {
+    accessorKey: "paid",
+    header: "Total Pagado",
+    cell: ({ row }) => formatCurrency(row.original.paid),
   },
   {
     accessorKey: "description",

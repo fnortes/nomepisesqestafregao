@@ -57,6 +57,7 @@ export default function FoodForm({ initialData }: Props) {
       date: initialData?.date,
       description: initialData?.description,
       price: initialData?.price ?? 0,
+      paid: initialData?.paid ?? 0,
       title: initialData?.title,
     },
   });
@@ -155,6 +156,17 @@ export default function FoodForm({ initialData }: Props) {
               name="price"
               showCurrency
               description="Es el coste por persona de la comida."
+            />
+            <NumberFormField
+              form={form}
+              input={{
+                placeholder: "Introduce el total pagado para esta comida.",
+              }}
+              label="Total pagado"
+              loading={loading}
+              name="paid"
+              showCurrency
+              description="Es la cantidad pagada total por la comparsa para esta comida."
             />
             <TextFormField
               form={form}

@@ -10,14 +10,20 @@ export async function PATCH(
     const { userId } = auth();
     const body = await req.json();
 
-    const { comments, title, price, date, description } = body;
+    const { comments, title, paid, price, date, description } = body;
     const { yearWorkId, foodId } = params;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if ((!price && price !== 0) || !title || !date || !yearWorkId) {
+    if (
+      (!price && price !== 0) ||
+      !title ||
+      !date ||
+      !yearWorkId ||
+      (!paid && paid !== 0)
+    ) {
       return new NextResponse(
         "Algunos de los campos obligatorios no han sido enviados.",
         { status: 400 }
@@ -64,6 +70,7 @@ export async function PATCH(
         comments,
         date,
         description,
+        paid,
         price,
         title,
         yearWorkId,

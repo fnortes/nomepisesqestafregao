@@ -19,11 +19,12 @@ export default async function FoodsPage({ params: { yearWorkId } }: Props) {
   });
 
   const formattedFoods: FoodColumn[] = foods.map(
-    ({ comments, description, date, id, price, title }) => ({
+    ({ comments, description, date, id, paid, price, title }) => ({
       comments: comments ?? "",
       date: format(date, DATE_FORMAT),
       description: description ?? "",
       id,
+      paid,
       price,
       title,
     })
