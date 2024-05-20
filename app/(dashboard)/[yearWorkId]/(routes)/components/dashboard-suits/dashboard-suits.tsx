@@ -5,60 +5,62 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DataTable } from "@/components/ui/data-table";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils";
+import { AgeGroup, Suit } from "@prisma/client";
 import { Calculator } from "lucide-react";
-import { GeneralExpense } from "../common.types";
+import { GeneralClient } from "../common.types";
+import { countClientsBySuit } from "../common.utils";
 import { DashboardSuitsColumn, columns } from "./columns";
 
 interface Props {
-  readonly expenses: GeneralExpense[];
-  readonly totalCost: number;
+  readonly clients: GeneralClient[];
+  readonly suits: Suit[];
 }
 
-export default function DashboardSuits({ expenses, totalCost }: Props) {
-  let suitAdultClientPrice = 0;
-  let suitAdultClientUnits = 0;
-  let suitChildClientPrice = 0;
-  let suitChildClientUnits = 0;
-  let suitBabyClientPrice = 0;
-  let suitBabyClientUnits = 0;
+export default function DashboardSuits({ clients, suits }: Props) {
+  const dashboardData: DashboardSuitsColumn[] = suits.map((suit) => {
+    const { ageGroup, gender, price } = suit;
+    const totalClients = countClientsBySuit(clients, suit);
 
-  const dashboardData: DashboardSuitsColumn[] = expenses.map(
-    ({ comments, description, paid, title, total, unitPrice, units }) => {
-      switch (title.substring(0, 5)) {
-        case "Bebés":
-          suitBabyClientPrice += total;
-          suitBabyClientUnits += units;
-          break;
-        case "Niñas":
-        case "Niños":
-          suitChildClientPrice += total;
-          suitChildClientUnits += units;
-          break;
-        case "Chico":
-        case "Chica":
-          suitAdultClientPrice += total;
-          suitAdultClientUnits += units;
-          break;
-      }
+    return {
+      ageGroup,
+      gender,
+      price,
+      totalClients,
+      totalPrice: totalClients * price,
+    };
+  });
 
-      return {
-        comments,
-        description,
-        paid,
-        title,
-        total,
-        unitPrice,
-        units,
-      };
-    }
+  const allSuitsTotalCost = dashboardData
+    .map((d) => d.totalPrice)
+    .reduce((a, b) => a + b, 0);
+
+  const adultSuits = dashboardData.filter((d) => d.ageGroup === AgeGroup.ADULT);
+  const mediumCostAdultSuit =
+    adultSuits.map((s) => s.totalPrice).reduce((a, b) => a + b, 0) /
+    adultSuits.map((s) => s.totalClients).reduce((a, b) => a + b, 0);
+
+  const childSuits = dashboardData.filter(
+    (d) =>
+      d.ageGroup === AgeGroup.CHILD ||
+      d.ageGroup === AgeGroup.CHILD_HALF_PORTION
   );
+  const mediumCostChildSuit =
+    childSuits.map((s) => s.totalPrice).reduce((a, b) => a + b, 0) /
+    childSuits.map((s) => s.totalClients).reduce((a, b) => a + b, 0);
+
+  const babySuits = dashboardData.filter((d) => d.ageGroup === AgeGroup.BABY);
+  const mediumCostBabySuit =
+    babySuits.map((s) => s.totalPrice).reduce((a, b) => a + b, 0) /
+    babySuits.map((s) => s.totalClients).reduce((a, b) => a + b, 0);
 
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen del pedido de los trajes del desfile de disfraces"
-          title={`Desglose del pedido de los trajes (${expenses.length})`}
+          title={`Desglose del pedido de los trajes para ${
+            clients.filter((c) => c.priceType.paradeSuit).length
+          } comparsistas`}
         />
       </div>
       <Separator />
@@ -74,16 +76,16 @@ export default function DashboardSuits({ expenses, totalCost }: Props) {
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-red-700">
-            {formatCurrency(totalCost)}
+            {formatCurrency(allSuitsTotalCost)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
-            Total a pagar del pedido de aperitivos y postres.
+            Total a pagar del pedido de trajes.
           </AlertDescription>
         </Alert>
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-green-700">
-            {formatCurrency(suitAdultClientPrice / suitAdultClientUnits)}
+            {formatCurrency(mediumCostAdultSuit)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Coste medio de traje para adultos.
@@ -92,7 +94,7 @@ export default function DashboardSuits({ expenses, totalCost }: Props) {
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-green-700">
-            {formatCurrency(suitChildClientPrice / suitChildClientUnits)}
+            {formatCurrency(mediumCostChildSuit)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Coste medio de traje para niños.
@@ -101,7 +103,7 @@ export default function DashboardSuits({ expenses, totalCost }: Props) {
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-green-700">
-            {formatCurrency(suitBabyClientPrice / suitBabyClientUnits)}
+            {formatCurrency(mediumCostBabySuit)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Coste medio de traje para bebés.

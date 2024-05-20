@@ -1,22 +1,25 @@
 "use client";
 
 import { formatCurrency } from "@/lib/utils";
-import { AgeGroup, Gender } from "@prisma/client";
+import CellAction from "./cell-action";
+
 import type { ColumnDef } from "@tanstack/react-table";
+import { AgeGroup, Gender } from "@prisma/client";
 import {
   AGE_GROUPS_LITERALS,
   GENDER_LITERALS,
 } from "../../clients/clients.constants";
 
-export type DashboardSuitsColumn = {
+export type SuitColumn = {
   ageGroup: AgeGroup;
+  comments: string;
   gender: Gender;
+  id: string;
+  paid: number;
   price: number;
-  totalClients: number;
-  totalPrice: number;
 };
 
-export const columns: ColumnDef<DashboardSuitsColumn>[] = [
+export const columns: ColumnDef<SuitColumn>[] = [
   {
     accessorKey: "gender",
     header: "Sexo",
@@ -33,12 +36,18 @@ export const columns: ColumnDef<DashboardSuitsColumn>[] = [
     cell: ({ row }) => formatCurrency(row.original.price),
   },
   {
-    accessorKey: "totalClients",
-    header: "Comparsistas",
+    accessorKey: "paid",
+    header: "Total Pagado",
+    cell: ({ row }) => formatCurrency(row.original.paid),
   },
   {
-    accessorKey: "totalPrice",
-    header: "Precio Total",
-    cell: ({ row }) => formatCurrency(row.original.totalPrice),
+    accessorKey: "comments",
+    header: "Comentarios",
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      return <CellAction data={row.original} />;
+    },
   },
 ];

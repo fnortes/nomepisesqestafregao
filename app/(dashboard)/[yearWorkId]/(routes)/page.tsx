@@ -2,6 +2,8 @@ import prismadb from "@/lib/prismadb";
 import {
   calculateTotalExpensesCurrentPaid,
   calculateTotalExpensesToPaid,
+  countAdultAndChildClients,
+  countAdultClients,
   getAppetizersExpenses,
   getChairsExpenses,
   getDrinksExpenses,
@@ -19,6 +21,7 @@ import DashboardPlastic from "./components/dashboard-plastic/dashboard-plastic";
 import DashboardResume from "./components/dashboard-resume/dashboard-resume";
 import DashboardShirts from "./components/dashboard-shirts/dashboard-shirts";
 import DashboardSuits from "./components/dashboard-suits/dashboard-suits";
+import DashboardQuotes from "./components/dashboard-quotes/dashboard-quotes";
 
 interface Props {
   readonly params: { yearWorkId: string };
@@ -54,6 +57,24 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
     },
   });
 
+  const suits = await prismadb.suit.findMany({
+    where: {
+      yearWorkId,
+    },
+    orderBy: {
+      ageGroup: "asc",
+    },
+  });
+
+  const priceTypes = await prismadb.priceType.findMany({
+    where: {
+      yearWorkId,
+    },
+    orderBy: {
+      adultPrice: "desc",
+    },
+  });
+
   if (!yearWork) {
     return null;
   }
@@ -82,16 +103,16 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
   const totalAppetizersExpensesCurrentPaid =
     calculateTotalExpensesCurrentPaid(appetizersExpenses);
 
-  const suitsExpenses = getSuitsExpenses(expenses);
-  const totalSuitsExpensesToPaid = calculateTotalExpensesToPaid(suitsExpenses);
-  const totalSuitsExpensesCurrentPaid =
-    calculateTotalExpensesCurrentPaid(suitsExpenses);
-
   const drinksExpenses = getDrinksExpenses(expenses);
   const totalDrinksExpensesToPaid =
     calculateTotalExpensesToPaid(drinksExpenses);
   const totalDrinksExpensesCurrentPaid =
     calculateTotalExpensesCurrentPaid(drinksExpenses);
+
+  const totalVariousExpensesByAdult =
+    totalVariousExpensesToPaid / countAdultClients(clients);
+  const totalVariousExpensesByAdultAndChild =
+    totalVariousExpensesToPaid / countAdultAndChildClients(clients);
 
   return (
     <div className="flex-col">
@@ -101,11 +122,11 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
           expenses={expenses}
           yearWork={yearWork}
           foods={foods}
+          suits={suits}
           totalVariousExpensesToPaid={totalVariousExpensesToPaid}
           totalPlasticExpensesToPaid={totalPlasticExpensesToPaid}
           totalChairsExpensesToPaid={totalChairsExpensesToPaid}
           totalAppetizersExpensesToPaid={totalAppetizersExpensesToPaid}
-          totalSuitsExpensesToPaid={totalSuitsExpensesToPaid}
           totalDrinksExpensesToPaid={totalDrinksExpensesToPaid}
           totalVariousExpensesCurrentPaid={totalVariousExpensesCurrentPaid}
           totalPlasticExpensesCurrentPaid={totalPlasticExpensesCurrentPaid}
@@ -113,15 +134,18 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
           totalAppetizersExpensesCurrentPaid={
             totalAppetizersExpensesCurrentPaid
           }
-          totalSuitsExpensesCurrentPaid={totalSuitsExpensesCurrentPaid}
           totalDrinksExpensesCurrentPaid={totalDrinksExpensesCurrentPaid}
         />
         <DashboardClients clients={clients} />
+        <DashboardQuotes priceTypes={priceTypes} />
         <DashboardShirts clients={clients} />
         <DashboardExtra
           expenses={variousExpenses}
           totalCost={totalVariousExpensesToPaid}
-          clients={clients}
+          totalVariousExpensesByAdult={totalVariousExpensesByAdult}
+          totalVariousExpensesByAdultAndChild={
+            totalVariousExpensesByAdultAndChild
+          }
         />
         <DashboardPlastic
           expenses={plasticExpenses}
@@ -139,10 +163,7 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
           totalCost={totalAppetizersExpensesToPaid}
           clients={clients}
         />
-        <DashboardSuits
-          expenses={suitsExpenses}
-          totalCost={totalSuitsExpensesToPaid}
-        />
+        <DashboardSuits clients={clients} suits={suits} />
         <DashboardDrinks
           clients={clients}
           expenses={drinksExpenses}

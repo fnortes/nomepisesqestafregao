@@ -14,8 +14,12 @@ export default function MainNav({
 
   const routes = [
     {
-      href: `/${params.yearWorkId}`,
-      label: "General",
+      href: `/${params.yearWorkId}/settings`,
+      label: "Configuración",
+    },
+    {
+      href: `/${params.yearWorkId}/clients`,
+      label: "Comparsistas",
     },
     {
       href: `/${params.yearWorkId}/priceTypes`,
@@ -30,14 +34,6 @@ export default function MainNav({
       label: "Turnos de Barra",
     },
     {
-      href: `/${params.yearWorkId}/foods`,
-      label: "Comidas",
-    },
-    {
-      href: `/${params.yearWorkId}/clients`,
-      label: "Comparsistas",
-    },
-    {
       href: `/${params.yearWorkId}/expenseCategories`,
       label: "Categorías de Gastos",
     },
@@ -46,8 +42,16 @@ export default function MainNav({
       label: "Gastos",
     },
     {
-      href: `/${params.yearWorkId}/settings`,
-      label: "Configuración",
+      href: `/${params.yearWorkId}/foods`,
+      label: "Comidas",
+    },
+    {
+      href: `/${params.yearWorkId}/suits`,
+      label: "Trajes",
+    },
+    {
+      href: `/${params.yearWorkId}`,
+      label: "General",
     },
   ];
 

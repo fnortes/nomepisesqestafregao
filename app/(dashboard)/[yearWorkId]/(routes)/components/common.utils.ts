@@ -4,6 +4,7 @@ import {
   Expense,
   ExpenseFamily,
   Food,
+  Suit,
   YearWork,
 } from "@prisma/client";
 import {
@@ -36,6 +37,17 @@ export const countClientsByFood = (
       return 0;
     })
     .reduce((a, b) => a + b, 0);
+
+export const countClientsBySuit = (
+  clients: GeneralClient[],
+  suit: Suit
+): number =>
+  clients.filter(
+    (client) =>
+      client.priceType.paradeSuit &&
+      client.ageGroup === suit.ageGroup &&
+      client.gender === suit.gender
+  ).length;
 
 export const countAdultClients = (clients: GeneralClient[]): number =>
   clients.filter((c) => ADULT_AGE_GROUPS.indexOf(c.ageGroup) !== -1).length;
@@ -86,6 +98,20 @@ export const calculateTotalFoodsToPaid = (
 
 export const calculateTotalFoodsCurrentPaid = (foods: Food[]): number =>
   foods.map((food) => food.paid).reduce((a, b) => a + b, 0);
+
+export const calculateTotalSuitsToPaid = (
+  suits: Suit[],
+  clients: GeneralClient[]
+): number =>
+  suits
+    .map((suit) => {
+      const total = countClientsBySuit(clients, suit);
+      return total * suit.price;
+    })
+    .reduce((a, b) => a + b, 0);
+
+export const calculateTotalSuitsCurrentPaid = (suits: Suit[]): number =>
+  suits.map((suit) => suit.paid).reduce((a, b) => a + b, 0);
 
 const getExpensesByFilter = (
   expenses: GeneralExpense[],
