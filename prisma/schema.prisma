@@ -30,6 +30,7 @@ model YearWork {
   priceTypes              PriceType[] @relation("YearWorkToPriceType")
   expenses                Expense[]   @relation("YearWorkToExpense")
   foods                   Food[]      @relation("YearWorkToFood")
+  suits                   Suit[]      @relation("YearWorkToSuit")
 }
 
 enum Gender {
@@ -220,4 +221,19 @@ model ClientsOnFoods {
   @@id([foodId, clientId])
   @@index([foodId])
   @@index([clientId])
+}
+
+model Suit {
+  id             String             @id @default(uuid())
+  yearWorkId     String
+  yearWork       YearWork           @relation("YearWorkToSuit", fields: [yearWorkId], references: [id])
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  ageGroup       AgeGroup           @default(ADULT)
+  gender         Gender             @default(MAN)
+  comments       String?
+  price          Float              @default(0)
+  paid           Float              @default(0)
+  
+  @@index([yearWorkId])
 }
