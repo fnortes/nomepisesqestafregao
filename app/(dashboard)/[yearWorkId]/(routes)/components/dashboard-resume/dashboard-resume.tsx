@@ -67,6 +67,13 @@ export default function DashboardResume({
     yearWork.commissionHelp +
     yearWork.awardsReward;
 
+  const totalCurrentPaid =
+    totalClientsCurrentPaid -
+    (totalExpensesCurrentPaid + totalFoodsCurrentPaid) +
+    yearWork.previousYearWorkAmount +
+    yearWork.commissionHelp +
+    yearWork.awardsReward;
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -132,47 +139,56 @@ export default function DashboardResume({
             comparsa.
           </AlertDescription>
         </Alert>
+        <Alert className="col-span-2">
+          <Wallet className="h-4 w-4" />
+          <AlertTitle className="text-green-500">
+            {formatCurrency(yearWork.previousYearWorkAmount)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Cantidad total de dinero sobrante o disponible del año anterior al
+            actual.
+          </AlertDescription>
+        </Alert>
+        <Alert className="col-span-2">
+          <Wallet className="h-4 w-4" />
+          <AlertTitle className="text-green-500">
+            {formatCurrency(yearWork.commissionHelp)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Cantidad de dinero que nos dará de subvención la comisión de
+            fiestas.
+          </AlertDescription>
+        </Alert>
+        <Alert className="col-span-2">
+          <Wallet className="h-4 w-4" />
+          <AlertTitle className="text-green-500">
+            {formatCurrency(yearWork.awardsReward)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Cantidad de dinero que hemos recibido por parte de los premios
+            ganados.
+          </AlertDescription>
+        </Alert>
+        <Separator className="col-span-2" />
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-gray-700">
+            {formatCurrency(totalToPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total estimado calculado.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-gray-700">
+            {formatCurrency(totalCurrentPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total real calculado.
+          </AlertDescription>
+        </Alert>
       </div>
-      <Alert>
-        <Wallet className="h-4 w-4" />
-        <AlertTitle className="text-green-500">
-          {formatCurrency(yearWork.previousYearWorkAmount)}
-        </AlertTitle>
-        <AlertDescription className="text-sm text-muted-foreground">
-          Cantidad total de dinero sobrante o disponible del año anterior al
-          actual.
-        </AlertDescription>
-      </Alert>
-      <Alert>
-        <Wallet className="h-4 w-4" />
-        <AlertTitle className="text-green-500">
-          {formatCurrency(yearWork.commissionHelp)}
-        </AlertTitle>
-        <AlertDescription className="text-sm text-muted-foreground">
-          Cantidad de dinero que nos da de subvención la comisión de fiestas
-          para el año de trabajo seleccionado.
-        </AlertDescription>
-      </Alert>
-      <Alert>
-        <Wallet className="h-4 w-4" />
-        <AlertTitle className="text-green-500">
-          {formatCurrency(yearWork.awardsReward)}
-        </AlertTitle>
-        <AlertDescription className="text-sm text-muted-foreground">
-          Cantidad de dinero que hemos recibido por parte de los premios ganados
-          en el año de trabajo seleccionado.
-        </AlertDescription>
-      </Alert>
-      <Separator />
-      <Alert>
-        <Calculator className="h-4 w-4" />
-        <AlertTitle className="text-gray-700">
-          {formatCurrency(totalToPaid)}
-        </AlertTitle>
-        <AlertDescription className="text-sm text-muted-foreground">
-          Total calculado.
-        </AlertDescription>
-      </Alert>
     </>
   );
 }
