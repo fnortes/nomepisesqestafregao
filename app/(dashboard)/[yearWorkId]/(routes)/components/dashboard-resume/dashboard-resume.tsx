@@ -4,74 +4,82 @@ import Heading from "@/components/heading";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils";
-import { Expense, Food, Suit, YearWork } from "@prisma/client";
+import { YearWork } from "@prisma/client";
 import { Calculator, CopyMinus, Wallet } from "lucide-react";
 import { GeneralClient } from "../common.types";
 import {
   calculateTotalClientsCurrentPaid,
   calculateTotalClientsToPaid,
-  calculateTotalExpensesCurrentPaid,
-  calculateTotalExpensesToPaid,
-  calculateTotalFoodsCurrentPaid,
-  calculateTotalFoodsToPaid,
-  calculateTotalSuitsCurrentPaid,
-  calculateTotalSuitsToPaid,
 } from "../common.utils";
 
 interface Props {
   readonly clients: GeneralClient[];
-  readonly expenses: Expense[];
-  readonly foods: Food[];
-  readonly suits: Suit[];
-  readonly totalAppetizersExpensesToPaid: number;
-  readonly totalChairsExpensesToPaid: number;
-  readonly totalDrinksExpensesToPaid: number;
-  readonly totalPlasticExpensesToPaid: number;
-  readonly totalVariousExpensesToPaid: number;
   readonly totalAppetizersExpensesCurrentPaid: number;
+  readonly totalAppetizersExpensesToPaid: number;
   readonly totalChairsExpensesCurrentPaid: number;
+  readonly totalChairsExpensesToPaid: number;
   readonly totalDrinksExpensesCurrentPaid: number;
+  readonly totalDrinksExpensesToPaid: number;
+  readonly totalFoodsCurrentPaid: number;
+  readonly totalFoodsToPaid: number;
   readonly totalPlasticExpensesCurrentPaid: number;
+  readonly totalPlasticExpensesToPaid: number;
+  readonly totalSuitsCurrentPaid: number;
+  readonly totalSuitsToPaid: number;
   readonly totalVariousExpensesCurrentPaid: number;
+  readonly totalVariousExpensesToPaid: number;
   readonly yearWork: YearWork;
 }
 
 export default function DashboardResume({
   clients,
-  expenses,
-  foods,
-  suits,
-  totalAppetizersExpensesToPaid,
-  totalChairsExpensesToPaid,
-  totalDrinksExpensesToPaid,
-  totalPlasticExpensesToPaid,
-  totalVariousExpensesToPaid,
   totalAppetizersExpensesCurrentPaid,
+  totalAppetizersExpensesToPaid,
   totalChairsExpensesCurrentPaid,
+  totalChairsExpensesToPaid,
   totalDrinksExpensesCurrentPaid,
+  totalDrinksExpensesToPaid,
+  totalFoodsToPaid,
   totalPlasticExpensesCurrentPaid,
+  totalPlasticExpensesToPaid,
+  totalSuitsCurrentPaid,
+  totalSuitsToPaid,
   totalVariousExpensesCurrentPaid,
+  totalVariousExpensesToPaid,
   yearWork,
+  totalFoodsCurrentPaid,
 }: Props) {
   const totalClientsToPaid = calculateTotalClientsToPaid(clients, yearWork);
   const totalClientsCurrentPaid = calculateTotalClientsCurrentPaid(clients);
-  const totalExpensesToPaid = calculateTotalExpensesToPaid(expenses);
-  const totalExpensesCurrentPaid = calculateTotalExpensesCurrentPaid(expenses);
-  const totalFoodsToPaid = calculateTotalFoodsToPaid(foods, clients);
-  const totalFoodsCurrentPaid = calculateTotalFoodsCurrentPaid(foods);
-  const totalSuitsToPaid = calculateTotalSuitsToPaid(suits, clients);
-  const totalSuitsCurrentPaid = calculateTotalSuitsCurrentPaid(suits);
+
+  const costsToPaid =
+    totalAppetizersExpensesToPaid +
+    totalChairsExpensesToPaid +
+    totalDrinksExpensesToPaid +
+    totalPlasticExpensesToPaid +
+    totalVariousExpensesToPaid +
+    totalFoodsToPaid +
+    totalSuitsToPaid;
 
   const totalToPaid =
     totalClientsToPaid -
-    (totalExpensesToPaid + totalFoodsToPaid + totalSuitsToPaid) +
+    costsToPaid +
     yearWork.previousYearWorkAmount +
     yearWork.commissionHelp +
     yearWork.awardsReward;
 
+  const costsCurrentPaid =
+    totalAppetizersExpensesCurrentPaid +
+    totalChairsExpensesCurrentPaid +
+    totalDrinksExpensesCurrentPaid +
+    totalPlasticExpensesCurrentPaid +
+    totalSuitsCurrentPaid +
+    totalVariousExpensesCurrentPaid +
+    totalFoodsCurrentPaid;
+
   const totalCurrentPaid =
     totalClientsCurrentPaid -
-    (totalExpensesCurrentPaid + totalFoodsCurrentPaid + totalSuitsCurrentPaid) +
+    costsCurrentPaid +
     yearWork.previousYearWorkAmount +
     yearWork.commissionHelp +
     yearWork.awardsReward;
@@ -111,10 +119,8 @@ export default function DashboardResume({
         <Alert>
           <CopyMinus className="h-4 w-4" />
           <AlertTitle className="text-red-700">
-            {formatCurrency(
-              totalExpensesToPaid + totalFoodsToPaid + totalSuitsToPaid
-            )}{" "}
-            (Varios: {formatCurrency(totalVariousExpensesToPaid)}, Plástico:{" "}
+            {formatCurrency(costsToPaid)} (Varios:{" "}
+            {formatCurrency(totalVariousExpensesToPaid)}, Plástico:{" "}
             {formatCurrency(totalPlasticExpensesToPaid)}, Sillas y mesas:{" "}
             {formatCurrency(totalChairsExpensesToPaid)}, Comidas:{" "}
             {formatCurrency(totalFoodsToPaid)}, Aperitivos y postres:{" "}
@@ -129,14 +135,10 @@ export default function DashboardResume({
         <Alert>
           <CopyMinus className="h-4 w-4" />
           <AlertTitle className="text-red-700">
-            {formatCurrency(
-              totalExpensesCurrentPaid +
-                totalFoodsCurrentPaid +
-                totalSuitsCurrentPaid
-            )}{" "}
-            (Varios: {formatCurrency(totalVariousExpensesCurrentPaid)},
-            Plástico: {formatCurrency(totalPlasticExpensesCurrentPaid)}, Sillas
-            y mesas: {formatCurrency(totalChairsExpensesCurrentPaid)}, Comidas:{" "}
+            {formatCurrency(costsCurrentPaid)} (Varios:{" "}
+            {formatCurrency(totalVariousExpensesCurrentPaid)}, Plástico:{" "}
+            {formatCurrency(totalPlasticExpensesCurrentPaid)}, Sillas y mesas:{" "}
+            {formatCurrency(totalChairsExpensesCurrentPaid)}, Comidas:{" "}
             {formatCurrency(totalFoodsCurrentPaid)}, Aperitivos y postres:{" "}
             {formatCurrency(totalAppetizersExpensesCurrentPaid)}, Trajes:{" "}
             {formatCurrency(totalSuitsCurrentPaid)}, Bebida:{" "}

@@ -1,44 +1,38 @@
 "use client";
 
 import Heading from "@/components/heading";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { formatCurrency } from "@/lib/utils";
 import { AgeGroup, PriceType } from "@prisma/client";
-import { Wallet } from "lucide-react";
-import { AGE_GROUPS_LITERALS } from "../../clients/clients.constants";
+import QuoteItem from "./quote-item";
+import { FoodCosts } from "../common.types";
 
 interface Props {
+  readonly commissionHelpPercentage: number;
+  readonly foodCosts: FoodCosts;
+  readonly mediumCostAdultSuit: number;
+  readonly mediumCostBabySuit: number;
+  readonly mediumCostChildSuit: number;
   readonly priceTypes: PriceType[];
+  readonly totalAppetizersExpensesByAdultAndChild: number;
+  readonly totalChairsExpensesByAdultAndChild: number;
+  readonly totalDrinksExpensesByAdult: number;
+  readonly totalPlasticExpensesByAdultAndChild: number;
+  readonly totalVariousExpensesByAdultAndChild: number;
 }
 
-export default function DashboardQuotes({ priceTypes }: Props) {
-  const extraCosts = 24.58;
-  const drinkCost = 55.01;
-  const adultSuitCost = 115.83;
-  const appetizersCost = 1.11;
-  const foodCosts = {
-    all: {
-      withoutDrink: 51.8,
-      withDrink: 69.8,
-    },
-    onlyDinner: {
-      withoutDrink: 34.53,
-      withDrink: 46.53,
-    },
-  };
-  const chairsCost = 4.53;
-  const plasticCost = 2.91;
-
-  const totalCosts =
-    extraCosts +
-    drinkCost +
-    adultSuitCost +
-    appetizersCost +
-    foodCosts.all.withoutDrink +
-    chairsCost +
-    plasticCost;
-
+export default function DashboardQuotes({
+  commissionHelpPercentage,
+  foodCosts,
+  mediumCostAdultSuit,
+  mediumCostBabySuit,
+  mediumCostChildSuit,
+  priceTypes,
+  totalAppetizersExpensesByAdultAndChild,
+  totalChairsExpensesByAdultAndChild,
+  totalDrinksExpensesByAdult,
+  totalPlasticExpensesByAdultAndChild,
+  totalVariousExpensesByAdultAndChild,
+}: Props) {
   return (
     <>
       <div className="flex items-center justify-between">
@@ -49,106 +43,83 @@ export default function DashboardQuotes({ priceTypes }: Props) {
       </div>
       <Separator />
 
-      {priceTypes.map((priceType) => (
-        <div
-          key={priceType.id}
-          className="grid grid-cols-1 gap-8 sm:grid-cols-4"
-        >
-          <div className="col-span-4">
-            <h3 className="text-xl font-bold tracking-tight">
-              {priceType.name}
-            </h3>
+      {priceTypes.map((priceType) => {
+        const drinkCost = priceType.drinkTickets
+          ? totalDrinksExpensesByAdult
+          : 0;
+        const launchCost = priceType.meals
+          ? foodCosts.withoutDrink * (1 - foodCosts.onlyDinnerPercentage)
+          : 0;
+        const dinnerCost = priceType.dinners
+          ? foodCosts.withoutDrink * foodCosts.onlyDinnerPercentage
+          : 0;
+        const launchAndDinnerCost = launchCost + dinnerCost;
+
+        return (
+          <div
+            key={priceType.id}
+            className="grid grid-cols-1 gap-8 sm:grid-cols-4"
+          >
+            <div className="col-span-4">
+              <h3 className="text-xl font-bold tracking-tight">
+                {priceType.name}
+              </h3>
+            </div>
+            {priceType.adultPrice > 0 && (
+              <QuoteItem
+                ageGroup={AgeGroup.ADULT}
+                appetizersCost={totalAppetizersExpensesByAdultAndChild}
+                chairsCost={totalChairsExpensesByAdultAndChild}
+                commissionHelpPercentage={commissionHelpPercentage}
+                drinkCost={drinkCost}
+                extraCosts={totalVariousExpensesByAdultAndChild}
+                launchAndDinnerCost={launchAndDinnerCost}
+                plasticCost={totalPlasticExpensesByAdultAndChild}
+                suitCost={mediumCostAdultSuit}
+              />
+            )}
+            {priceType.childPrice > 0 && (
+              <QuoteItem
+                ageGroup={AgeGroup.CHILD}
+                appetizersCost={totalAppetizersExpensesByAdultAndChild}
+                chairsCost={totalChairsExpensesByAdultAndChild}
+                commissionHelpPercentage={commissionHelpPercentage}
+                drinkCost={0}
+                extraCosts={totalVariousExpensesByAdultAndChild}
+                launchAndDinnerCost={launchAndDinnerCost}
+                plasticCost={totalPlasticExpensesByAdultAndChild}
+                suitCost={mediumCostChildSuit}
+              />
+            )}
+            {priceType.childHalfPortionPrice > 0 && (
+              <QuoteItem
+                ageGroup={AgeGroup.CHILD_HALF_PORTION}
+                appetizersCost={totalAppetizersExpensesByAdultAndChild}
+                chairsCost={totalChairsExpensesByAdultAndChild}
+                commissionHelpPercentage={commissionHelpPercentage}
+                drinkCost={0}
+                extraCosts={totalVariousExpensesByAdultAndChild}
+                launchAndDinnerCost={launchAndDinnerCost * 0.5}
+                plasticCost={totalPlasticExpensesByAdultAndChild}
+                suitCost={mediumCostChildSuit}
+              />
+            )}
+            {priceType.babyPrice > 0 && (
+              <QuoteItem
+                ageGroup={AgeGroup.BABY}
+                appetizersCost={0}
+                chairsCost={0}
+                commissionHelpPercentage={commissionHelpPercentage}
+                drinkCost={0}
+                extraCosts={0}
+                launchAndDinnerCost={launchAndDinnerCost * 0.5}
+                plasticCost={0}
+                suitCost={mediumCostBabySuit}
+              />
+            )}
           </div>
-          {priceType.adultPrice > 0 && (
-            <Alert>
-              <Wallet className="h-4 w-4" />
-              <AlertTitle className="text-gray-500">{`${
-                AGE_GROUPS_LITERALS[AgeGroup.ADULT]
-              }: ${formatCurrency(totalCosts)}`}</AlertTitle>
-              <AlertDescription className="text-sm text-muted-foreground">
-                <ul>
-                  <li>Gastos Extra: {formatCurrency(extraCosts)}</li>
-                  <li>Bebida: {formatCurrency(drinkCost)}</li>
-                  <li>Traje: {formatCurrency(adultSuitCost)}</li>
-                  <li>Aperitivos: {formatCurrency(appetizersCost)}</li>
-                  <li>
-                    Comidas y Cenas:{" "}
-                    {formatCurrency(foodCosts.all.withoutDrink)}
-                  </li>
-                  <li>Alquiler mesas y sillas: {formatCurrency(chairsCost)}</li>
-                  <li>Plástico: {formatCurrency(plasticCost)}</li>
-                </ul>
-              </AlertDescription>
-            </Alert>
-          )}
-          {priceType.childPrice > 0 && (
-            <Alert>
-              <Wallet className="h-4 w-4" />
-              <AlertTitle className="text-gray-500">{`${
-                AGE_GROUPS_LITERALS[AgeGroup.CHILD]
-              }: ${formatCurrency(totalCosts)}`}</AlertTitle>
-              <AlertDescription className="text-sm text-muted-foreground">
-                <ul>
-                  <li>Gastos Extra: {formatCurrency(extraCosts)}</li>
-                  <li>Bebida: {formatCurrency(drinkCost)}</li>
-                  <li>Traje: {formatCurrency(adultSuitCost)}</li>
-                  <li>Aperitivos: {formatCurrency(appetizersCost)}</li>
-                  <li>
-                    Comidas y Cenas:{" "}
-                    {formatCurrency(foodCosts.all.withoutDrink)}
-                  </li>
-                  <li>Alquiler mesas y sillas: {formatCurrency(chairsCost)}</li>
-                  <li>Plástico: {formatCurrency(plasticCost)}</li>
-                </ul>
-              </AlertDescription>
-            </Alert>
-          )}
-          {priceType.childHalfPortionPrice > 0 && (
-            <Alert>
-              <Wallet className="h-4 w-4" />
-              <AlertTitle className="text-gray-500">{`${
-                AGE_GROUPS_LITERALS[AgeGroup.CHILD_HALF_PORTION]
-              }: ${formatCurrency(totalCosts)}`}</AlertTitle>
-              <AlertDescription className="text-sm text-muted-foreground">
-                <ul>
-                  <li>Gastos Extra: {formatCurrency(extraCosts)}</li>
-                  <li>Bebida: {formatCurrency(drinkCost)}</li>
-                  <li>Traje: {formatCurrency(adultSuitCost)}</li>
-                  <li>Aperitivos: {formatCurrency(appetizersCost)}</li>
-                  <li>
-                    Comidas y Cenas:{" "}
-                    {formatCurrency(foodCosts.all.withoutDrink)}
-                  </li>
-                  <li>Alquiler mesas y sillas: {formatCurrency(chairsCost)}</li>
-                  <li>Plástico: {formatCurrency(plasticCost)}</li>
-                </ul>
-              </AlertDescription>
-            </Alert>
-          )}
-          {priceType.babyPrice > 0 && (
-            <Alert>
-              <Wallet className="h-4 w-4" />
-              <AlertTitle className="text-gray-500">{`${
-                AGE_GROUPS_LITERALS[AgeGroup.BABY]
-              }: ${formatCurrency(totalCosts)}`}</AlertTitle>
-              <AlertDescription className="text-sm text-muted-foreground">
-                <ul>
-                  <li>Gastos Extra: {formatCurrency(extraCosts)}</li>
-                  <li>Bebida: {formatCurrency(drinkCost)}</li>
-                  <li>Traje: {formatCurrency(adultSuitCost)}</li>
-                  <li>Aperitivos: {formatCurrency(appetizersCost)}</li>
-                  <li>
-                    Comidas y Cenas:{" "}
-                    {formatCurrency(foodCosts.all.withoutDrink)}
-                  </li>
-                  <li>Alquiler mesas y sillas: {formatCurrency(chairsCost)}</li>
-                  <li>Plástico: {formatCurrency(plasticCost)}</li>
-                </ul>
-              </AlertDescription>
-            </Alert>
-          )}
-        </div>
-      ))}
+        );
+      })}
     </>
   );
 }

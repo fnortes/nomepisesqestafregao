@@ -1,97 +1,35 @@
 "use client";
 
 import Heading from "@/components/heading";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DataTable } from "@/components/ui/data-table";
 import { Separator } from "@/components/ui/separator";
-import { AgeGroup, Food } from "@prisma/client";
+import { formatCurrency } from "@/lib/utils";
+import { Calculator } from "lucide-react";
+import {
+  EXTRA_DRINK_COST_BY_CLIENT_AND_FOOD,
+  EXTRA_PLASTIC_COST_BY_CLIENT_AND_FOOD,
+} from "../common.constants";
 import { GeneralClient } from "../common.types";
 import { DashboardFoodsColumn, columns } from "./columns";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Calculator } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
 
 interface Props {
+  readonly allFoodsCostByClient: number;
+  readonly allFoodsCostByClientWithExtra: number;
   readonly clients: GeneralClient[];
-  readonly foods: Food[];
+  readonly dashboardData: DashboardFoodsColumn[];
+  readonly mediumPriceByClientAndFood: number;
+  readonly totalFoodsToPaid: number;
 }
 
-export default function DashboardFoods({ clients, foods }: Props) {
-  const countClients = (
-    clients: GeneralClient[],
-    ageGroup: AgeGroup,
-    foodId: string
-  ) => {
-    const count = clients
-      .filter(
-        (client) =>
-          client.ageGroup === ageGroup &&
-          client.foods.filter((f) => f.foodId === foodId).length > 0
-      )
-      .map((client) => {
-        const clientFood = client.foods.find((f) => f.foodId === foodId);
-
-        if (clientFood) {
-          const foodPercentage =
-            client.ageGroup === AgeGroup.CHILD_HALF_PORTION ||
-            client.ageGroup === AgeGroup.BABY
-              ? 0.5
-              : 1;
-          return clientFood.quantity + (clientFood.attend ? foodPercentage : 0);
-        }
-
-        return 0;
-      });
-
-    return count.length > 0 ? count.reduce((a, b) => a + b, 0) : 0;
-  };
-
-  const dashboardData: DashboardFoodsColumn[] = foods.map((food) => {
-    const totalAdult = countClients(clients, AgeGroup.ADULT, food.id);
-    const totalChild = countClients(clients, AgeGroup.CHILD, food.id);
-    const totalChildHalfPortion = countClients(
-      clients,
-      AgeGroup.CHILD_HALF_PORTION,
-      food.id
-    );
-    const totalBaby = countClients(clients, AgeGroup.BABY, food.id);
-    const total = totalAdult + totalChild + totalChildHalfPortion + totalBaby;
-
-    return {
-      date: food.date,
-      price: food.price,
-      title: food.title,
-      total,
-      totalAdult,
-      totalBaby,
-      totalChild,
-      totalChildHalfPortion,
-      totalPrice: total * food.price,
-    };
-  });
-
-  // Se calcula un coste estimado extra (sobre el precio del menú) de 2€ para bebida y 1€ para plástico
-  const extraDrinkCostByClientAndFood = 2;
-  const extraPlasticCostByClientAndFood = 1;
-
-  const allFoodsTotalCost = dashboardData
-    .map((d) => d.totalPrice)
-    .reduce((a, b) => a + b, 0);
-
-  const allFoodsCostByClient = dashboardData
-    .map((d) => d.price)
-    .reduce((a, b) => a + b, 0);
-
-  const allFoodsCostByClientWithExtra = dashboardData
-    .map((d) => d.price)
-    .reduce(
-      (a, b) =>
-        a + extraDrinkCostByClientAndFood + extraPlasticCostByClientAndFood + b,
-      0
-    );
-
-  const mediumPriceByClientAndFood =
-    allFoodsCostByClientWithExtra / dashboardData.length;
-
+export default function DashboardFoods({
+  allFoodsCostByClient,
+  allFoodsCostByClientWithExtra,
+  clients,
+  dashboardData,
+  mediumPriceByClientAndFood,
+  totalFoodsToPaid,
+}: Props) {
   return (
     <>
       <div className="flex items-center justify-between">
@@ -113,7 +51,7 @@ export default function DashboardFoods({ clients, foods }: Props) {
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-red-700">
-            {formatCurrency(allFoodsTotalCost)}
+            {formatCurrency(totalFoodsToPaid)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Total a pagar por las comidas.
@@ -137,8 +75,8 @@ export default function DashboardFoods({ clients, foods }: Props) {
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Coste de todas las comidas por persona (incluyendo extra de bebida{" "}
-            {formatCurrency(extraDrinkCostByClientAndFood)} y extra de plástico{" "}
-            {formatCurrency(extraPlasticCostByClientAndFood)}).
+            {formatCurrency(EXTRA_DRINK_COST_BY_CLIENT_AND_FOOD)} y extra de
+            plástico {formatCurrency(EXTRA_PLASTIC_COST_BY_CLIENT_AND_FOOD)}).
           </AlertDescription>
         </Alert>
         <Alert>

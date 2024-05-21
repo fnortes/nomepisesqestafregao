@@ -6,20 +6,21 @@ import { DataTable } from "@/components/ui/data-table";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils";
 import { Calculator } from "lucide-react";
-import { GeneralClient, GeneralExpense } from "../common.types";
-import { countAdultAndChildClients, countAdultClients } from "../common.utils";
+import { GeneralExpense } from "../common.types";
 import { DashboardDrinksColumn, columns } from "./columns";
 
 interface Props {
   readonly expenses: GeneralExpense[];
-  readonly clients: GeneralClient[];
   readonly totalCost: number;
+  readonly totalDrinksExpensesByAdult: number;
+  readonly totalDrinksExpensesByAdultAndChild: number;
 }
 
 export default function DashboardDrinks({
   expenses,
-  clients,
   totalCost,
+  totalDrinksExpensesByAdult,
+  totalDrinksExpensesByAdultAndChild,
 }: Props) {
   const dashboardData: DashboardDrinksColumn[] = expenses.map(
     ({
@@ -48,9 +49,6 @@ export default function DashboardDrinks({
       };
     }
   );
-
-  const costByAdult = totalCost / countAdultClients(clients);
-  const costByAdultAndChild = totalCost / countAdultAndChildClients(clients);
 
   return (
     <>
@@ -82,7 +80,7 @@ export default function DashboardDrinks({
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-green-700">
-            {formatCurrency(costByAdult)}
+            {formatCurrency(totalDrinksExpensesByAdult)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Coste por persona (contando sólo a adultos).
@@ -91,7 +89,7 @@ export default function DashboardDrinks({
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-green-700">
-            {formatCurrency(costByAdultAndChild)}
+            {formatCurrency(totalDrinksExpensesByAdultAndChild)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Coste por persona (contando sólo a adultos y niños con cuota).

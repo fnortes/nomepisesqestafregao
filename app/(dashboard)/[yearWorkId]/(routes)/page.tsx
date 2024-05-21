@@ -1,27 +1,28 @@
 import prismadb from "@/lib/prismadb";
 import {
-  calculateTotalExpensesCurrentPaid,
-  calculateTotalExpensesToPaid,
-  countAdultAndChildClients,
-  countAdultClients,
-  getAppetizersExpenses,
-  getChairsExpenses,
-  getDrinksExpenses,
-  getPlasticExpenses,
-  getSuitsExpenses,
-  getVariousExpenses,
+  countClientsAdult,
+  countClientsAdultAndChild,
+  getCommissionHelpPercentageFromAllCosts,
+  getDinnerPercentageFromAll,
 } from "./components/common.utils";
 import DashboardAppetizers from "./components/dashboard-appetizers/dashboard-appetizers";
+import { calculateAppetizersExpensesData } from "./components/dashboard-appetizers/dashboard-appetizers.utils";
 import DashboardChairs from "./components/dashboard-chairs/dashboard-chairs";
+import { calculateChairsExpensesData } from "./components/dashboard-chairs/dashboard-chairs.utils";
 import DashboardClients from "./components/dashboard-clients/dashboard-clients";
 import DashboardDrinks from "./components/dashboard-drinks/dashboard-drinks";
+import { calculateDrinksExpensesData } from "./components/dashboard-drinks/dashboard-drinks.utils";
 import DashboardExtra from "./components/dashboard-extra/dashboard-extra";
+import { calculateVariousExpensesData } from "./components/dashboard-extra/dashboard-extra.utils";
 import DashboardFoods from "./components/dashboard-foods/dashboard-foods";
+import { calculateFoodsExpensesData } from "./components/dashboard-foods/dashboard-foods.utils";
 import DashboardPlastic from "./components/dashboard-plastic/dashboard-plastic";
+import { calculatePlasticExpensesData } from "./components/dashboard-plastic/dashboard-plastic.utils";
+import DashboardQuotes from "./components/dashboard-quotes/dashboard-quotes";
 import DashboardResume from "./components/dashboard-resume/dashboard-resume";
 import DashboardShirts from "./components/dashboard-shirts/dashboard-shirts";
 import DashboardSuits from "./components/dashboard-suits/dashboard-suits";
-import DashboardQuotes from "./components/dashboard-quotes/dashboard-quotes";
+import { calculateSuitsExpensesData } from "./components/dashboard-suits/dashboard-suits.utils";
 
 interface Props {
   readonly params: { yearWorkId: string };
@@ -79,95 +80,160 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
     return null;
   }
 
-  const variousExpenses = getVariousExpenses(expenses);
-  const totalVariousExpensesToPaid =
-    calculateTotalExpensesToPaid(variousExpenses);
-  const totalVariousExpensesCurrentPaid =
-    calculateTotalExpensesCurrentPaid(variousExpenses);
+  // Se calcula el total de comparsistas adultos y niños, usado para varios cálculos de precios medios.
+  const totalAdultClients = countClientsAdult(clients);
+  const totalAdultAndChildClients = countClientsAdultAndChild(clients);
 
-  const plasticExpenses = getPlasticExpenses(expenses);
-  const totalPlasticExpensesToPaid =
-    calculateTotalExpensesToPaid(plasticExpenses);
-  const totalPlasticExpensesCurrentPaid =
-    calculateTotalExpensesCurrentPaid(plasticExpenses);
+  const variousExpensesData = calculateVariousExpensesData(
+    expenses,
+    totalAdultClients,
+    totalAdultAndChildClients
+  );
 
-  const chairsExpenses = getChairsExpenses(expenses);
-  const totalChairsExpensesToPaid =
-    calculateTotalExpensesToPaid(chairsExpenses);
-  const totalChairsExpensesCurrentPaid =
-    calculateTotalExpensesCurrentPaid(chairsExpenses);
+  const plasticExpensesData = calculatePlasticExpensesData(
+    expenses,
+    totalAdultClients,
+    totalAdultAndChildClients
+  );
 
-  const appetizersExpenses = getAppetizersExpenses(expenses);
-  const totalAppetizersExpensesToPaid =
-    calculateTotalExpensesToPaid(appetizersExpenses);
-  const totalAppetizersExpensesCurrentPaid =
-    calculateTotalExpensesCurrentPaid(appetizersExpenses);
+  const chairsExpensesData = calculateChairsExpensesData(
+    expenses,
+    totalAdultClients,
+    totalAdultAndChildClients
+  );
 
-  const drinksExpenses = getDrinksExpenses(expenses);
-  const totalDrinksExpensesToPaid =
-    calculateTotalExpensesToPaid(drinksExpenses);
-  const totalDrinksExpensesCurrentPaid =
-    calculateTotalExpensesCurrentPaid(drinksExpenses);
+  const foodsExpensesData = calculateFoodsExpensesData(foods, clients);
 
-  const totalVariousExpensesByAdult =
-    totalVariousExpensesToPaid / countAdultClients(clients);
-  const totalVariousExpensesByAdultAndChild =
-    totalVariousExpensesToPaid / countAdultAndChildClients(clients);
+  const appetizersExpensesData = calculateAppetizersExpensesData(
+    expenses,
+    totalAdultClients,
+    totalAdultAndChildClients
+  );
+
+  const suitsExpensesData = calculateSuitsExpensesData(suits, clients);
+
+  const drinksExpensesData = calculateDrinksExpensesData(
+    expenses,
+    totalAdultClients,
+    totalAdultAndChildClients
+  );
 
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <DashboardResume
           clients={clients}
-          expenses={expenses}
           yearWork={yearWork}
-          foods={foods}
-          suits={suits}
-          totalVariousExpensesToPaid={totalVariousExpensesToPaid}
-          totalPlasticExpensesToPaid={totalPlasticExpensesToPaid}
-          totalChairsExpensesToPaid={totalChairsExpensesToPaid}
-          totalAppetizersExpensesToPaid={totalAppetizersExpensesToPaid}
-          totalDrinksExpensesToPaid={totalDrinksExpensesToPaid}
-          totalVariousExpensesCurrentPaid={totalVariousExpensesCurrentPaid}
-          totalPlasticExpensesCurrentPaid={totalPlasticExpensesCurrentPaid}
-          totalChairsExpensesCurrentPaid={totalChairsExpensesCurrentPaid}
+          totalVariousExpensesToPaid={variousExpensesData.totalToPaid}
+          totalPlasticExpensesToPaid={plasticExpensesData.totalToPaid}
+          totalChairsExpensesToPaid={chairsExpensesData.totalToPaid}
+          totalAppetizersExpensesToPaid={appetizersExpensesData.totalToPaid}
+          totalDrinksExpensesToPaid={drinksExpensesData.totalToPaid}
+          totalVariousExpensesCurrentPaid={variousExpensesData.totalCurrentPaid}
+          totalPlasticExpensesCurrentPaid={plasticExpensesData.totalCurrentPaid}
+          totalChairsExpensesCurrentPaid={chairsExpensesData.totalCurrentPaid}
           totalAppetizersExpensesCurrentPaid={
-            totalAppetizersExpensesCurrentPaid
+            appetizersExpensesData.totalCurrentPaid
           }
-          totalDrinksExpensesCurrentPaid={totalDrinksExpensesCurrentPaid}
+          totalDrinksExpensesCurrentPaid={drinksExpensesData.totalCurrentPaid}
+          totalSuitsToPaid={suitsExpensesData.totalToPaid}
+          totalSuitsCurrentPaid={suitsExpensesData.totalCurrentPaid}
+          totalFoodsToPaid={foodsExpensesData.totalToPaid}
+          totalFoodsCurrentPaid={foodsExpensesData.totalCurrentPaid}
         />
         <DashboardClients clients={clients} />
-        <DashboardQuotes priceTypes={priceTypes} />
+        <DashboardQuotes
+          mediumCostAdultSuit={suitsExpensesData.mediumCostAdult}
+          mediumCostBabySuit={suitsExpensesData.mediumCostBaby}
+          mediumCostChildSuit={suitsExpensesData.mediumCostChild}
+          priceTypes={priceTypes}
+          totalVariousExpensesByAdultAndChild={
+            variousExpensesData.totalByAdultAndChild
+          }
+          totalPlasticExpensesByAdultAndChild={
+            plasticExpensesData.totalByAdultAndChild
+          }
+          totalChairsExpensesByAdultAndChild={
+            chairsExpensesData.totalByAdultAndChild
+          }
+          totalAppetizersExpensesByAdultAndChild={
+            appetizersExpensesData.totalByAdultAndChild
+          }
+          totalDrinksExpensesByAdult={drinksExpensesData.totalByAdult}
+          foodCosts={{
+            withoutDrink: foodsExpensesData.costByClient,
+            withDrink: foodsExpensesData.costByClientWithExtra,
+            onlyDinnerPercentage: getDinnerPercentageFromAll(foods),
+          }}
+          commissionHelpPercentage={getCommissionHelpPercentageFromAllCosts(
+            variousExpensesData.totalToPaid +
+              plasticExpensesData.totalToPaid +
+              chairsExpensesData.totalToPaid +
+              appetizersExpensesData.totalToPaid +
+              drinksExpensesData.totalToPaid +
+              suitsExpensesData.totalToPaid +
+              foodsExpensesData.totalToPaid,
+            yearWork.commissionHelp
+          )}
+        />
         <DashboardShirts clients={clients} />
         <DashboardExtra
-          expenses={variousExpenses}
-          totalCost={totalVariousExpensesToPaid}
-          totalVariousExpensesByAdult={totalVariousExpensesByAdult}
+          expenses={variousExpensesData.expenses}
+          totalCost={variousExpensesData.totalToPaid}
+          totalVariousExpensesByAdult={variousExpensesData.totalByAdult}
           totalVariousExpensesByAdultAndChild={
-            totalVariousExpensesByAdultAndChild
+            variousExpensesData.totalByAdultAndChild
           }
         />
         <DashboardPlastic
-          expenses={plasticExpenses}
-          totalCost={totalPlasticExpensesToPaid}
-          clients={clients}
+          expenses={plasticExpensesData.expenses}
+          totalCost={plasticExpensesData.totalToPaid}
+          totalPlasticExpensesByAdult={plasticExpensesData.totalByAdult}
+          totalPlasticExpensesByAdultAndChild={
+            plasticExpensesData.totalByAdultAndChild
+          }
         />
         <DashboardChairs
-          expenses={chairsExpenses}
-          totalCost={totalChairsExpensesToPaid}
-          clients={clients}
+          expenses={chairsExpensesData.expenses}
+          totalCost={chairsExpensesData.totalToPaid}
+          totalChairsExpensesByAdult={chairsExpensesData.totalByAdult}
+          totalChairsExpensesByAdultAndChild={
+            chairsExpensesData.totalByAdultAndChild
+          }
         />
-        <DashboardFoods clients={clients} foods={foods} />
+        <DashboardFoods
+          allFoodsCostByClient={foodsExpensesData.costByClient}
+          allFoodsCostByClientWithExtra={
+            foodsExpensesData.costByClientWithExtra
+          }
+          clients={clients}
+          dashboardData={foodsExpensesData.dashboardData}
+          mediumPriceByClientAndFood={foodsExpensesData.mediumPriceByClient}
+          totalFoodsToPaid={foodsExpensesData.totalToPaid}
+        />
         <DashboardAppetizers
-          expenses={appetizersExpenses}
-          totalCost={totalAppetizersExpensesToPaid}
-          clients={clients}
+          expenses={appetizersExpensesData.expenses}
+          totalCost={appetizersExpensesData.totalToPaid}
+          totalAppetizersExpensesByAdult={appetizersExpensesData.totalByAdult}
+          totalAppetizersExpensesByAdultAndChild={
+            appetizersExpensesData.totalByAdultAndChild
+          }
         />
-        <DashboardSuits clients={clients} suits={suits} />
-        <DashboardDrinks
+        <DashboardSuits
           clients={clients}
-          expenses={drinksExpenses}
-          totalCost={totalDrinksExpensesToPaid}
+          dashboardData={suitsExpensesData.dashboardData}
+          mediumCostAdultSuit={suitsExpensesData.mediumCostAdult}
+          mediumCostBabySuit={suitsExpensesData.mediumCostBaby}
+          mediumCostChildSuit={suitsExpensesData.mediumCostChild}
+          totalSuitsToPaid={suitsExpensesData.totalToPaid}
+        />
+        <DashboardDrinks
+          expenses={drinksExpensesData.expenses}
+          totalCost={drinksExpensesData.totalToPaid}
+          totalDrinksExpensesByAdult={drinksExpensesData.totalByAdult}
+          totalDrinksExpensesByAdultAndChild={
+            drinksExpensesData.totalByAdultAndChild
+          }
         />
       </div>
     </div>

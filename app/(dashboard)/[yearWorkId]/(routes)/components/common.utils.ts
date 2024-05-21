@@ -14,6 +14,24 @@ import {
 } from "./common.constants";
 import { GeneralClient, GeneralExpense } from "./common.types";
 
+const clientToFoodCostMapper = (
+  client: GeneralClient,
+  foodId: string
+): number => {
+  const clientFood = client.foods.find((f) => f.foodId === foodId);
+
+  if (clientFood) {
+    const foodPercentage =
+      client.ageGroup === AgeGroup.CHILD_HALF_PORTION ||
+      client.ageGroup === AgeGroup.BABY
+        ? 0.5
+        : 1;
+    return clientFood.quantity + (clientFood.attend ? foodPercentage : 0);
+  }
+
+  return 0;
+};
+
 export const countClientsByFood = (
   clients: GeneralClient[],
   foodId: string
@@ -22,21 +40,24 @@ export const countClientsByFood = (
     .filter(
       (client) => client.foods.filter((f) => f.foodId === foodId).length > 0
     )
-    .map((client) => {
-      const clientFood = client.foods.find((f) => f.foodId === foodId);
-
-      if (clientFood) {
-        const foodPercentage =
-          client.ageGroup === AgeGroup.CHILD_HALF_PORTION ||
-          client.ageGroup === AgeGroup.BABY
-            ? 0.5
-            : 1;
-        return clientFood.quantity + (clientFood.attend ? foodPercentage : 0);
-      }
-
-      return 0;
-    })
+    .map((client) => clientToFoodCostMapper(client, foodId))
     .reduce((a, b) => a + b, 0);
+
+export const countClientsByFoodAndAgeGroup = (
+  clients: GeneralClient[],
+  foodId: string,
+  ageGroup: AgeGroup
+): number => {
+  const count = clients
+    .filter(
+      (client) =>
+        client.ageGroup === ageGroup &&
+        client.foods.filter((f) => f.foodId === foodId).length > 0
+    )
+    .map((client) => clientToFoodCostMapper(client, foodId));
+
+  return count.length > 0 ? count.reduce((a, b) => a + b, 0) : 0;
+};
 
 export const countClientsBySuit = (
   clients: GeneralClient[],
@@ -49,10 +70,10 @@ export const countClientsBySuit = (
       client.gender === suit.gender
   ).length;
 
-export const countAdultClients = (clients: GeneralClient[]): number =>
+export const countClientsAdult = (clients: GeneralClient[]): number =>
   clients.filter((c) => ADULT_AGE_GROUPS.indexOf(c.ageGroup) !== -1).length;
 
-export const countAdultAndChildClients = (clients: GeneralClient[]): number =>
+export const countClientsAdultAndChild = (clients: GeneralClient[]): number =>
   clients.filter(
     (c) => ADULT_AND_CHILD_WITH_QUOTE_AGE_GROUPS.indexOf(c.ageGroup) !== -1
   ).length;
@@ -149,16 +170,20 @@ export const getAppetizersExpenses = (
   expenses: GeneralExpense[]
 ): GeneralExpense[] => getExpensesByFilter(expenses, appetizersExpensesFilter);
 
-const suitsExpensesFilter = (expense: GeneralExpense) =>
-  expense.expenseCategory.family === ExpenseFamily.SUITS;
-
-export const getSuitsExpenses = (
-  expenses: GeneralExpense[]
-): GeneralExpense[] => getExpensesByFilter(expenses, suitsExpensesFilter);
-
 const drinksExpensesFilter = (expense: GeneralExpense) =>
   expense.expenseCategory.family === ExpenseFamily.DRINK;
 
 export const getDrinksExpenses = (
   expenses: GeneralExpense[]
 ): GeneralExpense[] => getExpensesByFilter(expenses, drinksExpensesFilter);
+
+export const countDinners = (foods: Food[]): number =>
+  foods.filter((f) => f.title === "Cena").length;
+
+export const getDinnerPercentageFromAll = (foods: Food[]): number =>
+  countDinners(foods) / foods.length;
+
+export const getCommissionHelpPercentageFromAllCosts = (
+  totalCosts: number,
+  commissionHelp: number
+): number => commissionHelp / totalCosts;

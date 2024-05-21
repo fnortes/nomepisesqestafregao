@@ -18,3 +18,9 @@ export type GeneralExpense = Expense & {
   expenseCategory: ExpenseCategory;
   yearWork: YearWork;
 };
+
+export type FoodCosts = {
+  withoutDrink: number;
+  withDrink: number;
+  onlyDinnerPercentage: number;
+};

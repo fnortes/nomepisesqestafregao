@@ -6,20 +6,21 @@ import { DataTable } from "@/components/ui/data-table";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils";
 import { Calculator } from "lucide-react";
-import { GeneralClient, GeneralExpense } from "../common.types";
-import { countAdultAndChildClients, countAdultClients } from "../common.utils";
+import { GeneralExpense } from "../common.types";
 import { DashboardPlasticColumn, columns } from "./columns";
 
 interface Props {
-  readonly clients: GeneralClient[];
   readonly expenses: GeneralExpense[];
   readonly totalCost: number;
+  readonly totalPlasticExpensesByAdult: number;
+  readonly totalPlasticExpensesByAdultAndChild: number;
 }
 
 export default function DashboardPlastic({
-  clients,
   expenses,
   totalCost,
+  totalPlasticExpensesByAdult,
+  totalPlasticExpensesByAdultAndChild,
 }: Props) {
   const dashboardData: DashboardPlasticColumn[] = expenses.map(
     ({
@@ -48,9 +49,6 @@ export default function DashboardPlastic({
       };
     }
   );
-
-  const costByAdult = totalCost / countAdultClients(clients);
-  const costByAdultAndChild = totalCost / countAdultAndChildClients(clients);
 
   return (
     <>
@@ -82,7 +80,7 @@ export default function DashboardPlastic({
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-green-700">
-            {formatCurrency(costByAdult)}
+            {formatCurrency(totalPlasticExpensesByAdult)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Coste por persona (contando sólo a adultos).
@@ -91,7 +89,7 @@ export default function DashboardPlastic({
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-green-700">
-            {formatCurrency(costByAdultAndChild)}
+            {formatCurrency(totalPlasticExpensesByAdultAndChild)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Coste por persona (contando sólo a adultos y niños con cuota).
