@@ -9,6 +9,7 @@ import {
   DashboardType,
   clientMapperToDashboard,
 } from "../dashboard-clients/dashboard-clients.constants";
+import { AgeGroup } from "@prisma/client";
 
 interface Props {
   readonly clients: GeneralClient[];
@@ -181,7 +182,10 @@ export default function DashboardShirts({ clients }: Props) {
   };
 
   clients
-    .filter((client) => client.priceType.paradeWater)
+    .filter(
+      (client) =>
+        client.priceType.paradeWater || client.ageGroup === AgeGroup.BABY
+    )
     .forEach((client) => {
       updateDashboardItem(
         client,

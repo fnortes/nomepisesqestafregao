@@ -44,16 +44,22 @@ export default function DashboardQuotes({
       <Separator />
 
       {priceTypes.map((priceType) => {
-        const drinkCost = priceType.drinkTickets
-          ? totalDrinksExpensesByAdult
-          : 0;
-        const launchCost = priceType.meals
-          ? foodCosts.withoutDrink * (1 - foodCosts.onlyDinnerPercentage)
-          : 0;
-        const dinnerCost = priceType.dinners
-          ? foodCosts.withoutDrink * foodCosts.onlyDinnerPercentage
-          : 0;
-        const launchAndDinnerCost = launchCost + dinnerCost;
+        const [drinkCost, baseFoodCost] = priceType.drinkTickets
+          ? [totalDrinksExpensesByAdult, foodCosts.withoutDrink]
+          : [0, foodCosts.withDrink];
+
+        const [launchCostAdult, launchCostChildAndBaby] = priceType.meals
+          ? [
+              baseFoodCost * (1 - foodCosts.onlyDinnerPercentage),
+              foodCosts.withoutDrink * (1 - foodCosts.onlyDinnerPercentage),
+            ]
+          : [0, 0];
+        const [dinnerCostAdult, dinnerCostChildAndBaby] = priceType.dinners
+          ? [
+              baseFoodCost * foodCosts.onlyDinnerPercentage,
+              foodCosts.withoutDrink * foodCosts.onlyDinnerPercentage,
+            ]
+          : [0, 0];
 
         return (
           <div
@@ -73,9 +79,9 @@ export default function DashboardQuotes({
                 commissionHelpPercentage={commissionHelpPercentage}
                 drinkCost={drinkCost}
                 extraCosts={totalVariousExpensesByAdultAndChild}
-                launchAndDinnerCost={launchAndDinnerCost}
+                launchAndDinnerCost={launchCostAdult + dinnerCostAdult}
                 plasticCost={totalPlasticExpensesByAdultAndChild}
-                suitCost={mediumCostAdultSuit}
+                suitCost={priceType.paradeSuit ? mediumCostAdultSuit : 0}
               />
             )}
             {priceType.childPrice > 0 && (
@@ -86,9 +92,11 @@ export default function DashboardQuotes({
                 commissionHelpPercentage={commissionHelpPercentage}
                 drinkCost={0}
                 extraCosts={totalVariousExpensesByAdultAndChild}
-                launchAndDinnerCost={launchAndDinnerCost}
+                launchAndDinnerCost={
+                  launchCostChildAndBaby + dinnerCostChildAndBaby
+                }
                 plasticCost={totalPlasticExpensesByAdultAndChild}
-                suitCost={mediumCostChildSuit}
+                suitCost={priceType.paradeSuit ? mediumCostChildSuit : 0}
               />
             )}
             {priceType.childHalfPortionPrice > 0 && (
@@ -99,9 +107,11 @@ export default function DashboardQuotes({
                 commissionHelpPercentage={commissionHelpPercentage}
                 drinkCost={0}
                 extraCosts={totalVariousExpensesByAdultAndChild}
-                launchAndDinnerCost={launchAndDinnerCost * 0.5}
+                launchAndDinnerCost={
+                  (launchCostChildAndBaby + dinnerCostChildAndBaby) * 0.5
+                }
                 plasticCost={totalPlasticExpensesByAdultAndChild}
-                suitCost={mediumCostChildSuit}
+                suitCost={priceType.paradeSuit ? mediumCostChildSuit : 0}
               />
             )}
             {priceType.babyPrice > 0 && (
@@ -112,9 +122,11 @@ export default function DashboardQuotes({
                 commissionHelpPercentage={commissionHelpPercentage}
                 drinkCost={0}
                 extraCosts={0}
-                launchAndDinnerCost={launchAndDinnerCost * 0.5}
+                launchAndDinnerCost={
+                  (launchCostChildAndBaby + dinnerCostChildAndBaby) * 0.5
+                }
                 plasticCost={0}
-                suitCost={mediumCostBabySuit}
+                suitCost={priceType.paradeSuit ? mediumCostBabySuit : 0}
               />
             )}
           </div>
