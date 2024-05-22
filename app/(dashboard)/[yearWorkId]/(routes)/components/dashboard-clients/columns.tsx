@@ -3,12 +3,13 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
 export type DashboardColumn = {
+  resume: number;
   type: string;
-  withFoods: number;
+  withBar: number;
+  withDinners: number;
+  withLaunches: number;
   withSuits: number;
   withWater: number;
-  withBar: number;
-  resume: number;
 };
 
 export const columns: ColumnDef<DashboardColumn>[] = [
@@ -17,8 +18,12 @@ export const columns: ColumnDef<DashboardColumn>[] = [
     header: "Tipo",
   },
   {
-    accessorKey: "withFoods",
+    accessorKey: "withLaunches",
     header: "Comidas",
+  },
+  {
+    accessorKey: "withDinners",
+    header: "Cenas",
   },
   {
     accessorKey: "withSuits",

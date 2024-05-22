@@ -18,76 +18,85 @@ interface Props {
 export default function DashboardClients({ clients }: Props) {
   const dashboardData: DashboardColumn[] = [
     {
+      resume: 0,
       type: DashboardType.MAN,
-      withFoods: 0,
+      withBar: 0,
+      withDinners: 0,
+      withLaunches: 0,
       withSuits: 0,
       withWater: 0,
-      withBar: 0,
-      resume: 0,
     },
     {
+      resume: 0,
       type: DashboardType.WOMAN,
-      withFoods: 0,
+      withBar: 0,
+      withDinners: 0,
+      withLaunches: 0,
       withSuits: 0,
       withWater: 0,
-      withBar: 0,
-      resume: 0,
     },
     {
+      resume: 0,
       type: DashboardType.CHILDREN_WITH_QUOTA,
-      withFoods: 0,
+      withBar: 0,
+      withDinners: 0,
+      withLaunches: 0,
       withSuits: 0,
       withWater: 0,
-      withBar: 0,
-      resume: 0,
     },
     {
+      resume: 0,
       type: DashboardType.GIRLS_WITH_QUOTA,
-      withFoods: 0,
+      withBar: 0,
+      withDinners: 0,
+      withLaunches: 0,
       withSuits: 0,
       withWater: 0,
-      withBar: 0,
-      resume: 0,
     },
     {
+      resume: 0,
       type: DashboardType.CHILDREN_HALF_PORTION_WITH_QUOTA,
-      withFoods: 0,
+      withBar: 0,
+      withDinners: 0,
+      withLaunches: 0,
       withSuits: 0,
       withWater: 0,
-      withBar: 0,
-      resume: 0,
     },
     {
+      resume: 0,
       type: DashboardType.GIRLS_HALF_PORTION_WITH_QUOTA,
-      withFoods: 0,
+      withBar: 0,
+      withDinners: 0,
+      withLaunches: 0,
       withSuits: 0,
       withWater: 0,
-      withBar: 0,
-      resume: 0,
     },
     {
+      resume: 0,
       type: DashboardType.CHILDREN_WITHOUT_QUOTA,
-      withFoods: 0,
+      withBar: 0,
+      withDinners: 0,
+      withLaunches: 0,
       withSuits: 0,
       withWater: 0,
-      withBar: 0,
-      resume: 0,
     },
     {
+      resume: 0,
       type: DashboardType.GIRLS_WITHOUT_QUOTA,
-      withFoods: 0,
+      withBar: 0,
+      withDinners: 0,
+      withLaunches: 0,
       withSuits: 0,
       withWater: 0,
-      withBar: 0,
-      resume: 0,
     },
     {
+      resume: 0,
       type: DashboardType.ALL,
-      withFoods: 0,
+      withBar: 0,
+      withDinners: 0,
+      withLaunches: 0,
       withSuits: 0,
       withWater: 0,
-      withBar: 0,
-      resume: 0,
     },
   ];
 
@@ -95,9 +104,12 @@ export default function DashboardClients({ clients }: Props) {
     const item = dashboardData.find((d) => d.type === type);
 
     if (item) {
-      item.withFoods = client.priceType.meals
-        ? item.withFoods + 1
-        : item.withFoods;
+      item.withLaunches = client.priceType.meals
+        ? item.withLaunches + 1
+        : item.withLaunches;
+      item.withDinners = client.priceType.dinners
+        ? item.withDinners + 1
+        : item.withDinners;
       item.withSuits = client.priceType.paradeSuit
         ? item.withSuits + 1
         : item.withSuits;
@@ -123,7 +135,8 @@ export default function DashboardClients({ clients }: Props) {
     .forEach((d) => {
       totals.withBar += d.withBar;
       totals.resume += d.resume;
-      totals.withFoods += d.withFoods;
+      totals.withLaunches += d.withLaunches;
+      totals.withDinners += d.withDinners;
       totals.withSuits += d.withSuits;
       totals.withWater += d.withWater;
     });
