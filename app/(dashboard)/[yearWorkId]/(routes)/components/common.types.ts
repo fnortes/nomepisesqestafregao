@@ -24,3 +24,13 @@ export type FoodCosts = {
   withDrink: number;
   onlyDinnerPercentage: number;
 };
+
+export type FoodClientCount = {
+  total: number;
+  clients: string[];
+};
+
+export type ClientUnitsFood = {
+  units: number;
+  name: string;
+};

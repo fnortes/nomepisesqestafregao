@@ -12,7 +12,12 @@ import {
   ADULT_AND_CHILD_WITH_QUOTE_AGE_GROUPS,
   OTHER_EXPENSE_FAMILIES,
 } from "./common.constants";
-import { GeneralClient, GeneralExpense } from "./common.types";
+import {
+  ClientUnitsFood,
+  FoodClientCount,
+  GeneralClient,
+  GeneralExpense,
+} from "./common.types";
 
 const clientToFoodCostMapper = (
   client: GeneralClient,
@@ -43,32 +48,46 @@ export const countClientsByFood = (
     .map((client) => clientToFoodCostMapper(client, foodId))
     .reduce((a, b) => a + b, 0);
 
-export const countClientsByFoodAndAgeGroup = (
+export const getClientsByFoodAndAgeGroup = (
   clients: GeneralClient[],
   foodId: string,
   ageGroup: AgeGroup
-): number => {
+): FoodClientCount => {
   const count = clients
     .filter(
       (client) =>
         client.ageGroup === ageGroup &&
         client.foods.filter((f) => f.foodId === foodId).length > 0
     )
-    .map((client) => clientToFoodCostMapper(client, foodId));
+    .map(
+      (client): ClientUnitsFood => ({
+        units: clientToFoodCostMapper(client, foodId),
+        name: `${client.firstName} ${client.lastName}`,
+      })
+    )
+    .filter((c) => c.units > 0);
 
-  return count.length > 0 ? count.reduce((a, b) => a + b, 0) : 0;
+  return count.length > 0
+    ? {
+        total: count.map((c) => c.units).reduce((a, b) => a + b, 0),
+        clients: count.map((c) => c.name),
+      }
+    : {
+        total: 0,
+        clients: [],
+      };
 };
 
-export const countClientsBySuit = (
+export const getClientsBySuit = (
   clients: GeneralClient[],
   suit: Suit
-): number =>
+): GeneralClient[] =>
   clients.filter(
     (client) =>
       client.priceType.paradeSuit &&
       client.ageGroup === suit.ageGroup &&
       client.gender === suit.gender
-  ).length;
+  );
 
 export const countClientsAdult = (clients: GeneralClient[]): number =>
   clients.filter((c) => ADULT_AGE_GROUPS.indexOf(c.ageGroup) !== -1).length;
@@ -126,7 +145,7 @@ export const calculateTotalSuitsToPaid = (
 ): number =>
   suits
     .map((suit) => {
-      const total = countClientsBySuit(clients, suit);
+      const total = getClientsBySuit(clients, suit).length;
       return total * suit.price;
     })
     .reduce((a, b) => a + b, 0);

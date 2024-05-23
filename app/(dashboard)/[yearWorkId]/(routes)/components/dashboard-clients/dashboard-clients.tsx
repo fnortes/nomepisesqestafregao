@@ -20,83 +20,83 @@ export default function DashboardClients({ clients }: Props) {
     {
       resume: 0,
       type: DashboardType.MAN,
-      withBar: 0,
-      withDinners: 0,
-      withLaunches: 0,
-      withSuits: 0,
-      withWater: 0,
+      withBarList: [],
+      withDinnersList: [],
+      withLaunchesList: [],
+      withSuitsList: [],
+      withWaterList: [],
     },
     {
       resume: 0,
       type: DashboardType.WOMAN,
-      withBar: 0,
-      withDinners: 0,
-      withLaunches: 0,
-      withSuits: 0,
-      withWater: 0,
+      withBarList: [],
+      withDinnersList: [],
+      withLaunchesList: [],
+      withSuitsList: [],
+      withWaterList: [],
     },
     {
       resume: 0,
       type: DashboardType.CHILDREN_WITH_QUOTA,
-      withBar: 0,
-      withDinners: 0,
-      withLaunches: 0,
-      withSuits: 0,
-      withWater: 0,
+      withBarList: [],
+      withDinnersList: [],
+      withLaunchesList: [],
+      withSuitsList: [],
+      withWaterList: [],
     },
     {
       resume: 0,
       type: DashboardType.GIRLS_WITH_QUOTA,
-      withBar: 0,
-      withDinners: 0,
-      withLaunches: 0,
-      withSuits: 0,
-      withWater: 0,
+      withBarList: [],
+      withDinnersList: [],
+      withLaunchesList: [],
+      withSuitsList: [],
+      withWaterList: [],
     },
     {
       resume: 0,
       type: DashboardType.CHILDREN_HALF_PORTION_WITH_QUOTA,
-      withBar: 0,
-      withDinners: 0,
-      withLaunches: 0,
-      withSuits: 0,
-      withWater: 0,
+      withBarList: [],
+      withDinnersList: [],
+      withLaunchesList: [],
+      withSuitsList: [],
+      withWaterList: [],
     },
     {
       resume: 0,
       type: DashboardType.GIRLS_HALF_PORTION_WITH_QUOTA,
-      withBar: 0,
-      withDinners: 0,
-      withLaunches: 0,
-      withSuits: 0,
-      withWater: 0,
+      withBarList: [],
+      withDinnersList: [],
+      withLaunchesList: [],
+      withSuitsList: [],
+      withWaterList: [],
     },
     {
       resume: 0,
       type: DashboardType.CHILDREN_WITHOUT_QUOTA,
-      withBar: 0,
-      withDinners: 0,
-      withLaunches: 0,
-      withSuits: 0,
-      withWater: 0,
+      withBarList: [],
+      withDinnersList: [],
+      withLaunchesList: [],
+      withSuitsList: [],
+      withWaterList: [],
     },
     {
       resume: 0,
       type: DashboardType.GIRLS_WITHOUT_QUOTA,
-      withBar: 0,
-      withDinners: 0,
-      withLaunches: 0,
-      withSuits: 0,
-      withWater: 0,
+      withBarList: [],
+      withDinnersList: [],
+      withLaunchesList: [],
+      withSuitsList: [],
+      withWaterList: [],
     },
     {
       resume: 0,
       type: DashboardType.ALL,
-      withBar: 0,
-      withDinners: 0,
-      withLaunches: 0,
-      withSuits: 0,
-      withWater: 0,
+      withBarList: [],
+      withDinnersList: [],
+      withLaunchesList: [],
+      withSuitsList: [],
+      withWaterList: [],
     },
   ];
 
@@ -104,20 +104,28 @@ export default function DashboardClients({ clients }: Props) {
     const item = dashboardData.find((d) => d.type === type);
 
     if (item) {
-      item.withLaunches = client.priceType.meals
-        ? item.withLaunches + 1
-        : item.withLaunches;
-      item.withDinners = client.priceType.dinners
-        ? item.withDinners + 1
-        : item.withDinners;
-      item.withSuits = client.priceType.paradeSuit
-        ? item.withSuits + 1
-        : item.withSuits;
-      item.withWater = client.priceType.paradeWater
-        ? item.withWater + 1
-        : item.withWater;
-      item.withBar =
-        client.barGroups.length > 0 ? item.withBar + 1 : item.withBar;
+      const clientName = `${client.firstName} ${client.lastName}`;
+
+      if (client.priceType.meals) {
+        item.withLaunchesList.push(clientName);
+      }
+
+      if (client.priceType.dinners) {
+        item.withDinnersList.push(clientName);
+      }
+
+      if (client.priceType.paradeSuit) {
+        item.withSuitsList.push(clientName);
+      }
+
+      if (client.priceType.paradeWater) {
+        item.withWaterList.push(clientName);
+      }
+
+      if (client.barGroups.length > 0) {
+        item.withBarList.push(clientName);
+      }
+
       item.resume++;
     }
   };
@@ -133,12 +141,14 @@ export default function DashboardClients({ clients }: Props) {
   dashboardData
     .filter((d) => d.type !== DashboardType.ALL)
     .forEach((d) => {
-      totals.withBar += d.withBar;
       totals.resume += d.resume;
-      totals.withLaunches += d.withLaunches;
-      totals.withDinners += d.withDinners;
-      totals.withSuits += d.withSuits;
-      totals.withWater += d.withWater;
+      totals.withBarList = totals.withBarList.concat(d.withBarList);
+      totals.withLaunchesList = totals.withLaunchesList.concat(
+        d.withLaunchesList
+      );
+      totals.withDinnersList = totals.withDinnersList.concat(d.withDinnersList);
+      totals.withSuitsList = totals.withSuitsList.concat(d.withSuitsList);
+      totals.withWaterList = totals.withWaterList.concat(d.withWaterList);
     });
 
   return (

@@ -7,31 +7,22 @@ import { GeneralClient } from "../common.types";
 import {
   calculateTotalFoodsCurrentPaid,
   calculateTotalFoodsToPaid,
-  countClientsByFoodAndAgeGroup,
+  getClientsByFoodAndAgeGroup,
 } from "../common.utils";
 import { DashboardFoodsColumn } from "./columns";
 
-const foodToDashboardDataMapper = (food: Food, clients: GeneralClient[]) => {
-  const totalAdult = countClientsByFoodAndAgeGroup(
-    clients,
-    food.id,
-    AgeGroup.ADULT
-  );
-  const totalChild = countClientsByFoodAndAgeGroup(
-    clients,
-    food.id,
-    AgeGroup.CHILD
-  );
-  const totalChildHalfPortion = countClientsByFoodAndAgeGroup(
-    clients,
-    food.id,
-    AgeGroup.CHILD_HALF_PORTION
-  );
-  const totalBaby = countClientsByFoodAndAgeGroup(
-    clients,
-    food.id,
-    AgeGroup.BABY
-  );
+const foodToDashboardDataMapper = (
+  food: Food,
+  clients: GeneralClient[]
+): DashboardFoodsColumn => {
+  const { total: totalAdult, clients: totalAdultList } =
+    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.ADULT);
+  const { total: totalChild, clients: totalChildList } =
+    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.CHILD);
+  const { total: totalChildHalfPortion, clients: totalChildHalfPortionList } =
+    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.CHILD_HALF_PORTION);
+  const { total: totalBaby, clients: totalBabyList } =
+    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.BABY);
   const total = totalAdult + totalChild + totalChildHalfPortion + totalBaby;
 
   return {
@@ -40,9 +31,13 @@ const foodToDashboardDataMapper = (food: Food, clients: GeneralClient[]) => {
     title: food.title,
     total,
     totalAdult,
+    totalAdultList,
     totalBaby,
+    totalBabyList,
     totalChild,
+    totalChildList,
     totalChildHalfPortion,
+    totalChildHalfPortionList,
     totalPrice: total * food.price,
   };
 };
