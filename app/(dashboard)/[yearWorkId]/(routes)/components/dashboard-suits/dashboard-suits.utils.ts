@@ -38,7 +38,7 @@ export const calculateSuitsExpensesData = (
   const adultSuits = dashboardData.filter((d) => d.ageGroup === AgeGroup.ADULT);
   const mediumCostAdult =
     adultSuits.map((s) => s.totalPrice).reduce((a, b) => a + b, 0) /
-    adultSuits.map((s) => s.totalClients).reduce((a, b) => a + b, 0);
+    adultSuits.map((s) => s.clients.length).reduce((a, b) => a + b, 0);
   // Se calcula el precio medio de todos los trajes para niños, en base al número de comparsistas.
   const childSuits = dashboardData.filter(
     (d) =>
@@ -47,12 +47,12 @@ export const calculateSuitsExpensesData = (
   );
   const mediumCostChild =
     childSuits.map((s) => s.totalPrice).reduce((a, b) => a + b, 0) /
-    childSuits.map((s) => s.totalClients).reduce((a, b) => a + b, 0);
+    childSuits.map((s) => s.clients.length).reduce((a, b) => a + b, 0);
   // Se calcula el precio medio de todos los trajes para bebés, en base al número de comparsistas.
   const babySuits = dashboardData.filter((d) => d.ageGroup === AgeGroup.BABY);
   const mediumCostBaby =
     babySuits.map((s) => s.totalPrice).reduce((a, b) => a + b, 0) /
-    babySuits.map((s) => s.totalClients).reduce((a, b) => a + b, 0);
+    babySuits.map((s) => s.clients.length).reduce((a, b) => a + b, 0);
 
   return {
     dashboardData,
