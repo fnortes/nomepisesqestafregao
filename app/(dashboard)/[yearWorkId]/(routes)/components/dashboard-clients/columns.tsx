@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Info } from "lucide-react";
 
 export type DashboardColumn = {
   resume: number;
@@ -27,107 +20,97 @@ export const columns: ColumnDef<DashboardColumn>[] = [
   {
     accessorKey: "withLaunchesList",
     header: "Comidas",
-    cell: ({ row }) => (
-      <>
-        <span>{row.original.withLaunchesList.length}</span>&nbsp;
-        {row.original.withLaunchesList.length > 0 && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md">
-                <p>{row.original.withLaunchesList.join(", ")}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </>
-    ),
+    cell: ({ row }) =>
+      row.original.withLaunchesList.length > 0 ? (
+        <div>
+          <strong>({row.original.withLaunchesList.length})</strong>
+          <br />
+          {row.original.withLaunchesList.toSorted().map((c) => (
+            <span key={c}>
+              {c}
+              <br />
+            </span>
+          ))}
+        </div>
+      ) : (
+        0
+      ),
   },
   {
     accessorKey: "withDinnersList",
     header: "Cenas",
-    cell: ({ row }) => (
-      <>
-        <span>{row.original.withDinnersList.length}</span>&nbsp;
-        {row.original.withDinnersList.length > 0 && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md">
-                <p>{row.original.withDinnersList.join(", ")}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </>
-    ),
+    cell: ({ row }) =>
+      row.original.withDinnersList.length > 0 ? (
+        <div>
+          <strong>({row.original.withDinnersList.length})</strong>
+          <br />
+          {row.original.withDinnersList.toSorted().map((c) => (
+            <span key={c}>
+              {c}
+              <br />
+            </span>
+          ))}
+        </div>
+      ) : (
+        0
+      ),
   },
   {
     accessorKey: "withSuitsList",
     header: "Trajes",
-    cell: ({ row }) => (
-      <>
-        <span>{row.original.withSuitsList.length}</span>&nbsp;
-        {row.original.withSuitsList.length > 0 && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md">
-                <p>{row.original.withSuitsList.join(", ")}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </>
-    ),
+    cell: ({ row }) =>
+      row.original.withSuitsList.length > 0 ? (
+        <div>
+          <strong>({row.original.withSuitsList.length})</strong>
+          <br />
+          {row.original.withSuitsList.toSorted().map((c) => (
+            <span key={c}>
+              {c}
+              <br />
+            </span>
+          ))}
+        </div>
+      ) : (
+        0
+      ),
   },
   {
     accessorKey: "withWaterList",
     header: "Desfile Agua",
-    cell: ({ row }) => (
-      <>
-        <span>{row.original.withWaterList.length}</span>&nbsp;
-        {row.original.withWaterList.length > 0 && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md">
-                <p>{row.original.withWaterList.join(", ")}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </>
-    ),
+    cell: ({ row }) =>
+      row.original.withWaterList.length > 0 ? (
+        <div>
+          <strong>({row.original.withWaterList.length})</strong>
+          <br />
+          {row.original.withWaterList.toSorted().map((c) => (
+            <span key={c}>
+              {c}
+              <br />
+            </span>
+          ))}
+        </div>
+      ) : (
+        0
+      ),
   },
   {
     accessorKey: "withBarList",
     header: "Barra",
-    cell: ({ row }) => (
-      <>
-        <span>{row.original.withBarList.length}</span>&nbsp;
-        {row.original.withBarList.length > 0 && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md">
-                <p>{row.original.withBarList.join(", ")}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </>
-    ),
+    cell: ({ row }) =>
+      row.original.withBarList.length > 0 ? (
+        <div>
+          <strong>({row.original.withBarList.length})</strong>
+          <br />
+          {row.original.withBarList.toSorted().map((c) => (
+            <span key={c}>
+              {c}
+              <br />
+            </span>
+          ))}
+        </div>
+      ) : (
+        0
+      ),
   },
   {
     accessorKey: "resume",

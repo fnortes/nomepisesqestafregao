@@ -10,6 +10,14 @@ import {
   DashboardType,
   clientMapperToDashboard,
 } from "./dashboard-clients.constants";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronsUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getClientName } from "../common.utils";
 
 interface Props {
   readonly clients: GeneralClient[];
@@ -104,7 +112,7 @@ export default function DashboardClients({ clients }: Props) {
     const item = dashboardData.find((d) => d.type === type);
 
     if (item) {
-      const clientName = `${client.firstName} ${client.lastName}`;
+      const clientName = getClientName(client);
 
       if (client.priceType.meals) {
         item.withLaunchesList.push(clientName);
@@ -152,21 +160,33 @@ export default function DashboardClients({ clients }: Props) {
     });
 
   return (
-    <>
+    <Collapsible>
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen de todos los comparsistas categorizados para el año de trabajo seleccionado"
           title={`Desglose comparsistas (${clients.length})`}
         />
+        <CollapsibleTrigger>
+          <Button size="icon" variant="outline">
+            <ChevronsUpDown className="w-4 h-4" />
+          </Button>
+        </CollapsibleTrigger>
       </div>
-      <Separator />
-      <DataTable
-        columns={columns}
-        data={dashboardData}
-        searchConfig={{
-          searchFields: [],
-        }}
-      />
-    </>
+      <CollapsibleContent>
+        <Separator />
+        <DataTable
+          columns={columns}
+          data={dashboardData}
+          searchConfig={{
+            searchFields: [],
+          }}
+          id="dashboardClients"
+          printableConfig={{
+            pdf: true,
+            orientation: "l",
+          }}
+        />
+      </CollapsibleContent>
+    </Collapsible>
   );
 }

@@ -10,6 +10,13 @@ import {
   clientMapperToDashboard,
 } from "../dashboard-clients/dashboard-clients.constants";
 import { AgeGroup } from "@prisma/client";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import { ChevronsUpDown } from "lucide-react";
 
 interface Props {
   readonly clients: GeneralClient[];
@@ -215,7 +222,7 @@ export default function DashboardShirts({ clients }: Props) {
     });
 
   return (
-    <>
+    <Collapsible>
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen de camisetas de todas la comparsa para el año de trabajo seleccionado"
@@ -223,15 +230,24 @@ export default function DashboardShirts({ clients }: Props) {
             .map((d) => d.resume)
             .reduce((a, b) => a + b, 0)})`}
         />
+        <CollapsibleTrigger>
+          <Button size="icon" variant="outline">
+            <ChevronsUpDown className="w-4 h-4" />
+          </Button>
+        </CollapsibleTrigger>
       </div>
-      <Separator />
-      <DataTable
-        columns={columns}
-        data={dashboardData}
-        searchConfig={{
-          searchFields: [],
-        }}
-      />
-    </>
+      <CollapsibleContent>
+        <Separator />
+        <DataTable
+          columns={columns}
+          data={dashboardData}
+          searchConfig={{
+            searchFields: [],
+          }}
+          id="dashboardShirts"
+          printableConfig={{ pdf: true, orientation: "l" }}
+        />
+      </CollapsibleContent>
+    </Collapsible>
   );
 }

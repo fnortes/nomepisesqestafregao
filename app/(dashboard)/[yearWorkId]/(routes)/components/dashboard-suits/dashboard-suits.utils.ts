@@ -3,6 +3,7 @@ import { GeneralClient } from "../common.types";
 import {
   calculateTotalSuitsCurrentPaid,
   calculateTotalSuitsToPaid,
+  getClientName,
   getClientsBySuit,
 } from "../common.utils";
 import { DashboardSuitsColumn } from "./columns";
@@ -18,7 +19,7 @@ const suitToDashboardDataMapper = (
     ageGroup,
     gender,
     price,
-    clients: clientsBySuit.map((c) => `${c.firstName} ${c.lastName}`),
+    clients: clientsBySuit.map(getClientName),
     totalPrice: clientsBySuit.length * price,
   };
 };

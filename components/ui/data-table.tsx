@@ -3,6 +3,7 @@
 import {
   ColumnDef,
   ColumnFiltersState,
+  StringOrTemplateHeader,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -21,6 +22,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { Printer } from "lucide-react";
 
 interface DataTableSearchField {
   key: string;
@@ -31,11 +35,18 @@ interface DataTableSearchConfig {
   searchFields: DataTableSearchField[];
 }
 
+interface PrintableConfig {
+  pdf: boolean;
+  orientation: "p" | "l";
+}
+
 interface DataTableProps<TData, TValue> {
   readonly columns: ColumnDef<TData, TValue>[];
   readonly data: TData[];
   readonly searchConfig: DataTableSearchConfig;
   readonly pageSize?: number;
+  readonly printableConfig?: PrintableConfig;
+  readonly id?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -43,6 +54,8 @@ export function DataTable<TData, TValue>({
   data,
   searchConfig,
   pageSize = 20,
+  printableConfig = { pdf: false, orientation: "p" },
+  id,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -63,25 +76,40 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const handlePrintToPdf = () => {
+    const doc = new jsPDF(printableConfig.orientation);
+    doc.autoTable({ html: `#${id}` });
+    doc.save(`${id}.pdf`);
+  };
+
   return (
     <div>
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 py-4">
-        {searchConfig.searchFields.map(({ key, placeholder }) => (
-          <Input
-            key={key}
-            placeholder={placeholder ?? "Buscar ..."}
-            value={(table.getColumn(key)?.getFilterValue() as string) ?? ""}
-            onChange={(event) => {
-              return table.getColumn(key)?.setFilterValue(() => {
-                return event.target.value;
-              });
-            }}
-            className="max-w-sm"
-          />
-        ))}
-      </div>
+      {searchConfig.searchFields.length > 0 && (
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 py-4">
+          {searchConfig.searchFields.map(({ key, placeholder }) => (
+            <Input
+              key={key}
+              placeholder={placeholder ?? "Buscar ..."}
+              value={(table.getColumn(key)?.getFilterValue() as string) ?? ""}
+              onChange={(event) => {
+                return table.getColumn(key)?.setFilterValue(() => {
+                  return event.target.value;
+                });
+              }}
+              className="max-w-sm"
+            />
+          ))}
+        </div>
+      )}
+      {printableConfig.pdf && (
+        <div className="flex flex-row justify-end py-4">
+          <Button onClick={handlePrintToPdf} size="icon">
+            <Printer className="w-4 h-4" />
+          </Button>
+        </div>
+      )}
       <div className="rounded-md border">
-        <Table>
+        <Table id={id}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

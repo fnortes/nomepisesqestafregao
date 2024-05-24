@@ -19,6 +19,9 @@ import {
   GeneralExpense,
 } from "./common.types";
 
+export const getClientName = (client: GeneralClient): string =>
+  `${client.firstName}`;
+
 const clientToFoodCostMapper = (
   client: GeneralClient,
   foodId: string
@@ -62,7 +65,7 @@ export const getClientsByFoodAndAgeGroup = (
     .map(
       (client): ClientUnitsFood => ({
         units: clientToFoodCostMapper(client, foodId),
-        name: `${client.firstName} ${client.lastName}`,
+        name: getClientName(client),
       })
     )
     .filter((c) => c.units > 0);

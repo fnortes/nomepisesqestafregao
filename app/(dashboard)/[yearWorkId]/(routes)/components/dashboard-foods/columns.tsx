@@ -1,16 +1,9 @@
 "use client";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { DATE_FORMAT } from "@/constants/date";
 import { formatCurrency } from "@/lib/utils";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { Info } from "lucide-react";
 
 export type DashboardFoodsColumn = {
   date: Date;
@@ -46,86 +39,78 @@ export const columns: ColumnDef<DashboardFoodsColumn>[] = [
   {
     accessorKey: "totalAdult",
     header: "Adultos",
-    cell: ({ row }) => (
-      <>
-        <span>{row.original.totalAdult}</span>&nbsp;
-        {row.original.totalAdultList.length > 0 && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md">
-                <p>{row.original.totalAdultList.join(", ")}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </>
-    ),
+    cell: ({ row }) =>
+      row.original.totalAdultList.length > 0 ? (
+        <div>
+          <strong>({row.original.totalAdult})</strong>
+          <br />
+          {row.original.totalAdultList.toSorted().map((c) => (
+            <span key={c}>
+              {c}
+              <br />
+            </span>
+          ))}
+        </div>
+      ) : (
+        0
+      ),
   },
   {
     accessorKey: "totalChild",
     header: "Niños con cuota",
-    cell: ({ row }) => (
-      <>
-        <span>{row.original.totalChild}</span>&nbsp;
-        {row.original.totalChildList.length > 0 && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md">
-                <p>{row.original.totalChildList.join(", ")}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </>
-    ),
+    cell: ({ row }) =>
+      row.original.totalChildList.length > 0 ? (
+        <div>
+          <strong>({row.original.totalChild})</strong>
+          <br />
+          {row.original.totalChildList.toSorted().map((c) => (
+            <span key={c}>
+              {c}
+              <br />
+            </span>
+          ))}
+        </div>
+      ) : (
+        0
+      ),
   },
   {
     accessorKey: "totalChildHalfPortion",
     header: "Niños con cuota 50% Ración",
-    cell: ({ row }) => (
-      <>
-        <span>{row.original.totalChildHalfPortion}</span>&nbsp;
-        {row.original.totalChildHalfPortionList.length > 0 && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md">
-                <p>{row.original.totalChildHalfPortionList.join(", ")}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </>
-    ),
+    cell: ({ row }) =>
+      row.original.totalChildHalfPortionList.length > 0 ? (
+        <div>
+          <strong>({row.original.totalChildHalfPortion})</strong>
+          <br />
+          {row.original.totalChildHalfPortionList.toSorted().map((c) => (
+            <span key={c}>
+              {c}
+              <br />
+            </span>
+          ))}
+        </div>
+      ) : (
+        0
+      ),
   },
   {
     accessorKey: "totalBaby",
     header: "Bebés",
-    cell: ({ row }) => (
-      <>
-        <span>{row.original.totalBaby}</span>&nbsp;
-        {row.original.totalBabyList.length > 0 && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md">
-                <p>{row.original.totalBabyList.join(", ")}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </>
-    ),
+    cell: ({ row }) =>
+      row.original.totalBabyList.length > 0 ? (
+        <div>
+          <strong>({row.original.totalBaby})</strong>
+          <br />
+          {row.original.totalBabyList.toSorted().map((c) => (
+            <span key={c}>
+              {c}
+              <br />
+            </span>
+          ))}
+        </div>
+      ) : (
+        0
+      ),
   },
   {
     accessorKey: "total",
