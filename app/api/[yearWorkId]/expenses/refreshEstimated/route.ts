@@ -80,41 +80,52 @@ export async function PATCH(
     });
 
     const previousYearPartyDays = differenceInDays(
-      previousYearWork.firstPartyDay,
-      previousYearWork.lastPartyDay
+      previousYearWork.lastPartyDay,
+      previousYearWork.firstPartyDay
     );
     const currentYearPartyDays = differenceInDays(
-      currentYearWork.firstPartyDay,
-      currentYearWork.lastPartyDay
+      currentYearWork.lastPartyDay,
+      currentYearWork.firstPartyDay
     );
-
     const newExpenses = currentExpenses.map(async (currentExpense) => {
-      const previousExpense = await prismadb.expense.findFirst({
+      const previousExpense = await prismadb.expense.findMany({
         where: {
           yearWorkId: previousYearWork.id,
           expenseCategoryId: currentExpense.expenseCategoryId,
-          title: currentExpense.title,
         },
       });
 
-      if (previousExpense) {
-        const previousUnitsToUse = Math.ceil(
-          (previousExpense.units / previousYearPartyDays) * currentYearPartyDays
-        );
+      let totalPreviousUnits = 0;
+      let totalEstimatedUnits = 0;
 
-        currentExpense.estimatedUnits = Math.ceil(
-          (currentTotalAdults * previousUnitsToUse) / previousTotalAdults
-        );
+      if (previousExpense.length > 0) {
+        totalPreviousUnits = previousExpense[0].units;
 
-        return await prismadb.expense.update({
-          where: {
-            id: currentExpense.id,
-          },
-          data: currentExpense,
-        });
+        if (previousExpense.length > 1) {
+          totalPreviousUnits = previousExpense
+            .map((e) => e.units)
+            .reduce((a, b) => a + b, 0);
+        }
       }
 
-      return null;
+      if (totalPreviousUnits > 0) {
+        const previousUnitsToUse = Math.ceil(
+          (totalPreviousUnits / previousYearPartyDays) * currentYearPartyDays
+        );
+        totalEstimatedUnits = Math.ceil(
+          (currentTotalAdults * previousUnitsToUse) / previousTotalAdults
+        );
+      }
+
+      currentExpense.previousYearWorkUnits = totalPreviousUnits;
+      currentExpense.estimatedUnits = totalEstimatedUnits;
+
+      return await prismadb.expense.update({
+        where: {
+          id: currentExpense.id,
+        },
+        data: currentExpense,
+      });
     });
 
     return NextResponse.json(newExpenses);
