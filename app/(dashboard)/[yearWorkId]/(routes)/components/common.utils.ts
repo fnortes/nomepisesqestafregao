@@ -185,8 +185,7 @@ export const getChairsExpenses = (
 ): GeneralExpense[] => getExpensesByFilter(expenses, chairsExpensesFilter);
 
 const appetizersExpensesFilter = (expense: GeneralExpense) =>
-  expense.expenseCategory.family === ExpenseFamily.FOODS &&
-  expense.expenseCategory.name === "Aperitivos y postres";
+  expense.expenseCategory.family === ExpenseFamily.FOODS;
 
 export const getAppetizersExpenses = (
   expenses: GeneralExpense[]
