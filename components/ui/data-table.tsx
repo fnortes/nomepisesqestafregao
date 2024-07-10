@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import { Printer } from "lucide-react";
+import { Printer, Sheet } from "lucide-react";
 
 interface DataTableSearchField {
   key: string;
@@ -46,6 +46,7 @@ interface DataTableProps<TData, TValue> {
   readonly searchConfig: DataTableSearchConfig;
   readonly pageSize?: number;
   readonly printableConfig?: PrintableConfig;
+  readonly dataToCsv?: any[];
   readonly id?: string;
 }
 
@@ -55,6 +56,7 @@ export function DataTable<TData, TValue>({
   searchConfig,
   pageSize = 20,
   printableConfig = { pdf: false, orientation: "p" },
+  dataToCsv,
   id,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -82,6 +84,52 @@ export function DataTable<TData, TValue>({
     doc.save(`${id}.pdf`);
   };
 
+  const download = (data) => {
+    // Create a Blob with the CSV data and type
+    const blob = new Blob([data], { type: "text/csv" });
+
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(blob);
+
+    // Create an anchor tag for downloading
+    const a = document.createElement("a");
+
+    // Set the URL and download attribute of the anchor tag
+    a.href = url;
+    a.download = "download.csv";
+
+    // Trigger the download by clicking the anchor tag
+    a.click();
+  };
+
+  const handlePrintToCsv = () => {
+    if (dataToCsv) {
+      const headers: string[] = [];
+      table.getHeaderGroups().forEach((headerGroup) => {
+        headerGroup.headers.forEach((header) => {
+          headers.push(header.id);
+        });
+      });
+
+      const separator = ";";
+
+      const csv = [
+        headers
+          .filter((header) => Object.keys(dataToCsv[0]).indexOf(header) !== -1)
+          .join(separator),
+        ...dataToCsv.map((row) =>
+          headers
+            .map((header) => row[header])
+            .filter((item) => item !== undefined)
+            .join(separator)
+        ),
+      ];
+
+      console.log("CSV: ", csv);
+      download(csv.join("\n"));
+    }
+  };
+
   return (
     <div>
       {searchConfig.searchFields.length > 0 && (
@@ -101,11 +149,18 @@ export function DataTable<TData, TValue>({
           ))}
         </div>
       )}
-      {printableConfig.pdf && (
-        <div className="flex flex-row justify-end py-4">
-          <Button onClick={handlePrintToPdf} size="icon">
-            <Printer className="w-4 h-4" />
-          </Button>
+      {(printableConfig.pdf || dataToCsv) && (
+        <div className="flex flex-row justify-end py-4 space-x-2">
+          {printableConfig.pdf && (
+            <Button onClick={handlePrintToPdf} size="icon">
+              <Printer className="w-4 h-4" />
+            </Button>
+          )}
+          {dataToCsv && (
+            <Button onClick={handlePrintToCsv} size="icon">
+              <Sheet className="w-4 h-4" />
+            </Button>
+          )}
         </div>
       )}
       <div className="rounded-md border">

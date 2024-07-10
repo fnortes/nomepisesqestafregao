@@ -74,6 +74,11 @@ export default function DashboardDrinks({
         <DataTable
           columns={columns}
           data={dashboardData}
+          dataToCsv={dashboardData.map((row) => ({
+            category: row.category.name,
+            description: row.description,
+            units: row.units,
+          }))}
           pageSize={999}
           searchConfig={{
             searchFields: [],
