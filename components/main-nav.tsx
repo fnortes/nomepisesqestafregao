@@ -50,6 +50,14 @@ export default function MainNav({
       label: "Trajes",
     },
     {
+      href: `/${params.yearWorkId}/saleCategories`,
+      label: "Categorías de Ventas",
+    },
+    {
+      href: `/${params.yearWorkId}/sales`,
+      label: "Ventas",
+    },
+    {
       href: `/${params.yearWorkId}`,
       label: "General",
     },

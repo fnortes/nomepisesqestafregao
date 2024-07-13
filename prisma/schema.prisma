@@ -31,6 +31,7 @@ model YearWork {
   expenses                Expense[]   @relation("YearWorkToExpense")
   foods                   Food[]      @relation("YearWorkToFood")
   suits                   Suit[]      @relation("YearWorkToSuit")
+  sales                   Sale[]      @relation("YearWorkToSale")
 }
 
 enum Gender {
@@ -237,3 +238,39 @@ model Suit {
   
   @@index([yearWorkId])
 }
+
+model SaleCategory {
+  id             String     @id @default(uuid())
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  name           String
+  comments       String?
+
+  sales          Sale[]     @relation("SaleCategoryToSale")
+}
+// Bonos de 5 tickets
+// Bonos de 10 tickets
+// Bebida en barra
+
+model Sale {
+  id                        String          @id @default(uuid())
+  yearWorkId                String
+  yearWork                  YearWork        @relation("YearWorkToSale", fields: [yearWorkId], references: [id])
+  saleCategoryId            String
+  saleCategory              SaleCategory    @relation("SaleCategoryToSale", fields: [saleCategoryId], references: [id])
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime        @updatedAt
+  date                      DateTime        @default(now())
+  title                     String
+  comments                  String?
+  initialAmount             Float           @default(0)
+  finallyAmount              Float           @default(0)
+  benefitAmount              Float           @default(0)
+
+  @@index([yearWorkId])
+  @@index([saleCategoryId])
+}
+
+// Para llevar la cantidad de cada moneda o billete que dejas en la barra y que luego recoges, para contar, simplemente porner una tabla a modo de ayuda,
+// en la página propia del listado de ventas, donde tu le pongas el numero de cada billete o moneda y te calcule el total para esa moneda 
+// y el total sumando todas.
