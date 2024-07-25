@@ -17,13 +17,23 @@ const foodToDashboardDataMapper = (
 ): DashboardFoodsColumn => {
   const { total: totalAdult, clients: totalAdultList } =
     getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.ADULT);
+  const { total: totalTeen, clients: totalTeenList } =
+    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.TEEN);
+  const { total: totalTeenHalfPortion, clients: totalTeenHalfPortionList } =
+    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.TEEN_HALF_PORTION);
   const { total: totalChild, clients: totalChildList } =
     getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.CHILD);
   const { total: totalChildHalfPortion, clients: totalChildHalfPortionList } =
     getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.CHILD_HALF_PORTION);
   const { total: totalBaby, clients: totalBabyList } =
     getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.BABY);
-  const total = totalAdult + totalChild + totalChildHalfPortion + totalBaby;
+  const total =
+    totalAdult +
+    totalTeen +
+    totalTeenHalfPortion +
+    totalChild +
+    totalChildHalfPortion +
+    totalBaby;
 
   return {
     date: food.date,
@@ -35,10 +45,14 @@ const foodToDashboardDataMapper = (
     totalBaby,
     totalBabyList,
     totalChild,
-    totalChildList,
     totalChildHalfPortion,
     totalChildHalfPortionList,
+    totalChildList,
     totalPrice: total * food.price,
+    totalTeen,
+    totalTeenHalfPortion,
+    totalTeenHalfPortionList,
+    totalTeenList,
   };
 };
 

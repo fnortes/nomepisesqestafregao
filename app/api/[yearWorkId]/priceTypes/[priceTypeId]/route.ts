@@ -21,6 +21,8 @@ export async function PATCH(
       name,
       paradeSuit,
       paradeWater,
+      teenHalfPortionPrice,
+      teenPrice,
     } = body;
     const { yearWorkId, priceTypeId } = params;
 
@@ -74,6 +76,8 @@ export async function PATCH(
       data: {
         adultPrice: adultPrice || 0,
         babyPrice: babyPrice || 0,
+        teenHalfPortionPrice: teenHalfPortionPrice || 0,
+        teenPrice: teenPrice || 0,
         childHalfPortionPrice: childHalfPortionPrice || 0,
         childPrice: childPrice || 0,
         dinners,

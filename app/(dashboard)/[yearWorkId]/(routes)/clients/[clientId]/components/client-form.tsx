@@ -25,6 +25,7 @@ import {
   formSchema,
   genderOptionsData,
   shirtSizeOptionsData,
+  suitGroupData,
 } from "./client-form.constants";
 
 import type { CommonFormFieldData } from "@/components/form/form.types";
@@ -108,6 +109,7 @@ export default function ClientForm({
       shirtSize: initialData?.shirtSize,
       quotaPaid: initialData?.quotaPaid ?? 0,
       comments: initialData?.comments,
+      suitGroup: initialData?.suitGroup,
     },
   });
 
@@ -118,6 +120,11 @@ export default function ClientForm({
 
   const ageGroupOptionsData: CommonFormFieldData = useMemo(
     () => ageGroupData,
+    []
+  );
+
+  const suitGroupOptionsData: CommonFormFieldData = useMemo(
+    () => suitGroupData,
     []
   );
 
@@ -282,6 +289,14 @@ export default function ClientForm({
               loading={loading}
               name="ageGroup"
               placeholder="Selecciona un grupo de edad"
+            />
+            <SelectFormField
+              data={suitGroupOptionsData}
+              form={form}
+              label="Grupo de traje"
+              loading={loading}
+              name="suitGroup"
+              placeholder="Selecciona un grupo de traje"
             />
             <SelectFormField
               data={shirtSizeOptionsData}

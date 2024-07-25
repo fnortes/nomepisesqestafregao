@@ -19,6 +19,7 @@ interface Props {
   readonly mediumCostAdultSuit: number;
   readonly mediumCostBabySuit: number;
   readonly mediumCostChildSuit: number;
+  readonly mediumCostTeenSuit: number;
   readonly priceTypes: PriceType[];
   readonly totalAppetizersExpensesByAdultAndChild: number;
   readonly totalChairsExpensesByAdultAndChild: number;
@@ -33,6 +34,7 @@ export default function DashboardQuotes({
   mediumCostAdultSuit,
   mediumCostBabySuit,
   mediumCostChildSuit,
+  mediumCostTeenSuit,
   priceTypes,
   totalAppetizersExpensesByAdultAndChild,
   totalChairsExpensesByAdultAndChild,
@@ -94,6 +96,36 @@ export default function DashboardQuotes({
                   launchAndDinnerCost={launchCostAdult + dinnerCostAdult}
                   plasticCost={totalPlasticExpensesByAdultAndChild}
                   suitCost={priceType.paradeSuit ? mediumCostAdultSuit : 0}
+                />
+              )}
+              {priceType.teenPrice > 0 && (
+                <QuoteItem
+                  ageGroup={AgeGroup.TEEN}
+                  appetizersCost={totalAppetizersExpensesByAdultAndChild}
+                  chairsCost={totalChairsExpensesByAdultAndChild}
+                  commissionHelpPercentage={commissionHelpPercentage}
+                  drinkCost={0}
+                  extraCosts={totalVariousExpensesByAdultAndChild}
+                  launchAndDinnerCost={
+                    launchCostChildAndBaby + dinnerCostChildAndBaby
+                  }
+                  plasticCost={totalPlasticExpensesByAdultAndChild}
+                  suitCost={priceType.paradeSuit ? mediumCostTeenSuit : 0}
+                />
+              )}
+              {priceType.teenHalfPortionPrice > 0 && (
+                <QuoteItem
+                  ageGroup={AgeGroup.TEEN_HALF_PORTION}
+                  appetizersCost={totalAppetizersExpensesByAdultAndChild}
+                  chairsCost={totalChairsExpensesByAdultAndChild}
+                  commissionHelpPercentage={commissionHelpPercentage}
+                  drinkCost={0}
+                  extraCosts={totalVariousExpensesByAdultAndChild}
+                  launchAndDinnerCost={
+                    (launchCostChildAndBaby + dinnerCostChildAndBaby) * 0.5
+                  }
+                  plasticCost={totalPlasticExpensesByAdultAndChild}
+                  suitCost={priceType.paradeSuit ? mediumCostTeenSuit : 0}
                 />
               )}
               {priceType.childPrice > 0 && (

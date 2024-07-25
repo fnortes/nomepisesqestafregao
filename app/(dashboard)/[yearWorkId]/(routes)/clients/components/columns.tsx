@@ -9,6 +9,7 @@ import type {
   Gender,
   PriceType,
   ShirtSize,
+  SuitGroup,
   YearWork,
 } from "@prisma/client";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -17,6 +18,7 @@ import {
   AGE_GROUPS_LITERALS,
   GENDER_LITERALS,
   SHIRT_SIZE_LITERALS,
+  SUIT_GROUPS_LITERALS,
 } from "../clients.constants";
 
 export type ClientColumn = {
@@ -24,6 +26,7 @@ export type ClientColumn = {
   comments: string | null;
   email: string | null;
   firstName: string;
+  foods: ClientsOnFoods[];
   gender: Gender;
   id: string;
   isNew: boolean;
@@ -32,8 +35,8 @@ export type ClientColumn = {
   priceType: PriceType;
   quotaPaid: number;
   shirtSize: ShirtSize | null;
+  suitGroup: SuitGroup;
   yearWork: YearWork;
-  foods: ClientsOnFoods[];
 };
 
 export const columns: ColumnDef<ClientColumn>[] = [
@@ -62,6 +65,11 @@ export const columns: ColumnDef<ClientColumn>[] = [
     accessorKey: "ageGroup",
     header: "Grupo de edad",
     cell: ({ row }) => AGE_GROUPS_LITERALS[row.original.ageGroup],
+  },
+  {
+    accessorKey: "suitGroup",
+    header: "Grupo de traje",
+    cell: ({ row }) => SUIT_GROUPS_LITERALS[row.original.suitGroup],
   },
   {
     accessorKey: "isNew",

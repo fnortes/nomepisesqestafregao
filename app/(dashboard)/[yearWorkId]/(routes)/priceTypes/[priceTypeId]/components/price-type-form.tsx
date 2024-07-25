@@ -63,6 +63,8 @@ export default function PriceTypeForm({ initialData }: Props) {
       name: initialData?.name ?? "",
       paradeSuit: initialData?.paradeSuit ?? false,
       paradeWater: initialData?.paradeWater ?? false,
+      teenHalfPortionPrice: initialData?.teenHalfPortionPrice ?? 0,
+      teenPrice: initialData?.teenPrice ?? 0,
     },
   });
 
@@ -155,6 +157,25 @@ export default function PriceTypeForm({ initialData }: Props) {
             />
             <NumberFormField
               form={form}
+              input={{ placeholder: "Cantidad de cuota para los adolescentes" }}
+              label="Cuota para adolescentes"
+              loading={loading}
+              name="teenPrice"
+              showCurrency
+            />
+            <NumberFormField
+              form={form}
+              input={{
+                placeholder:
+                  "Cantidad de cuota para los adolescentes con media ración",
+              }}
+              label="Cuota para adolescentes 50% ración"
+              loading={loading}
+              name="teenHalfPortionPrice"
+              showCurrency
+            />
+            <NumberFormField
+              form={form}
               input={{ placeholder: "Cantidad de cuota para los niños" }}
               label="Cuota para niños"
               loading={loading}
@@ -167,7 +188,7 @@ export default function PriceTypeForm({ initialData }: Props) {
                 placeholder:
                   "Cantidad de cuota para los niños con media ración",
               }}
-              label="Cuota para niños 50 ración"
+              label="Cuota para niños 50% ración"
               loading={loading}
               name="childHalfPortionPrice"
               showCurrency

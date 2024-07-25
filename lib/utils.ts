@@ -29,6 +29,8 @@ export const calculateQuote = ({
 
   const pricesMapping: { [key in AgeGroup]: number } = {
     [AgeGroup.ADULT]: priceType.adultPrice,
+    [AgeGroup.TEEN]: priceType.teenPrice,
+    [AgeGroup.TEEN_HALF_PORTION]: priceType.teenHalfPortionPrice,
     [AgeGroup.CHILD]: priceType.childPrice,
     [AgeGroup.CHILD_HALF_PORTION]: priceType.childHalfPortionPrice,
     [AgeGroup.BABY]: priceType.babyPrice,

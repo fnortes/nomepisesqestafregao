@@ -25,6 +25,7 @@ export async function PATCH(
       priceTypeId,
       quotaPaid,
       shirtSize,
+      suitGroup,
     } = body;
     const { yearWorkId, clientId } = params;
 
@@ -32,7 +33,14 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!firstName || !gender || !ageGroup || !priceTypeId || !yearWorkId) {
+    if (
+      !firstName ||
+      !gender ||
+      !ageGroup ||
+      !priceTypeId ||
+      !yearWorkId ||
+      !suitGroup
+    ) {
       return new NextResponse(
         "Algunos de los campos obligatorios no han sido enviados.",
         { status: 400 }
@@ -108,6 +116,7 @@ export async function PATCH(
         shirtSize,
         quotaPaid,
         comments,
+        suitGroup,
       },
     });
 

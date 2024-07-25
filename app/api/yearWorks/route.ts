@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
     let newClientPrice = 20, // Por defecto la cuota para los nuevos comparsistas es de 20€
       previousAdults = 0, // Por defecto el número de adultos del año anterior es cero.
       previousChields = 0, // Por defecto el número de niños del año anterior es cero.
+      previousTeens = 0, // Por defecto el número de adolescentes del año anterior es cero.
       unitFoodPrice = 10, // Por defecto el precio por comida extra para los comparsistas o no comparsistas es de 10€
       previousYearWorkAmount = 0, // Por defecto la cantidad de dinero sobrante del año anterior es cero.
       awardsReward = 0, // Por defecto la cantidad de dinero obtenida de premios es cero.
@@ -128,6 +129,13 @@ export async function POST(req: NextRequest) {
           (client) => client.ageGroup === AgeGroup.ADULT
         ).length;
 
+        // Se calcula el número de adolescentes del año anterior
+        previousTeens = clients.filter(
+          (client) =>
+            client.ageGroup === AgeGroup.TEEN ||
+            client.ageGroup === AgeGroup.TEEN_HALF_PORTION
+        ).length;
+
         // Se calcula el número de niños con cuota del año anterior
         previousChields = clients.filter(
           (client) =>
@@ -180,16 +188,17 @@ export async function POST(req: NextRequest) {
     // Se da de alta el nuevo año de trabajo.
     const yearWork = await prismadb.yearWork.create({
       data: {
-        year,
+        awardsReward,
+        commissionHelp,
+        firstPartyDay,
+        lastPartyDay,
         newClientPrice,
         previousAdults,
         previousChilds: previousChields,
-        firstPartyDay,
-        lastPartyDay,
-        unitFoodPrice,
+        previousTeens,
         previousYearWorkAmount,
-        awardsReward,
-        commissionHelp,
+        unitFoodPrice,
+        year,
       },
     });
 

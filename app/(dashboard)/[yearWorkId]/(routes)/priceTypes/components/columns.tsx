@@ -19,6 +19,8 @@ export type PriceTypeColumn = {
   name: string;
   paradeSuit: boolean;
   paradeWater: boolean;
+  teenHalfPortionPrice: number;
+  teenPrice: number;
 };
 
 export const columns: ColumnDef<PriceTypeColumn>[] = [
@@ -30,6 +32,16 @@ export const columns: ColumnDef<PriceTypeColumn>[] = [
     accessorKey: "adultPrice",
     header: "Adulto",
     cell: ({ row }) => formatCurrency(row.original.adultPrice),
+  },
+  {
+    accessorKey: "teenPrice",
+    header: "Adolescente",
+    cell: ({ row }) => formatCurrency(row.original.teenPrice),
+  },
+  {
+    accessorKey: "teenHalfPortionPrice",
+    header: "Adolescente 50% Ración",
+    cell: ({ row }) => formatCurrency(row.original.teenHalfPortionPrice),
   },
   {
     accessorKey: "childPrice",

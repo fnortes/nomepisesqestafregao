@@ -12,15 +12,15 @@ const suitToDashboardDataMapper = (
   suit: Suit,
   clients: GeneralClient[]
 ): DashboardSuitsColumn => {
-  const { ageGroup, gender, price } = suit;
+  const { ageGroup, gender, unitPrice } = suit;
   const clientsBySuit = getClientsBySuit(clients, suit);
 
   return {
     ageGroup,
     gender,
-    price,
+    price: unitPrice,
     clients: clientsBySuit.map(getClientName),
-    totalPrice: clientsBySuit.length * price,
+    totalPrice: clientsBySuit.length * unitPrice,
   };
 };
 
@@ -29,7 +29,7 @@ export const calculateSuitsExpensesData = (
   clients: GeneralClient[]
 ) => {
   // Se calcula el total del coste de los trajes, estimado a pagar y el pagado actual.
-  const totalToPaid = calculateTotalSuitsToPaid(suits, clients);
+  const totalToPaid = calculateTotalSuitsToPaid(suits);
   const totalCurrentPaid = calculateTotalSuitsCurrentPaid(suits);
   // Se obtiene el listado de los trajes con los precios totales según los comparsistas.
   const dashboardData: DashboardSuitsColumn[] = suits.map((suit) =>
@@ -40,6 +40,14 @@ export const calculateSuitsExpensesData = (
   const mediumCostAdult =
     adultSuits.map((s) => s.totalPrice).reduce((a, b) => a + b, 0) /
     adultSuits.map((s) => s.clients.length).reduce((a, b) => a + b, 0);
+  // Se calcula el precio medio de todos los trajes para adolescentes, en base al número de comparsistas.
+  const teenSuits = dashboardData.filter(
+    (d) =>
+      d.ageGroup === AgeGroup.TEEN || d.ageGroup === AgeGroup.TEEN_HALF_PORTION
+  );
+  const mediumCostTeen =
+    teenSuits.map((s) => s.totalPrice).reduce((a, b) => a + b, 0) /
+    teenSuits.map((s) => s.clients.length).reduce((a, b) => a + b, 0);
   // Se calcula el precio medio de todos los trajes para niños, en base al número de comparsistas.
   const childSuits = dashboardData.filter(
     (d) =>
@@ -60,6 +68,7 @@ export const calculateSuitsExpensesData = (
     mediumCostAdult,
     mediumCostBaby,
     mediumCostChild,
+    mediumCostTeen,
     totalCurrentPaid,
     totalToPaid,
   };

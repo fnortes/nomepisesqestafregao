@@ -11,8 +11,10 @@ export const OTHER_EXPENSE_FAMILIES = [
 ];
 
 export const ADULT_AGE_GROUPS: string[] = [AgeGroup.ADULT];
-export const ADULT_AND_CHILD_WITH_QUOTE_AGE_GROUPS: string[] = [
+export const ALL_WITH_QUOTE_AGE_GROUPS: string[] = [
   ...ADULT_AGE_GROUPS,
+  AgeGroup.TEEN,
+  AgeGroup.TEEN_HALF_PORTION,
   AgeGroup.CHILD,
   AgeGroup.CHILD_HALF_PORTION,
 ];

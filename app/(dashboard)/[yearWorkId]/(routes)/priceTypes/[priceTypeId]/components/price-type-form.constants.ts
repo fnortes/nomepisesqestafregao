@@ -11,4 +11,6 @@ export const formSchema = z.object({
   name: z.string().min(1).max(50),
   paradeSuit: z.boolean().default(false),
   paradeWater: z.boolean().default(false),
+  teenHalfPortionPrice: z.number().min(0).max(999),
+  teenPrice: z.number().min(0).max(999),
 });

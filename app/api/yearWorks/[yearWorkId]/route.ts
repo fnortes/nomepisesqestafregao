@@ -11,16 +11,17 @@ export async function PATCH(
     const body = await req.json();
 
     const {
-      year,
+      awardsReward,
+      commissionHelp,
+      firstPartyDay,
+      lastPartyDay,
       newClientPrice,
       previousAdults,
       previousChilds,
-      firstPartyDay,
-      lastPartyDay,
-      unitFoodPrice,
+      previousTeens,
       previousYearWorkAmount,
-      awardsReward,
-      commissionHelp,
+      unitFoodPrice,
+      year,
     } = body;
 
     if (!userId) {
@@ -31,6 +32,7 @@ export async function PATCH(
       !year ||
       (!newClientPrice && newClientPrice !== 0) ||
       !previousAdults ||
+      (!previousTeens && previousTeens !== 0) ||
       (!previousChilds && previousChilds !== 0) ||
       !firstPartyDay ||
       !lastPartyDay ||
@@ -72,16 +74,17 @@ export async function PATCH(
         id: params.yearWorkId,
       },
       data: {
-        year,
+        awardsReward,
+        commissionHelp,
+        firstPartyDay,
+        lastPartyDay,
         newClientPrice,
         previousAdults,
         previousChilds,
-        firstPartyDay,
-        lastPartyDay,
-        unitFoodPrice,
+        previousTeens,
         previousYearWorkAmount,
-        awardsReward,
-        commissionHelp,
+        unitFoodPrice,
+        year,
       },
     });
 

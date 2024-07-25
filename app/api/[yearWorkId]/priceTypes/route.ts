@@ -22,6 +22,8 @@ export async function POST(
       name,
       paradeSuit,
       paradeWater,
+      teenHalfPortionPrice,
+      teenPrice,
     } = body;
     const { yearWorkId } = params;
 
@@ -71,6 +73,8 @@ export async function POST(
       data: {
         adultPrice: adultPrice || 0,
         babyPrice: babyPrice || 0,
+        teenHalfPortionPrice: teenHalfPortionPrice || 0,
+        teenPrice: teenPrice || 0,
         childHalfPortionPrice: childHalfPortionPrice || 0,
         childPrice: childPrice || 0,
         dinners,

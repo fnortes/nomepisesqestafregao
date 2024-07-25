@@ -35,6 +35,7 @@ export default async function ClientPage({ params: { yearWorkId } }: Props) {
       priceType,
       quotaPaid,
       shirtSize,
+      suitGroup,
       yearWork,
     }) => ({
       ageGroup,
@@ -50,6 +51,7 @@ export default async function ClientPage({ params: { yearWorkId } }: Props) {
       priceType,
       quotaPaid,
       shirtSize,
+      suitGroup,
       yearWork,
     })
   );

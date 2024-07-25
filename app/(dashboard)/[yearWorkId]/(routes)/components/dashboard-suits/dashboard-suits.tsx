@@ -21,6 +21,7 @@ interface Props {
   readonly mediumCostAdultSuit: number;
   readonly mediumCostBabySuit: number;
   readonly mediumCostChildSuit: number;
+  readonly mediumCostTeenSuit: number;
   readonly totalSuitsToPaid: number;
 }
 
@@ -30,6 +31,7 @@ export default function DashboardSuits({
   mediumCostAdultSuit,
   mediumCostBabySuit,
   mediumCostChildSuit,
+  mediumCostTeenSuit,
   totalSuitsToPaid,
 }: Props) {
   return (
@@ -79,6 +81,15 @@ export default function DashboardSuits({
             </AlertTitle>
             <AlertDescription className="text-sm text-muted-foreground">
               Coste medio de traje para adultos.
+            </AlertDescription>
+          </Alert>
+          <Alert>
+            <Calculator className="h-4 w-4" />
+            <AlertTitle className="text-green-700">
+              {formatCurrency(mediumCostTeenSuit)}
+            </AlertTitle>
+            <AlertDescription className="text-sm text-muted-foreground">
+              Coste medio de traje para adolescentes.
             </AlertDescription>
           </Alert>
           <Alert>

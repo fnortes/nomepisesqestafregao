@@ -26,6 +26,7 @@ export async function POST(
       priceTypeId,
       quotaPaid,
       shirtSize,
+      suitGroup,
     } = body;
     const { yearWorkId } = params;
 
@@ -33,7 +34,14 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!firstName || !gender || !ageGroup || !priceTypeId || !yearWorkId) {
+    if (
+      !firstName ||
+      !gender ||
+      !ageGroup ||
+      !priceTypeId ||
+      !yearWorkId ||
+      !suitGroup
+    ) {
       return new NextResponse(
         "Algunos de los campos obligatorios no han sido enviados.",
         { status: 400 }
@@ -98,6 +106,7 @@ export async function POST(
         shirtSize,
         quotaPaid,
         comments,
+        suitGroup,
       },
     });
 

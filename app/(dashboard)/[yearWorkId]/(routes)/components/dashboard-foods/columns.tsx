@@ -19,6 +19,10 @@ export type DashboardFoodsColumn = {
   totalChildHalfPortionList: string[];
   totalChildList: string[];
   totalPrice: number;
+  totalTeen: number;
+  totalTeenHalfPortion: number;
+  totalTeenHalfPortionList: string[];
+  totalTeenList: string[];
 };
 
 export const columns: ColumnDef<DashboardFoodsColumn>[] = [

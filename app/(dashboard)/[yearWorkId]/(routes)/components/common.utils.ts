@@ -9,7 +9,7 @@ import {
 } from "@prisma/client";
 import {
   ADULT_AGE_GROUPS,
-  ADULT_AND_CHILD_WITH_QUOTE_AGE_GROUPS,
+  ALL_WITH_QUOTE_AGE_GROUPS,
   OTHER_EXPENSE_FAMILIES,
 } from "./common.constants";
 import {
@@ -30,6 +30,7 @@ const clientToFoodCostMapper = (
 
   if (clientFood) {
     const foodPercentage =
+      client.ageGroup === AgeGroup.TEEN_HALF_PORTION ||
       client.ageGroup === AgeGroup.CHILD_HALF_PORTION ||
       client.ageGroup === AgeGroup.BABY
         ? 0.5
@@ -89,16 +90,16 @@ export const getClientsBySuit = (
     (client) =>
       client.priceType.paradeSuit &&
       client.ageGroup === suit.ageGroup &&
-      client.gender === suit.gender
+      client.gender === suit.gender &&
+      client.suitGroup === suit.suitGroup
   );
 
 export const countClientsAdult = (clients: GeneralClient[]): number =>
   clients.filter((c) => ADULT_AGE_GROUPS.indexOf(c.ageGroup) !== -1).length;
 
-export const countClientsAdultAndChild = (clients: GeneralClient[]): number =>
-  clients.filter(
-    (c) => ADULT_AND_CHILD_WITH_QUOTE_AGE_GROUPS.indexOf(c.ageGroup) !== -1
-  ).length;
+export const countClientsAllWithQuote = (clients: GeneralClient[]): number =>
+  clients.filter((c) => ALL_WITH_QUOTE_AGE_GROUPS.indexOf(c.ageGroup) !== -1)
+    .length;
 
 export const calculateTotalClientsToPaid = (
   clients: GeneralClient[],
@@ -142,16 +143,8 @@ export const calculateTotalFoodsToPaid = (
 export const calculateTotalFoodsCurrentPaid = (foods: Food[]): number =>
   foods.map((food) => food.paid).reduce((a, b) => a + b, 0);
 
-export const calculateTotalSuitsToPaid = (
-  suits: Suit[],
-  clients: GeneralClient[]
-): number =>
-  suits
-    .map((suit) => {
-      const total = getClientsBySuit(clients, suit).length;
-      return total * suit.price;
-    })
-    .reduce((a, b) => a + b, 0);
+export const calculateTotalSuitsToPaid = (suits: Suit[]): number =>
+  suits.map((suit) => suit.total).reduce((a, b) => a + b, 0);
 
 export const calculateTotalSuitsCurrentPaid = (suits: Suit[]): number =>
   suits.map((suit) => suit.paid).reduce((a, b) => a + b, 0);

@@ -1,7 +1,7 @@
 import prismadb from "@/lib/prismadb";
 import {
   countClientsAdult,
-  countClientsAdultAndChild,
+  countClientsAllWithQuote,
   getCommissionHelpPercentageFromAllCosts,
   getDinnerPercentageFromAll,
 } from "./components/common.utils";
@@ -76,13 +76,19 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
     },
   });
 
+  const sales = await prismadb.sale.findMany({
+    include: { yearWork: true, saleCategory: true },
+    where: { yearWorkId },
+    orderBy: { date: "asc" },
+  });
+
   if (!yearWork) {
     return null;
   }
 
   // Se calcula el total de comparsistas adultos y niños, usado para varios cálculos de precios medios.
   const totalAdultClients = countClientsAdult(clients);
-  const totalAdultAndChildClients = countClientsAdultAndChild(clients);
+  const totalAdultAndChildClients = countClientsAllWithQuote(clients);
 
   const variousExpensesData = calculateVariousExpensesData(
     expenses,
@@ -140,12 +146,16 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
           totalSuitsCurrentPaid={suitsExpensesData.totalCurrentPaid}
           totalFoodsToPaid={foodsExpensesData.totalToPaid}
           totalFoodsCurrentPaid={foodsExpensesData.totalCurrentPaid}
+          totalSalesBenefits={sales
+            .map((s) => s.benefitAmount)
+            .reduce((a, b) => a + b, 0)}
         />
         <DashboardClients clients={clients} />
         <DashboardQuotes
           mediumCostAdultSuit={suitsExpensesData.mediumCostAdult}
           mediumCostBabySuit={suitsExpensesData.mediumCostBaby}
           mediumCostChildSuit={suitsExpensesData.mediumCostChild}
+          mediumCostTeenSuit={suitsExpensesData.mediumCostTeen}
           priceTypes={priceTypes}
           totalVariousExpensesByAdultAndChild={
             variousExpensesData.totalByAdultAndChild
@@ -225,6 +235,7 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
           mediumCostAdultSuit={suitsExpensesData.mediumCostAdult}
           mediumCostBabySuit={suitsExpensesData.mediumCostBaby}
           mediumCostChildSuit={suitsExpensesData.mediumCostChild}
+          mediumCostTeenSuit={suitsExpensesData.mediumCostTeen}
           totalSuitsToPaid={suitsExpensesData.totalToPaid}
         />
         <DashboardDrinks

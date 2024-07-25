@@ -30,6 +30,8 @@ export default async function PriceTypesPage({
       name,
       paradeSuit,
       paradeWater,
+      teenHalfPortionPrice,
+      teenPrice,
     }) => ({
       adultPrice,
       babyPrice,
@@ -42,6 +44,8 @@ export default async function PriceTypesPage({
       name,
       paradeSuit,
       paradeWater,
+      teenHalfPortionPrice,
+      teenPrice,
     })
   );
 

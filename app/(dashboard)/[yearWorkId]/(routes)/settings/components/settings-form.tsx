@@ -22,7 +22,7 @@ import NumberFormField from "../../../../../../components/form/number-form-field
 import type { SettingsFormValues } from "./settings-form.types";
 
 interface Props {
-  initialData: YearWork;
+  readonly initialData: YearWork;
 }
 
 export default function SettingsForm({ initialData }: Props) {
@@ -33,16 +33,17 @@ export default function SettingsForm({ initialData }: Props) {
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      year: initialData.year,
+      awardsReward: initialData.awardsReward,
+      commissionHelp: initialData.commissionHelp,
+      firstPartyDay: initialData.firstPartyDay,
+      lastPartyDay: initialData.lastPartyDay,
       newClientPrice: initialData.newClientPrice,
       previousAdults: initialData.previousAdults,
       previousChilds: initialData.previousChilds,
-      firstPartyDay: initialData.firstPartyDay,
-      lastPartyDay: initialData.lastPartyDay,
-      unitFoodPrice: initialData.unitFoodPrice,
+      previousTeens: initialData.previousTeens,
       previousYearWorkAmount: initialData.previousYearWorkAmount,
-      awardsReward: initialData.awardsReward,
-      commissionHelp: initialData.commissionHelp,
+      unitFoodPrice: initialData.unitFoodPrice,
+      year: initialData.year,
     },
   });
 
@@ -146,6 +147,15 @@ export default function SettingsForm({ initialData }: Props) {
               label="Adultos año anterior"
               loading={loading}
               name="previousAdults"
+            />
+            <NumberFormField
+              form={form}
+              input={{
+                placeholder: "Número de adolescentes del año anterior",
+              }}
+              label="Adolescentes año anterior"
+              loading={loading}
+              name="previousTeens"
             />
             <NumberFormField
               form={form}

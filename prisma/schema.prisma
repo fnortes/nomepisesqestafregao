@@ -19,6 +19,7 @@ model YearWork {
   newClientPrice          Float       @default(20)
   previousAdults          Int         @default(0)
   previousChilds          Int         @default(0)
+  previousTeens           Int         @default(0)
   firstPartyDay            DateTime    @default(now())
   lastPartyDay            DateTime    @default(now())
   unitFoodPrice           Float       @default(10)
@@ -41,6 +42,8 @@ enum Gender {
 
 enum AgeGroup {
   ADULT
+  TEEN
+  TEEN_HALF_PORTION
   CHILD
   CHILD_HALF_PORTION
   BABY
@@ -58,6 +61,7 @@ enum ShirtSize {
   A_3_4
   A_6
   A_8
+  A_9
   A_12
   A_16
 }
@@ -93,6 +97,8 @@ model PriceType {
   updatedAt               DateTime  @updatedAt
   name                    String
   adultPrice              Float     @default(0)
+  teenPrice               Float     @default(0)
+  teenHalfPortionPrice    Float     @default(0)
   childPrice              Float     @default(0)
   childHalfPortionPrice   Float     @default(0)
   babyPrice               Float     @default(0)
@@ -120,6 +126,7 @@ model Client {
   phone         String?
   gender        Gender                @default(MAN)
   ageGroup      AgeGroup              @default(ADULT)
+  suitGroup     SuitGroup             @default(GROUP_1)
   isNew         Boolean               @default(false)
   barGroups     ClientsOnBarGroups[]
   foods         ClientsOnFoods[]
@@ -224,6 +231,12 @@ model ClientsOnFoods {
   @@index([clientId])
 }
 
+enum SuitGroup {
+  GROUP_1
+  GROUP_2
+  GROUP_3
+}
+
 model Suit {
   id             String             @id @default(uuid())
   yearWorkId     String
@@ -231,10 +244,15 @@ model Suit {
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
   ageGroup       AgeGroup           @default(ADULT)
+  suitGroup      SuitGroup          @default(GROUP_1)
   gender         Gender             @default(MAN)
   comments       String?
-  price          Float              @default(0)
+  units          Int                @default(1)
+  unitPrice      Float              @default(0)
+  total          Float              @default(0)
   paid           Float              @default(0)
+
+
   
   @@index([yearWorkId])
 }
