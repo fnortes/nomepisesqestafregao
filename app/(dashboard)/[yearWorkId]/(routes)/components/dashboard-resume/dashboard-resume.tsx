@@ -24,6 +24,7 @@ interface Props {
   readonly totalFoodsToPaid: number;
   readonly totalPlasticExpensesCurrentPaid: number;
   readonly totalPlasticExpensesToPaid: number;
+  readonly totalSalesBenefits: number;
   readonly totalSuitsCurrentPaid: number;
   readonly totalSuitsToPaid: number;
   readonly totalVariousExpensesCurrentPaid: number;
@@ -42,6 +43,7 @@ export default function DashboardResume({
   totalFoodsToPaid,
   totalPlasticExpensesCurrentPaid,
   totalPlasticExpensesToPaid,
+  totalSalesBenefits,
   totalSuitsCurrentPaid,
   totalSuitsToPaid,
   totalVariousExpensesCurrentPaid,
@@ -77,12 +79,19 @@ export default function DashboardResume({
     totalVariousExpensesCurrentPaid +
     totalFoodsCurrentPaid;
 
-  const totalCurrentPaid =
+  const totalCurrentPaidWithPreviousYearWorkAmount =
     totalClientsCurrentPaid -
     costsCurrentPaid +
-    yearWork.previousYearWorkAmount +
-    yearWork.commissionHelp +
-    yearWork.awardsReward;
+    yearWork.previousYearWorkAmount;
+
+  const totalCurrentPaidWithSales =
+    totalCurrentPaidWithPreviousYearWorkAmount + totalSalesBenefits;
+
+  const totalCurrentPaidWithAwardsReward =
+    totalCurrentPaidWithSales + yearWork.awardsReward;
+
+  const totalCurrentPaidWithCommissionHelp =
+    totalCurrentPaidWithAwardsReward + yearWork.commissionHelp;
 
   return (
     <>
@@ -149,7 +158,7 @@ export default function DashboardResume({
             comparsa.
           </AlertDescription>
         </Alert>
-        <Alert className="col-span-2">
+        <Alert>
           <Wallet className="h-4 w-4" />
           <AlertTitle className="text-green-500">
             {formatCurrency(yearWork.previousYearWorkAmount)}
@@ -159,7 +168,57 @@ export default function DashboardResume({
             actual.
           </AlertDescription>
         </Alert>
-        <Alert className="col-span-2">
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-gray-700">
+            {formatCurrency(totalCurrentPaidWithPreviousYearWorkAmount)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total real calculado teniendo en cuenta el dinero sobrante del año
+            anterior.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Wallet className="h-4 w-4" />
+          <AlertTitle className="text-green-500">
+            {formatCurrency(totalSalesBenefits)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Cantidad de dinero que hemos obtenido de beneficio de todas las
+            ventas realizadas.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-gray-700">
+            {formatCurrency(totalCurrentPaidWithSales)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total real calculado a partir del total actual anterior más las
+            ventas realizadas.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Wallet className="h-4 w-4" />
+          <AlertTitle className="text-green-500">
+            {formatCurrency(yearWork.awardsReward)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Cantidad de dinero que hemos recibido por parte de los premios
+            ganados.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-gray-700">
+            {formatCurrency(totalCurrentPaidWithAwardsReward)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total real calculado a partir del total actual anterior más la
+            cantidad de premios recibidos.
+          </AlertDescription>
+        </Alert>
+        <Alert>
           <Wallet className="h-4 w-4" />
           <AlertTitle className="text-green-500">
             {formatCurrency(yearWork.commissionHelp)}
@@ -169,14 +228,14 @@ export default function DashboardResume({
             fiestas.
           </AlertDescription>
         </Alert>
-        <Alert className="col-span-2">
-          <Wallet className="h-4 w-4" />
-          <AlertTitle className="text-green-500">
-            {formatCurrency(yearWork.awardsReward)}
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-gray-700">
+            {formatCurrency(totalCurrentPaidWithCommissionHelp)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
-            Cantidad de dinero que hemos recibido por parte de los premios
-            ganados.
+            Total real calculado a partir del total actual anterior más la ayuda
+            de la comisión.
           </AlertDescription>
         </Alert>
         <Separator className="col-span-2" />
@@ -187,15 +246,6 @@ export default function DashboardResume({
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Total estimado calculado.
-          </AlertDescription>
-        </Alert>
-        <Alert>
-          <Calculator className="h-4 w-4" />
-          <AlertTitle className="text-gray-700">
-            {formatCurrency(totalCurrentPaid)}
-          </AlertTitle>
-          <AlertDescription className="text-sm text-muted-foreground">
-            Total real calculado.
           </AlertDescription>
         </Alert>
       </div>
