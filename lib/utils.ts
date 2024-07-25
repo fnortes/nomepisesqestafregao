@@ -12,7 +12,8 @@ export const formatCurrency = (value: number) =>
     currency: "EUR",
   }).format(value);
 
-interface CalculateQuoteParams extends Pick<Client, "ageGroup" | "isNew"> {
+interface CalculateQuoteParams
+  extends Pick<Client, "ageGroup" | "isNew" | "quotaModifier"> {
   priceType: PriceType;
   yearWork: YearWork;
   foodQuantities: number[];
@@ -24,6 +25,7 @@ export const calculateQuote = ({
   priceType,
   yearWork,
   foodQuantities,
+  quotaModifier,
 }: CalculateQuoteParams): number => {
   let newCalculatedQuote = 0;
 
@@ -51,5 +53,5 @@ export const calculateQuote = ({
           .reduce((a, b) => a + b, 0)
       : 0;
 
-  return newCalculatedQuote + foodPriceTotal;
+  return newCalculatedQuote + foodPriceTotal + quotaModifier;
 };

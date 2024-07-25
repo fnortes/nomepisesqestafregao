@@ -33,6 +33,7 @@ export type ClientColumn = {
   lastName: string | null;
   phone: string | null;
   priceType: PriceType;
+  quotaModifier: number;
   quotaPaid: number;
   shirtSize: ShirtSize | null;
   suitGroup: SuitGroup;
@@ -95,6 +96,11 @@ export const columns: ColumnDef<ClientColumn>[] = [
         : "-",
   },
   {
+    accessorKey: "quotaModifier",
+    header: "Modificador de cuota",
+    cell: ({ row }) => formatCurrency(row.original.quotaModifier),
+  },
+  {
     accessorKey: "quota",
     header: "Cálculo cuota",
     cell: ({ row }) =>
@@ -105,6 +111,7 @@ export const columns: ColumnDef<ClientColumn>[] = [
           priceType: row.original.priceType,
           yearWork: row.original.yearWork,
           foodQuantities: row.original.foods.map((f) => f.quantity),
+          quotaModifier: row.original.quotaModifier,
         })
       ),
   },

@@ -61,6 +61,7 @@ export default function ClientForm({
           yearWork,
           priceType: initialData.priceType,
           foodQuantities: initialData.foods.map((f) => f.quantity),
+          quotaModifier: initialData.quotaModifier,
         })
       : 0
   );
@@ -107,6 +108,7 @@ export default function ClientForm({
       }),
       priceTypeId: initialData?.priceTypeId ?? "",
       shirtSize: initialData?.shirtSize,
+      quotaModifier: initialData?.quotaModifier ?? 0,
       quotaPaid: initialData?.quotaPaid ?? 0,
       comments: initialData?.comments,
       suitGroup: initialData?.suitGroup,
@@ -144,7 +146,9 @@ export default function ClientForm({
     const subscription = form.watch((value, { name }) => {
       if (
         name &&
-        (["priceTypeId", "ageGroup", "isNew", "foods"].indexOf(name) !== -1 ||
+        (["priceTypeId", "ageGroup", "isNew", "foods", "quotaModifier"].indexOf(
+          name
+        ) !== -1 ||
           name.includes("quantity"))
       ) {
         const priceTypeSelected = priceTypes.find(
@@ -160,6 +164,7 @@ export default function ClientForm({
             yearWork,
             priceType: priceTypeSelected,
             foodQuantities: value.foods?.map((f) => f?.quantity ?? 0) ?? [],
+            quotaModifier: value.quotaModifier ?? 0,
           });
         }
 
@@ -314,6 +319,33 @@ export default function ClientForm({
               name="priceTypeId"
               placeholder="Selecciona la modalidad de cuota"
             />
+            <CheckboxFormField
+              form={form}
+              label="¿Es nuevo comparsista este año?"
+              loading={loading}
+              name="isNew"
+            />
+            <NumberFormField
+              form={form}
+              input={{
+                placeholder:
+                  "Introduce la cantidad a sumar o restar de la cuota calculada para el comparsista",
+              }}
+              label="Modificador de cuota"
+              loading={loading}
+              name="quotaModifier"
+              showCurrency
+              description="Es la cantidad a sumar o restar de la cuota calculada para este comparsista. Este valor debería ser siempre cero, pero se puede usar para casos excepcionales en los que se necesita ajustar la cuota de alguien en particular"
+            />
+            <Alert className="col-span-2">
+              <Calculator className="h-4 w-4" />
+              <AlertTitle className="text-orange-500">{`${calculatedQuote} €`}</AlertTitle>
+              <AlertDescription className="text-sm text-muted-foreground">
+                Esta es la cuota calculada a pagar por el comparsista en base a
+                su grupo de edad, modalidad de cuota y si es nuevo o no en la
+                comparsa.
+              </AlertDescription>
+            </Alert>
             <NumberFormField
               form={form}
               input={{
@@ -325,21 +357,17 @@ export default function ClientForm({
               showCurrency
               description="Esta cantidad de cuota pagada por el comparsista nunca debe ser mayor a la cuota calculada para pagar en el año en curso"
             />
-            <CheckboxFormField
-              form={form}
-              label="¿Es nuevo comparsista este año?"
-              loading={loading}
-              name="isNew"
-            />
-            <Alert className="col-span-2">
-              <Calculator className="h-4 w-4" />
-              <AlertTitle className="text-orange-500">{`${calculatedQuote} €`}</AlertTitle>
-              <AlertDescription className="text-sm text-muted-foreground">
-                Esta es la cuota calculada a pagar por el comparsista en base a
-                su grupo de edad, modalidad de cuota y si es nuevo o no en la
-                comparsa.
-              </AlertDescription>
-            </Alert>
+            <div className="col-span-3">
+              <TextFormField
+                form={form}
+                input={{
+                  placeholder: "Comentarios del comparsista",
+                }}
+                label="Comentarios"
+                loading={loading}
+                name="comments"
+              />
+            </div>
           </div>
           <Separator />
           <h3 className="text-2xl font-bold tracking-tight">Grupos de barra</h3>

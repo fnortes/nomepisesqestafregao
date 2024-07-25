@@ -113,6 +113,7 @@ export const calculateTotalClientsToPaid = (
         priceType: client.priceType,
         yearWork,
         foodQuantities: client.foods.map((f) => f.quantity),
+        quotaModifier: client.quotaModifier,
       })
     )
     .reduce((a, b) => a + b, 0);

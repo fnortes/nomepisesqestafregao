@@ -28,6 +28,7 @@ export const formSchema = z.object({
   lastName: z.string().max(50).optional().nullable(),
   phone: z.string().length(9).optional().nullable(),
   priceTypeId: z.string(),
+  quotaModifier: z.number().min(-999).max(999),
   quotaPaid: z.number().min(0).max(999),
   shirtSize: z.nativeEnum(ShirtSize).optional().nullable(),
   suitGroup: z.nativeEnum(SuitGroup),

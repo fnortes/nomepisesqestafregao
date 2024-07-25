@@ -133,6 +133,7 @@ model Client {
   priceTypeId   String
   priceType     PriceType             @relation("PriceTypeToClient", fields: [priceTypeId], references: [id])
   shirtSize     ShirtSize?  
+  quotaModifier  Float                 @default(0)
   quotaPaid     Float                 @default(0)
   comments      String?
 
