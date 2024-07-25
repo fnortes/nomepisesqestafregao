@@ -11,6 +11,7 @@ export type DashboardShirtsColumn = {
   A_3_4: string[];
   A_6: string[];
   A_8: string[];
+  A_9: string[];
   A_12: string[];
   A_16: string[];
   S: string[];
@@ -112,6 +113,25 @@ export const columns: ColumnDef<DashboardShirtsColumn>[] = [
           <strong>({row.original.A_8.length})</strong>
           <br />
           {row.original.A_8.toSorted().map((c) => (
+            <span key={c}>
+              {c}
+              <br />
+            </span>
+          ))}
+        </div>
+      ) : (
+        0
+      ),
+  },
+  {
+    accessorKey: "A_9",
+    header: SHIRT_SIZE_LITERALS[ShirtSize.A_9],
+    cell: ({ row }) =>
+      row.original.A_9.length > 0 ? (
+        <div>
+          <strong>({row.original.A_9.length})</strong>
+          <br />
+          {row.original.A_9.toSorted().map((c) => (
             <span key={c}>
               {c}
               <br />
