@@ -11,7 +11,16 @@ export async function POST(
     const { userId } = auth();
     const body = await req.json();
 
-    const { comments, price, paid, ageGroup, gender } = body;
+    const {
+      ageGroup,
+      comments,
+      gender,
+      paid,
+      suitGroup,
+      total,
+      unitPrice,
+      units,
+    } = body;
     const { yearWorkId } = params;
 
     if (!userId) {
@@ -21,7 +30,10 @@ export async function POST(
     if (
       !gender ||
       !ageGroup ||
-      (!price && price !== 0) ||
+      !suitGroup ||
+      (!total && total !== 0) ||
+      (!unitPrice && unitPrice !== 0) ||
+      (!units && units !== 0) ||
       !yearWorkId ||
       (!paid && paid !== 0)
     ) {
@@ -49,6 +61,7 @@ export async function POST(
       where: {
         ageGroup,
         gender,
+        suitGroup,
         yearWorkId,
       },
     });
@@ -57,7 +70,7 @@ export async function POST(
       return NextResponse.json(
         {
           errorMessage:
-            "Ya existe otro traje para el mismo grupo de edad, género y año de trabajo. Inténtalo de nuevo con otros datos distintos.",
+            "Ya existe otro traje para el mismo grupo de edad, grupo de precio, género y año de trabajo. Inténtalo de nuevo con otros datos distintos.",
         },
         { status: 400 }
       );
@@ -65,11 +78,14 @@ export async function POST(
 
     const suit = await prismadb.suit.create({
       data: {
-        comments,
-        paid,
-        price,
         ageGroup,
+        comments,
         gender,
+        paid,
+        suitGroup,
+        total,
+        unitPrice,
+        units,
         yearWorkId,
       },
     });

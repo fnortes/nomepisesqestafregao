@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -23,6 +23,7 @@ import type { BarGroup, Suit } from "@prisma/client";
 import {
   ageGroupData,
   genderOptionsData,
+  suitGroupData,
 } from "../../../clients/[clientId]/components/client-form.constants";
 import type { SuitFormValues } from "./suit-form.types";
 
@@ -58,11 +59,14 @@ export default function SuitForm({ initialData }: Props) {
   const form = useForm<SuitFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      comments: initialData?.comments,
-      price: initialData?.price ?? 0,
-      paid: initialData?.paid ?? 0,
-      gender: initialData?.gender,
       ageGroup: initialData?.ageGroup,
+      comments: initialData?.comments,
+      gender: initialData?.gender,
+      paid: initialData?.paid ?? 0,
+      suitGroup: initialData?.suitGroup,
+      total: initialData?.total ?? 0,
+      unitPrice: initialData?.unitPrice ?? 0,
+      units: initialData?.units ?? 0,
     },
   });
 
@@ -70,6 +74,20 @@ export default function SuitForm({ initialData }: Props) {
     () => ageGroupData,
     []
   );
+
+  const suitGroupOptionsData: CommonFormFieldData = useMemo(
+    () => suitGroupData,
+    []
+  );
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      if (name && ["units", "unitPrice"].indexOf(name) !== -1) {
+        form.setValue("total", (value.units ?? 1) * (value.unitPrice ?? 0));
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const handleValid = async (values: SuitFormValues) => {
     try {
@@ -154,28 +172,58 @@ export default function SuitForm({ initialData }: Props) {
               name="ageGroup"
               placeholder="Selecciona un grupo de edad"
             />
-            <NumberFormField
+            <SelectFormField
+              data={suitGroupOptionsData}
               form={form}
-              input={{
-                placeholder: "Introduce el precio por persona.",
-              }}
-              label="Precio por persona"
+              label="Grupo de precio"
               loading={loading}
-              name="price"
-              showCurrency
-              description="Es el coste por persona del traje."
+              name="suitGroup"
+              placeholder="Selecciona un grupo de precio"
             />
             <NumberFormField
               form={form}
               input={{
                 placeholder:
-                  "Introduce el total pagado para este tipo de traje.",
+                  "Introduce las unidades consumidas en el año actual.",
               }}
-              label="Total pagado"
+              label="Consumido año actual"
+              loading={loading}
+              name="units"
+              description="Son el número de unidades consumidas (pedidas - devueltas) en el año actual."
+            />
+            <NumberFormField
+              form={form}
+              input={{
+                placeholder: "Introduce el precio unitario.",
+              }}
+              label="Precio por unidad"
+              loading={loading}
+              name="unitPrice"
+              showCurrency
+              description="Es el precio unitario de coste de cada traje."
+            />
+            <NumberFormField
+              form={form}
+              input={{
+                disabled: true,
+                placeholder: "Introduce el total.",
+              }}
+              label="Coste total"
+              loading={loading}
+              name="total"
+              showCurrency
+              description="Es el coste total que se debe pagar por estos trajes."
+            />
+            <NumberFormField
+              form={form}
+              input={{
+                placeholder: "Introduce el importe pagado.",
+              }}
+              label="Pagado"
               loading={loading}
               name="paid"
               showCurrency
-              description="Es la cantidad pagada total por la comparsa para este tipo de traje."
+              description="Es el importe pagado para estos trajes hasta la fecha."
             />
             <TextFormField
               form={form}

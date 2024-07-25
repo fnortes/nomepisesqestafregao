@@ -4,10 +4,11 @@ import { formatCurrency } from "@/lib/utils";
 import CellAction from "./cell-action";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { AgeGroup, Gender } from "@prisma/client";
+import { AgeGroup, Gender, SuitGroup } from "@prisma/client";
 import {
   AGE_GROUPS_LITERALS,
   GENDER_LITERALS,
+  SUIT_GROUPS_LITERALS,
 } from "../../clients/clients.constants";
 
 export type SuitColumn = {
@@ -16,7 +17,10 @@ export type SuitColumn = {
   gender: Gender;
   id: string;
   paid: number;
-  price: number;
+  suitGroup: SuitGroup;
+  total: number;
+  unitPrice: number;
+  units: number;
 };
 
 export const columns: ColumnDef<SuitColumn>[] = [
@@ -31,9 +35,23 @@ export const columns: ColumnDef<SuitColumn>[] = [
     cell: ({ row }) => AGE_GROUPS_LITERALS[row.original.ageGroup],
   },
   {
+    accessorKey: "suitGroup",
+    header: "Grupo de precio",
+    cell: ({ row }) => SUIT_GROUPS_LITERALS[row.original.suitGroup],
+  },
+  {
+    accessorKey: "units",
+    header: "Unidades",
+  },
+  {
     accessorKey: "price",
     header: "Precio por persona",
-    cell: ({ row }) => formatCurrency(row.original.price),
+    cell: ({ row }) => formatCurrency(row.original.unitPrice),
+  },
+  {
+    accessorKey: "total",
+    header: "Total coste",
+    cell: ({ row }) => formatCurrency(row.original.total),
   },
   {
     accessorKey: "paid",

@@ -16,13 +16,26 @@ export default async function SuitsPage({ params: { yearWorkId } }: Props) {
   });
 
   const formattedSuits: SuitColumn[] = suits.map(
-    ({ comments, id, paid, price, ageGroup, gender }) => ({
-      comments: comments ?? "",
+    ({
+      ageGroup,
+      comments,
+      gender,
       id,
       paid,
-      price,
+      suitGroup,
+      total,
+      unitPrice,
+      units,
+    }) => ({
       ageGroup,
+      comments: comments ?? "",
       gender,
+      id,
+      paid,
+      suitGroup,
+      total,
+      unitPrice,
+      units,
     })
   );
 
