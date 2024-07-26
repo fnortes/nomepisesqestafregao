@@ -66,7 +66,11 @@ export const getClientsByFoodAndAgeGroup = (
     .map(
       (client): ClientUnitsFood => ({
         units: clientToFoodCostMapper(client, foodId),
-        name: getClientName(client),
+        name: `${getClientName(client)}${
+          client.comments && client.comments.length > 0
+            ? ` - [${client.comments}]`
+            : ""
+        }`,
       })
     )
     .filter((c) => c.units > 0);
