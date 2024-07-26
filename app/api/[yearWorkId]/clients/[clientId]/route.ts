@@ -13,6 +13,7 @@ export async function PATCH(
 
     const {
       ageGroup,
+      allergiesComments,
       barGroups,
       comments,
       email,
@@ -93,19 +94,16 @@ export async function PATCH(
         id: clientId,
       },
       data: {
-        yearWorkId,
-        firstName,
-        lastName,
-        email,
-        phone,
-        gender,
         ageGroup,
-        isNew,
+        allergiesComments,
         barGroups: {
           create: barGroups.map((barGroup: string) => ({
             barGroup: { connect: { id: barGroup } },
           })),
         },
+        comments,
+        email,
+        firstName,
         foods: {
           create: (foods as ClientsOnFoods[]).map((food) => ({
             food: { connect: { id: food.foodId } },
@@ -113,12 +111,16 @@ export async function PATCH(
             attend: food.attend,
           })),
         },
+        gender,
+        isNew,
+        lastName,
+        phone,
         priceTypeId,
-        shirtSize,
         quotaModifier,
         quotaPaid,
-        comments,
+        shirtSize,
         suitGroup,
+        yearWorkId,
       },
     });
 

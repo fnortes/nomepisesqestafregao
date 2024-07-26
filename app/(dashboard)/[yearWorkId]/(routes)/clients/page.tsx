@@ -23,6 +23,7 @@ export default async function ClientPage({ params: { yearWorkId } }: Props) {
   const formattedClients: ClientColumn[] = clients.map(
     ({
       ageGroup,
+      allergiesComments,
       comments,
       email,
       firstName,
@@ -40,6 +41,7 @@ export default async function ClientPage({ params: { yearWorkId } }: Props) {
       yearWork,
     }) => ({
       ageGroup,
+      allergiesComments,
       comments,
       email,
       firstName,

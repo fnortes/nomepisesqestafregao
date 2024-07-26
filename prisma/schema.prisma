@@ -115,27 +115,28 @@ model PriceType {
 }
 
 model Client {
-  id            String                @id @default(uuid())
-  yearWorkId    String
-  yearWork      YearWork              @relation("YearWorkToClient", fields: [yearWorkId], references: [id])
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
-  firstName      String
-  lastName      String?
-  email         String?     
-  phone         String?
-  gender        Gender                @default(MAN)
-  ageGroup      AgeGroup              @default(ADULT)
-  suitGroup     SuitGroup             @default(GROUP_1)
-  isNew         Boolean               @default(false)
-  barGroups     ClientsOnBarGroups[]
-  foods         ClientsOnFoods[]
-  priceTypeId   String
-  priceType     PriceType             @relation("PriceTypeToClient", fields: [priceTypeId], references: [id])
-  shirtSize     ShirtSize?  
-  quotaModifier  Float                 @default(0)
-  quotaPaid     Float                 @default(0)
-  comments      String?
+  id                     String                @id @default(uuid())
+  yearWorkId             String
+  yearWork               YearWork              @relation("YearWorkToClient", fields: [yearWorkId], references: [id])
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  firstName               String
+  lastName               String?
+  email                  String?     
+  phone                  String?
+  gender                 Gender                @default(MAN)
+  ageGroup               AgeGroup              @default(ADULT)
+  suitGroup              SuitGroup             @default(GROUP_1)
+  isNew                  Boolean               @default(false)
+  barGroups              ClientsOnBarGroups[]
+  foods                  ClientsOnFoods[]
+  priceTypeId            String
+  priceType              PriceType             @relation("PriceTypeToClient", fields: [priceTypeId], references: [id])
+  shirtSize              ShirtSize?  
+  quotaModifier           Float                 @default(0)
+  quotaPaid              Float                 @default(0)
+  comments               String?
+  allergiesComments      String?
 
   @@index([yearWorkId])
   @@index([priceTypeId])

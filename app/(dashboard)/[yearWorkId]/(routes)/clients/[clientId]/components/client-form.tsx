@@ -88,15 +88,13 @@ export default function ClientForm({
   const form = useForm<ClientFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: initialData?.firstName,
-      lastName: initialData?.lastName,
-      phone: initialData?.phone,
-      email: initialData?.email,
-      gender: initialData?.gender,
       ageGroup: initialData?.ageGroup,
-      isNew: initialData?.isNew ?? false,
+      allergiesComments: initialData?.allergiesComments,
       barGroups:
         initialData?.barGroups.map((barGroup) => barGroup.barGroupId) ?? [],
+      comments: initialData?.comments,
+      email: initialData?.email,
+      firstName: initialData?.firstName,
       foods: foods.map(({ id }) => {
         const initialFood = initialData?.foods.find((f) => f.foodId === id);
 
@@ -106,11 +104,14 @@ export default function ClientForm({
           quantity: initialFood?.quantity ?? 0,
         };
       }),
+      gender: initialData?.gender,
+      isNew: initialData?.isNew ?? false,
+      lastName: initialData?.lastName,
+      phone: initialData?.phone,
       priceTypeId: initialData?.priceTypeId ?? "",
-      shirtSize: initialData?.shirtSize,
       quotaModifier: initialData?.quotaModifier ?? 0,
       quotaPaid: initialData?.quotaPaid ?? 0,
-      comments: initialData?.comments,
+      shirtSize: initialData?.shirtSize,
       suitGroup: initialData?.suitGroup,
     },
   });
@@ -366,6 +367,17 @@ export default function ClientForm({
                 label="Comentarios"
                 loading={loading}
                 name="comments"
+              />
+            </div>
+            <div className="col-span-3">
+              <TextFormField
+                form={form}
+                input={{
+                  placeholder: "Alergias del comparsista",
+                }}
+                label="Alergias"
+                loading={loading}
+                name="allergiesComments"
               />
             </div>
           </div>

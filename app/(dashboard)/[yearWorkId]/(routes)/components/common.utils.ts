@@ -67,8 +67,8 @@ export const getClientsByFoodAndAgeGroup = (
       (client): ClientUnitsFood => ({
         units: clientToFoodCostMapper(client, foodId),
         name: `${getClientName(client)}${
-          client.comments && client.comments.length > 0
-            ? ` - [${client.comments}]`
+          client.allergiesComments && client.allergiesComments.length > 0
+            ? ` - [${client.allergiesComments}]`
             : ""
         }`,
       })

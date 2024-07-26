@@ -14,6 +14,7 @@ export async function POST(
 
     const {
       ageGroup,
+      allergiesComments,
       barGroups,
       comments,
       email,
@@ -83,19 +84,16 @@ export async function POST(
 
     const client = await prismadb.client.create({
       data: {
-        yearWorkId,
-        firstName,
-        lastName,
-        email,
-        phone,
-        gender,
         ageGroup,
-        isNew,
+        allergiesComments,
         barGroups: {
           create: barGroups.map((barGroup: string) => ({
             barGroup: { connect: { id: barGroup } },
           })),
         },
+        comments,
+        email,
+        firstName,
         foods: {
           create: (foods as ClientsOnFoods[]).map((food) => ({
             food: { connect: { id: food.foodId } },
@@ -103,12 +101,16 @@ export async function POST(
             attend: food.attend,
           })),
         },
+        gender,
+        isNew,
+        lastName,
+        phone,
         priceTypeId,
-        shirtSize,
         quotaModifier,
         quotaPaid,
-        comments,
+        shirtSize,
         suitGroup,
+        yearWorkId,
       },
     });
 

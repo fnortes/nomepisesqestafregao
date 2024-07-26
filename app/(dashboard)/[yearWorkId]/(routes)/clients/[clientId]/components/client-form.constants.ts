@@ -12,6 +12,7 @@ import {
 
 export const formSchema = z.object({
   ageGroup: z.nativeEnum(AgeGroup),
+  allergiesComments: z.string().optional().nullable(),
   barGroups: z.array(z.string()),
   comments: z.string().optional().nullable(),
   email: z.string().email().optional().nullable(),

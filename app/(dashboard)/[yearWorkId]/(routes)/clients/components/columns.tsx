@@ -23,6 +23,7 @@ import {
 
 export type ClientColumn = {
   ageGroup: AgeGroup;
+  allergiesComments: string | null;
   comments: string | null;
   email: string | null;
   firstName: string;
@@ -123,6 +124,10 @@ export const columns: ColumnDef<ClientColumn>[] = [
   {
     accessorKey: "comments",
     header: "Comentarios",
+  },
+  {
+    accessorKey: "allergiesComments",
+    header: "Alergias",
   },
   {
     id: "actions",
