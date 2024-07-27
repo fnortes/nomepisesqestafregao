@@ -15,7 +15,7 @@ export default async function SalesPage({ params: { yearWorkId } }: Props) {
   const sales = await prismadb.sale.findMany({
     include: { yearWork: true, saleCategory: true },
     where: { yearWorkId },
-    orderBy: { createdAt: "desc" },
+    orderBy: { date: "asc" },
   });
 
   const formattedSales: SaleColumn[] = sales.map(
