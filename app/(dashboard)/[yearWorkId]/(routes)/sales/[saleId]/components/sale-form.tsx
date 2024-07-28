@@ -18,10 +18,9 @@ import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { formSchema } from "./sale-form.constants";
 
-import type { Expense, Sale, SaleCategory, YearWork } from "@prisma/client";
-import { EXPENSE_FAMILY_LITERALS } from "../../../expenseCategories/components/expenseCategories.constants";
-import type { SaleFormValues } from "./sale-form.types";
 import DateFormField from "@/components/form/date-form-field";
+import type { Expense, Sale, SaleCategory, YearWork } from "@prisma/client";
+import type { SaleFormValues } from "./sale-form.types";
 
 interface Props {
   readonly initialData: Sale | null;
