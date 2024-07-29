@@ -43,7 +43,7 @@ interface PrintableConfig {
 interface DataTableProps<TData, TValue> {
   readonly columns: ColumnDef<TData, TValue>[];
   readonly data: TData[];
-  readonly searchConfig: DataTableSearchConfig;
+  readonly searchConfig?: DataTableSearchConfig;
   readonly pageSize?: number;
   readonly printableConfig?: PrintableConfig;
   readonly dataToCsv?: any[];
@@ -132,7 +132,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      {searchConfig.searchFields.length > 0 && (
+      {searchConfig && searchConfig.searchFields.length > 0 && (
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 py-4">
           {searchConfig.searchFields.map(({ key, placeholder }) => (
             <Input

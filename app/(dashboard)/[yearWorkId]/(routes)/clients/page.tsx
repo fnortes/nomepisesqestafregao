@@ -20,6 +20,11 @@ export default async function ClientPage({ params: { yearWorkId } }: Props) {
     orderBy: { createdAt: "desc" },
   });
 
+  const priceTypes = await prismadb.priceType.findMany({
+    where: { yearWorkId },
+    orderBy: { name: "asc" },
+  });
+
   const formattedClients: ClientColumn[] = clients.map(
     ({
       ageGroup,
@@ -63,7 +68,7 @@ export default async function ClientPage({ params: { yearWorkId } }: Props) {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ClientsClient clients={formattedClients} />
+        <ClientsClient clients={formattedClients} priceTypes={priceTypes} />
       </div>
     </div>
   );

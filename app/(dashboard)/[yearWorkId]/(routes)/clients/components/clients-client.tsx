@@ -7,13 +7,18 @@ import Heading from "@/components/heading";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { Separator } from "@/components/ui/separator";
+import { PriceType } from "@prisma/client";
+import { useState } from "react";
+import ClientsSearchForm from "./clients-search-form";
 import { columns, type ClientColumn } from "./columns";
 
 interface Props {
   readonly clients: ClientColumn[];
+  readonly priceTypes: PriceType[];
 }
 
-export default function ClientsClient({ clients }: Props) {
+export default function ClientsClient({ clients, priceTypes }: Props) {
+  const [tableData, setTableData] = useState<ClientColumn[]>(clients);
   const router = useRouter();
   const params = useParams();
 
@@ -22,7 +27,7 @@ export default function ClientsClient({ clients }: Props) {
       <div className="flex items-center justify-between">
         <Heading
           description="Administra los comparsistas apuntados para el año de trabajo seleccionado"
-          title={`Comparsistas (${clients.length})`}
+          title={`Comparsistas (${tableData.length})`}
         />
         <Button
           onClick={() => router.push(`/${params.yearWorkId}/clients/new`)}
@@ -32,22 +37,13 @@ export default function ClientsClient({ clients }: Props) {
         </Button>
       </div>
       <Separator />
-      <DataTable
-        columns={columns}
-        data={clients}
-        searchConfig={{
-          searchFields: [
-            {
-              key: "firstName",
-              placeholder: "Buscar por nombre...",
-            },
-            {
-              key: "ageGroup",
-              placeholder: "Buscar por grupo de edad...",
-            },
-          ],
-        }}
+      <ClientsSearchForm
+        clients={clients}
+        priceTypes={priceTypes}
+        setTableData={setTableData}
       />
+      <Separator />
+      <DataTable columns={columns} data={tableData} />
     </>
   );
 }
