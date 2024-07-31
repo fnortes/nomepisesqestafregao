@@ -54,25 +54,27 @@ export const countClientsByFood = (
 
 export const getClientsByFoodAndAgeGroup = (
   clients: GeneralClient[],
-  foodId: string,
-  ageGroup: AgeGroup
+  foodId: string
+  // ageGroup: AgeGroup
 ): FoodClientCount => {
   const count = clients
     .filter(
       (client) =>
-        client.ageGroup === ageGroup &&
+        // client.ageGroup === ageGroup &&
         client.foods.filter((f) => f.foodId === foodId).length > 0
     )
-    .map(
-      (client): ClientUnitsFood => ({
-        units: clientToFoodCostMapper(client, foodId),
-        name: `${getClientName(client)}${
+    .map((client): ClientUnitsFood => {
+      const units = clientToFoodCostMapper(client, foodId);
+
+      return {
+        units,
+        name: `(${units}) ${getClientName(client)}${
           client.allergiesComments && client.allergiesComments.length > 0
             ? ` - [${client.allergiesComments}]`
             : ""
         }`,
-      })
-    )
+      };
+    })
     .filter((c) => c.units > 0);
 
   return count.length > 0

@@ -15,44 +15,49 @@ const foodToDashboardDataMapper = (
   food: Food,
   clients: GeneralClient[]
 ): DashboardFoodsColumn => {
-  const { total: totalAdult, clients: totalAdultList } =
-    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.ADULT);
-  const { total: totalTeen, clients: totalTeenList } =
-    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.TEEN);
-  const { total: totalTeenHalfPortion, clients: totalTeenHalfPortionList } =
-    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.TEEN_HALF_PORTION);
-  const { total: totalChild, clients: totalChildList } =
-    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.CHILD);
-  const { total: totalChildHalfPortion, clients: totalChildHalfPortionList } =
-    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.CHILD_HALF_PORTION);
-  const { total: totalBaby, clients: totalBabyList } =
-    getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.BABY);
-  const total =
-    totalAdult +
-    totalTeen +
-    totalTeenHalfPortion +
-    totalChild +
-    totalChildHalfPortion +
-    totalBaby;
+  const { total, clients: totalList } = getClientsByFoodAndAgeGroup(
+    clients,
+    food.id
+  );
+  // const { total: totalAdult, clients: totalAdultList } =
+  //   getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.ADULT);
+  // const { total: totalTeen, clients: totalTeenList } =
+  //   getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.TEEN);
+  // const { total: totalTeenHalfPortion, clients: totalTeenHalfPortionList } =
+  //   getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.TEEN_HALF_PORTION);
+  // const { total: totalChild, clients: totalChildList } =
+  //   getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.CHILD);
+  // const { total: totalChildHalfPortion, clients: totalChildHalfPortionList } =
+  //   getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.CHILD_HALF_PORTION);
+  // const { total: totalBaby, clients: totalBabyList } =
+  //   getClientsByFoodAndAgeGroup(clients, food.id, AgeGroup.BABY);
+  // const total =
+  //   totalAdult +
+  //   totalTeen +
+  //   totalTeenHalfPortion +
+  //   totalChild +
+  //   totalChildHalfPortion +
+  //   totalBaby;
 
   return {
     date: food.date,
     price: food.price,
     title: food.title,
     total,
-    totalAdult,
-    totalAdultList,
-    totalBaby,
-    totalBabyList,
-    totalChild,
-    totalChildHalfPortion,
-    totalChildHalfPortionList,
-    totalChildList,
+    totalList,
+    // totalAdult,
+    // totalAdultList,
+    // totalBaby,
+    // totalBabyList,
+    // totalChild,
+    // totalChildHalfPortion,
+    // totalChildHalfPortionList,
+    // totalChildList,
     totalPrice: total * food.price,
-    totalTeen,
-    totalTeenHalfPortion,
-    totalTeenHalfPortionList,
-    totalTeenList,
+    // totalTeen,
+    // totalTeenHalfPortion,
+    // totalTeenHalfPortionList,
+    // totalTeenList,
   };
 };
 
