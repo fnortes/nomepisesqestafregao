@@ -1,6 +1,5 @@
 import prismadb from "@/lib/prismadb";
 import SaleForm from "./components/sale-form";
-import MoneyCounterForm from "./components/money-counter-form";
 
 interface Props {
   readonly params: {
@@ -39,7 +38,6 @@ export default async function SalePage({
           categories={categories}
           yearWork={yearWork}
         />
-        <MoneyCounterForm />
       </div>
     </div>
   );
