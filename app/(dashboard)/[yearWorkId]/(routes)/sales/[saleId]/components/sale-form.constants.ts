@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const formSchema = z.object({
-  benefitAmount: z.number().min(0).max(9999),
+  benefitAmount: z.number().max(9999),
   comments: z.string().optional().nullable(),
   date: z.date(),
   finallyAmount: z.number().min(0).max(9999),
