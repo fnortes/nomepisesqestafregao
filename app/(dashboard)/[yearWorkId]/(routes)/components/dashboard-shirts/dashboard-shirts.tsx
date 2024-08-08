@@ -235,7 +235,7 @@ export default function DashboardShirts({ clients }: Props) {
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen de camisetas de todas la comparsa para el año de trabajo seleccionado"
-          title={`Desglose camisetas (${dashboardData
+          title={`Camisetas (${dashboardData
             .map((d) => d.resume)
             .reduce((a, b) => a + b, 0)})`}
         />

@@ -61,7 +61,7 @@ export default function DashboardChairs({
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen del pedido de mesas y sillas"
-          title={`Desglose del alquiler de mesas y sillas (${expenses.length})`}
+          title={`Mesas y sillas (${expenses.length})`}
         />
         <CollapsibleTrigger>
           <Button size="icon" variant="outline">

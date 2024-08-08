@@ -164,7 +164,7 @@ export default function DashboardClients({ clients }: Props) {
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen de todos los comparsistas categorizados para el año de trabajo seleccionado"
-          title={`Desglose comparsistas (${clients.length})`}
+          title={`Comparsistas (${clients.length})`}
         />
         <CollapsibleTrigger>
           <Button size="icon" variant="outline">

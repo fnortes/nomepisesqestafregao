@@ -41,7 +41,7 @@ export default function DashboardFoods({
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen de todas las comidas, con la agenda de quienes vienen a cada una de ellas"
-          title={`Desglose comidas para ${clients.length} comparsistas`}
+          title={`Comidas para ${clients.length} comparsistas`}
         />
         <CollapsibleTrigger>
           <Button size="icon" variant="outline">

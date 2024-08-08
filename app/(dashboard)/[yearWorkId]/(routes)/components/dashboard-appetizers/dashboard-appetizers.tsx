@@ -61,7 +61,7 @@ export default function DashboardAppetizers({
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen del pedido de aperitivos y postres"
-          title={`Desglose del pedido de aperitivos y postres (${expenses.length})`}
+          title={`Aperitivos y postres (${expenses.length})`}
         />
         <CollapsibleTrigger>
           <Button size="icon" variant="outline">

@@ -39,7 +39,7 @@ export default function DashboardSuits({
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen del pedido de los trajes del desfile de disfraces"
-          title={`Desglose del pedido de los trajes para ${
+          title={`Trajes para ${
             clients.filter((c) => c.priceType.paradeSuit).length
           } comparsistas`}
         />

@@ -61,7 +61,7 @@ export default function DashboardExtra({
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen de todos los gastos extra o varios"
-          title={`Desglose de todos los gastos extra (${expenses.length})`}
+          title={`Gastos extra (${expenses.length})`}
         />
         <CollapsibleTrigger>
           <Button size="icon" variant="outline">

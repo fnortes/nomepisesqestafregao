@@ -61,7 +61,7 @@ export default function DashboardDrinks({
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen del pedido de toda la bebida"
-          title={`Desglose del pedido de toda la bebida (${expenses.length})`}
+          title={`Bebida (${expenses.length})`}
         />
         <CollapsibleTrigger>
           <Button size="icon" variant="outline">

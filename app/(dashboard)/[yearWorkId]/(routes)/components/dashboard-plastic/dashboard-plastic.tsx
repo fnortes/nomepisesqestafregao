@@ -61,7 +61,7 @@ export default function DashboardPlastic({
       <div className="flex items-center justify-between">
         <Heading
           description="Ver el resumen del pedido de plástico"
-          title={`Desglose del pedido de plástico (${expenses.length})`}
+          title={`Plástico (${expenses.length})`}
         />
         <CollapsibleTrigger>
           <Button size="icon" variant="outline">
