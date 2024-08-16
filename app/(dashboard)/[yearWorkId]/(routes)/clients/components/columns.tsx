@@ -1,6 +1,6 @@
 "use client";
 
-import { calculateQuote, formatCurrency } from "@/lib/utils";
+import { calculateQuote, cn, formatCurrency } from "@/lib/utils";
 import CellAction from "./cell-action";
 
 import type {
@@ -119,7 +119,25 @@ export const columns: ColumnDef<ClientColumn>[] = [
   {
     accessorKey: "quotaPaid",
     header: "Pagado cuota",
-    cell: ({ row }) => formatCurrency(row.original.quotaPaid),
+    cell: ({ row }) => (
+      <span
+        className={cn(
+          "font-bold",
+          calculateQuote({
+            ageGroup: row.original.ageGroup,
+            isNew: row.original.isNew,
+            priceType: row.original.priceType,
+            yearWork: row.original.yearWork,
+            foodQuantities: row.original.foods.map((f) => f.quantity),
+            quotaModifier: row.original.quotaModifier,
+          }) === row.original.quotaPaid
+            ? "text-green-600"
+            : "text-red-600"
+        )}
+      >
+        {formatCurrency(row.original.quotaPaid)}
+      </span>
+    ),
   },
   {
     accessorKey: "comments",
