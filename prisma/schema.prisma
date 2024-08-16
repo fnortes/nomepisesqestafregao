@@ -175,7 +175,7 @@ model ExpenseCategory {
   updatedAt                     DateTime      @updatedAt
   family                        ExpenseFamily
   name                          String
-  previousYearWorkUnitsConsumed Int           @default(0) // Este campo no se está usando ahora mismo. Valorar si interesa tener calculado todas las unidades pedidas del año anterior para una categoría de gastos.
+  previousYearWorkUnitsConsumed Int           @default(0)
   comments                      String?
 
   expenses                      Expense[]     @relation("ExpenseCategoryToExpense")
@@ -225,7 +225,7 @@ model ClientsOnFoods {
   food          Food      @relation(fields: [foodId], references: [id], onDelete: Cascade)
   clientId      String
   client        Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  quantity      Int       @default(0)
+  quantity      Float       @default(0)
   attend        Boolean   @default(true)
 
   @@id([foodId, clientId])
@@ -268,9 +268,6 @@ model SaleCategory {
 
   sales          Sale[]     @relation("SaleCategoryToSale")
 }
-// Bonos de 5 tickets
-// Bonos de 10 tickets
-// Bebida en barra
 
 model Sale {
   id                        String          @id @default(uuid())
@@ -290,7 +287,3 @@ model Sale {
   @@index([yearWorkId])
   @@index([saleCategoryId])
 }
-
-// Para llevar la cantidad de cada moneda o billete que dejas en la barra y que luego recoges, para contar, simplemente porner una tabla a modo de ayuda,
-// en la página propia del listado de ventas, donde tu le pongas el numero de cada billete o moneda y te calcule el total para esa moneda 
-// y el total sumando todas.
