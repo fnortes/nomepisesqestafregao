@@ -94,6 +94,18 @@ export async function DELETE(
       );
     }
 
+    await prismadb.clientsOnBarGroups.deleteMany({
+      where: {
+        barGroupId,
+      },
+    });
+
+    await prismadb.turn.deleteMany({
+      where: {
+        barGroupId,
+      },
+    });
+
     const barGroup = await prismadb.barGroup.deleteMany({
       where: {
         id: barGroupId,
