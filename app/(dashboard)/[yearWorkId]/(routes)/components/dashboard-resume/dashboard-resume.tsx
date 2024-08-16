@@ -68,7 +68,8 @@ export default function DashboardResume({
     costsToPaid +
     yearWork.previousYearWorkAmount +
     yearWork.commissionHelp +
-    yearWork.awardsReward;
+    yearWork.awardsReward +
+    totalSalesBenefits;
 
   const costsCurrentPaid =
     totalAppetizersExpensesCurrentPaid +
