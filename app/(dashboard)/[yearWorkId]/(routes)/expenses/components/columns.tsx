@@ -1,6 +1,6 @@
 "use client";
 
-import { formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import CellAction from "./cell-action";
 
 import type { ExpenseCategory, YearWork } from "@prisma/client";
@@ -77,7 +77,18 @@ export const columns: ColumnDef<ExpenseColumn>[] = [
   {
     accessorKey: "paid",
     header: "Pagado",
-    cell: ({ row }) => formatCurrency(row.original.paid),
+    cell: ({ row }) => (
+      <span
+        className={cn(
+          "font-bold",
+          row.original.total === row.original.paid
+            ? "text-green-600"
+            : "text-red-600"
+        )}
+      >
+        {formatCurrency(row.original.paid)}
+      </span>
+    ),
   },
   {
     id: "actions",
