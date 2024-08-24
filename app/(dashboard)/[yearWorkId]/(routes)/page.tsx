@@ -146,9 +146,7 @@ export default async function DashboardPage({ params: { yearWorkId } }: Props) {
           totalSuitsCurrentPaid={suitsExpensesData.totalCurrentPaid}
           totalFoodsToPaid={foodsExpensesData.totalToPaid}
           totalFoodsCurrentPaid={foodsExpensesData.totalCurrentPaid}
-          totalSalesBenefits={sales
-            .map((s) => s.benefitAmount)
-            .reduce((a, b) => a + b, 0)}
+          sales={sales}
         />
         <DashboardClients clients={clients} />
         <DashboardQuotes

@@ -4,7 +4,7 @@ import Heading from "@/components/heading";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils";
-import { YearWork } from "@prisma/client";
+import { Sale, YearWork } from "@prisma/client";
 import { Calculator, CopyMinus, Wallet } from "lucide-react";
 import { GeneralClient } from "../common.types";
 import {
@@ -24,7 +24,7 @@ interface Props {
   readonly totalFoodsToPaid: number;
   readonly totalPlasticExpensesCurrentPaid: number;
   readonly totalPlasticExpensesToPaid: number;
-  readonly totalSalesBenefits: number;
+  readonly sales: Sale[];
   readonly totalSuitsCurrentPaid: number;
   readonly totalSuitsToPaid: number;
   readonly totalVariousExpensesCurrentPaid: number;
@@ -43,7 +43,7 @@ export default function DashboardResume({
   totalFoodsToPaid,
   totalPlasticExpensesCurrentPaid,
   totalPlasticExpensesToPaid,
-  totalSalesBenefits,
+  sales,
   totalSuitsCurrentPaid,
   totalSuitsToPaid,
   totalVariousExpensesCurrentPaid,
@@ -53,6 +53,13 @@ export default function DashboardResume({
 }: Props) {
   const totalClientsToPaid = calculateTotalClientsToPaid(clients, yearWork);
   const totalClientsCurrentPaid = calculateTotalClientsCurrentPaid(clients);
+  const totalSalesBenefits = sales
+    .map((s) => s.benefitAmount)
+    .reduce((a, b) => a + b, 0);
+  const barCash = sales.find(
+    (s) => s.date.toISOString() === yearWork.firstPartyDay.toISOString()
+  );
+  const barCashInitialAmount = barCash?.initialAmount ?? 0;
 
   const costsToPaid =
     totalAppetizersExpensesToPaid +
@@ -83,7 +90,8 @@ export default function DashboardResume({
   const totalCurrentPaidWithPreviousYearWorkAmount =
     totalClientsCurrentPaid -
     costsCurrentPaid +
-    yearWork.previousYearWorkAmount;
+    yearWork.previousYearWorkAmount -
+    barCashInitialAmount;
 
   const totalCurrentPaidWithSales =
     totalCurrentPaidWithPreviousYearWorkAmount + totalSalesBenefits;
@@ -176,7 +184,9 @@ export default function DashboardResume({
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Total real calculado teniendo en cuenta el dinero sobrante del año
-            anterior.
+            anterior ({formatCurrency(yearWork.previousYearWorkAmount)}) y el
+            efectivo sacado de la cuenta para la barra (
+            {formatCurrency(barCashInitialAmount)}).
           </AlertDescription>
         </Alert>
         <Alert>
