@@ -51,15 +51,33 @@ export default function DashboardResume({
   yearWork,
   totalFoodsCurrentPaid,
 }: Props) {
-  const totalClientsToPaid = calculateTotalClientsToPaid(clients, yearWork);
   const totalClientsCurrentPaid = calculateTotalClientsCurrentPaid(clients);
-  const totalSalesBenefits = sales
-    .map((s) => s.benefitAmount)
-    .reduce((a, b) => a + b, 0);
   const barCash = sales.find(
     (s) => s.date.toISOString() === yearWork.firstPartyDay.toISOString()
   );
   const barCashInitialAmount = barCash?.initialAmount ?? 0;
+
+  const costsCurrentPaid =
+    totalAppetizersExpensesCurrentPaid +
+    totalChairsExpensesCurrentPaid +
+    totalDrinksExpensesCurrentPaid +
+    totalPlasticExpensesCurrentPaid +
+    totalSuitsCurrentPaid +
+    totalVariousExpensesCurrentPaid +
+    totalFoodsCurrentPaid;
+
+  const currentTotalAccount =
+    totalClientsCurrentPaid -
+    costsCurrentPaid +
+    yearWork.previousYearWorkAmount -
+    barCashInitialAmount;
+
+  const currentTotalAccountWithCash = currentTotalAccount + yearWork.cash;
+
+  const totalClientsToPaid = calculateTotalClientsToPaid(clients, yearWork);
+  const totalSalesBenefits = sales
+    .map((s) => s.benefitAmount)
+    .reduce((a, b) => a + b, 0);
 
   const costsToPaid =
     totalAppetizersExpensesToPaid +
@@ -78,29 +96,20 @@ export default function DashboardResume({
     yearWork.awardsReward +
     totalSalesBenefits;
 
-  const costsCurrentPaid =
-    totalAppetizersExpensesCurrentPaid +
-    totalChairsExpensesCurrentPaid +
-    totalDrinksExpensesCurrentPaid +
-    totalPlasticExpensesCurrentPaid +
-    totalSuitsCurrentPaid +
-    totalVariousExpensesCurrentPaid +
-    totalFoodsCurrentPaid;
-
   const totalCurrentPaidWithPreviousYearWorkAmount =
     totalClientsCurrentPaid -
     costsCurrentPaid +
     yearWork.previousYearWorkAmount -
     barCashInitialAmount;
 
+  const totalCurrentPaidWithCash =
+    totalCurrentPaidWithPreviousYearWorkAmount + yearWork.cash;
+
   const totalCurrentPaidWithSales =
-    totalCurrentPaidWithPreviousYearWorkAmount + totalSalesBenefits;
+    totalCurrentPaidWithCash + totalSalesBenefits;
 
   const totalCurrentPaidWithAwardsReward =
     totalCurrentPaidWithSales + yearWork.awardsReward;
-
-  const totalCurrentPaidWithCommissionHelp =
-    totalCurrentPaidWithAwardsReward + yearWork.commissionHelp;
 
   return (
     <>
@@ -180,12 +189,15 @@ export default function DashboardResume({
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-gray-700">
-            {formatCurrency(totalCurrentPaidWithPreviousYearWorkAmount)}
+            {formatCurrency(currentTotalAccount)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
-            Total real calculado teniendo en cuenta el dinero sobrante del año
-            anterior ({formatCurrency(yearWork.previousYearWorkAmount)}) y el
-            efectivo sacado de la cuenta para la barra (
+            Total real en cuenta, calculado a partir del dinero ingresado por
+            los comparsistas ({formatCurrency(totalClientsCurrentPaid)}), más el
+            dinero disponible del año anterior (
+            {formatCurrency(yearWork.previousYearWorkAmount)}), restando los
+            costes actualmente pagados ({formatCurrency(costsCurrentPaid)}) y el
+            efectivo que se saca para la barra (
             {formatCurrency(barCashInitialAmount)}).
           </AlertDescription>
         </Alert>
@@ -202,11 +214,12 @@ export default function DashboardResume({
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-gray-700">
-            {formatCurrency(totalCurrentPaidWithSales)}
+            {formatCurrency(currentTotalAccountWithCash)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
-            Total real calculado a partir del total actual anterior más las
-            ventas realizadas.
+            Total real acumulado, calculado a partir del total real en cuenta (
+            {formatCurrency(currentTotalAccount)}) más todo el efectivo
+            disponible en caja ({formatCurrency(yearWork.cash)}).
           </AlertDescription>
         </Alert>
         <Alert>
@@ -219,16 +232,7 @@ export default function DashboardResume({
             ganados.
           </AlertDescription>
         </Alert>
-        <Alert>
-          <Calculator className="h-4 w-4" />
-          <AlertTitle className="text-gray-700">
-            {formatCurrency(totalCurrentPaidWithAwardsReward)}
-          </AlertTitle>
-          <AlertDescription className="text-sm text-muted-foreground">
-            Total real calculado a partir del total actual anterior más la
-            cantidad de premios recibidos.
-          </AlertDescription>
-        </Alert>
+        <div />
         <Alert>
           <Wallet className="h-4 w-4" />
           <AlertTitle className="text-green-500">
@@ -239,16 +243,7 @@ export default function DashboardResume({
             fiestas.
           </AlertDescription>
         </Alert>
-        <Alert>
-          <Calculator className="h-4 w-4" />
-          <AlertTitle className="text-gray-700">
-            {formatCurrency(totalCurrentPaidWithCommissionHelp)}
-          </AlertTitle>
-          <AlertDescription className="text-sm text-muted-foreground">
-            Total real calculado a partir del total actual anterior más la ayuda
-            de la comisión.
-          </AlertDescription>
-        </Alert>
+        <div />
         <Separator className="col-span-2" />
         <Alert>
           <Calculator className="h-4 w-4" />

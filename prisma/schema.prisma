@@ -26,6 +26,7 @@ model YearWork {
   previousYearWorkAmount  Float       @default(0)
   awardsReward            Float       @default(0)
   commissionHelp          Float       @default(0)
+  cash                    Float       @default(0)
   clients                 Client[]    @relation("YearWorkToClient")
   barGroups               BarGroup[]  @relation("YearWorkToBarGroup")
   priceTypes              PriceType[] @relation("YearWorkToPriceType")

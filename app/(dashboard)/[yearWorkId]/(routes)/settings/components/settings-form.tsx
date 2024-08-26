@@ -34,6 +34,7 @@ export default function SettingsForm({ initialData }: Props) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       awardsReward: initialData.awardsReward,
+      cash: initialData.cash,
       commissionHelp: initialData.commissionHelp,
       firstPartyDay: initialData.firstPartyDay,
       lastPartyDay: initialData.lastPartyDay,
@@ -211,6 +212,16 @@ export default function SettingsForm({ initialData }: Props) {
               label="Ayuda comisión"
               loading={loading}
               name="commissionHelp"
+              showCurrency
+            />
+            <NumberFormField
+              form={form}
+              input={{
+                placeholder: "Cantidad de efectivo actual en caja",
+              }}
+              label="Efectivo año actual"
+              loading={loading}
+              name="cash"
               showCurrency
             />
           </div>
