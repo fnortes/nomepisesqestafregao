@@ -41,7 +41,7 @@ export async function PATCH(
       !previousYearWorkAmount ||
       (!awardsReward && awardsReward !== 0) ||
       !commissionHelp ||
-      !cash
+      (!cash && cash !== 0)
     ) {
       return NextResponse.json(
         {
