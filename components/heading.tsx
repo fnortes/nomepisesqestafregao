@@ -1,6 +1,6 @@
 interface Props {
-  title: string;
-  description: string;
+  readonly title: string;
+  readonly description: string;
 }
 
 export default function Heading({ title, description }: Props) {

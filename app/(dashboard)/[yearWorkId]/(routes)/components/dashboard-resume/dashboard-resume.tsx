@@ -52,10 +52,6 @@ export default function DashboardResume({
   totalFoodsCurrentPaid,
 }: Props) {
   const totalClientsCurrentPaid = calculateTotalClientsCurrentPaid(clients);
-  const barCash = sales.find(
-    (s) => s.date.toISOString() === yearWork.firstPartyDay.toISOString()
-  );
-  const barCashInitialAmount = barCash?.initialAmount ?? 0;
 
   const costsCurrentPaid =
     totalAppetizersExpensesCurrentPaid +
@@ -65,14 +61,6 @@ export default function DashboardResume({
     totalSuitsCurrentPaid +
     totalVariousExpensesCurrentPaid +
     totalFoodsCurrentPaid;
-
-  const currentTotalAccount =
-    totalClientsCurrentPaid -
-    costsCurrentPaid +
-    yearWork.previousYearWorkAmount -
-    barCashInitialAmount;
-
-  const currentTotalAccountWithCash = currentTotalAccount + yearWork.cash;
 
   const totalClientsToPaid = calculateTotalClientsToPaid(clients, yearWork);
   const totalSalesBenefits = sales
@@ -88,28 +76,26 @@ export default function DashboardResume({
     totalFoodsToPaid +
     totalSuitsToPaid;
 
-  const totalToPaid =
-    totalClientsToPaid -
-    costsToPaid +
+  const currentCommissionHelp = yearWork.commissionHelpPaid
+    ? yearWork.commissionHelp
+    : 0;
+  const currentAwardsReward = yearWork.awardsRewardPaid
+    ? yearWork.awardsReward
+    : 0;
+
+  const totalCurrentReceipt =
+    currentCommissionHelp +
+    totalSalesBenefits +
+    currentAwardsReward +
     yearWork.previousYearWorkAmount +
-    yearWork.commissionHelp +
+    totalClientsCurrentPaid;
+
+  const totalEstimatedToReceipt =
     yearWork.awardsReward +
-    totalSalesBenefits;
-
-  const totalCurrentPaidWithPreviousYearWorkAmount =
-    totalClientsCurrentPaid -
-    costsCurrentPaid +
-    yearWork.previousYearWorkAmount -
-    barCashInitialAmount;
-
-  const totalCurrentPaidWithCash =
-    totalCurrentPaidWithPreviousYearWorkAmount + yearWork.cash;
-
-  const totalCurrentPaidWithSales =
-    totalCurrentPaidWithCash + totalSalesBenefits;
-
-  const totalCurrentPaidWithAwardsReward =
-    totalCurrentPaidWithSales + yearWork.awardsReward;
+    totalSalesBenefits +
+    yearWork.commissionHelp +
+    yearWork.previousYearWorkAmount +
+    totalClientsToPaid;
 
   return (
     <>
@@ -121,6 +107,180 @@ export default function DashboardResume({
       </div>
       <Separator />
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+        <div>
+          <h3 className="text-2xl font-bold tracking-tight">Real</h3>
+          <p className="text-sm text-muted-foreground">
+            Cálculos obtenidos a base a la actualidad (Gastos ya pagados e
+            ingresos ya cobrados).
+          </p>
+          <Separator />
+        </div>
+        <div>
+          <h3 className="text-2xl font-bold tracking-tight">Estimado</h3>
+          <p className="text-sm text-muted-foreground">
+            Cálculos obtenidos a base a una estimación (Gastos e ingresos a
+            futuro).
+          </p>
+          <Separator />
+        </div>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Varios: {formatCurrency(totalVariousExpensesCurrentPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos varios pagados actualmente.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Varios: {formatCurrency(totalVariousExpensesToPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos varios estimados a pagar.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Plástico: {formatCurrency(totalPlasticExpensesCurrentPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en plástico pagados actualmente.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Plástico: {formatCurrency(totalPlasticExpensesToPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en plástico estimados a pagar.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Alquiler de mesas y sillas:{" "}
+            {formatCurrency(totalChairsExpensesCurrentPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en alquiler de mesas y sillas pagados actualmente.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Alquiler de mesas y sillas:{" "}
+            {formatCurrency(totalChairsExpensesToPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en alquiler de mesas y sillas estimados a pagar.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Comidas: {formatCurrency(totalFoodsCurrentPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en comidas pagados actualmente.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Comidas: {formatCurrency(totalChairsExpensesToPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en comidas estimados a pagar.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Aperitivos y postres:{" "}
+            {formatCurrency(totalAppetizersExpensesCurrentPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en aperitivos y postres pagados actualmente.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Aperitivos y postres:{" "}
+            {formatCurrency(totalAppetizersExpensesToPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en aperitivos y postres estimados a pagar.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Trajes: {formatCurrency(totalSuitsCurrentPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en trajes pagados actualmente.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Trajes: {formatCurrency(totalSuitsToPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en trajes estimados a pagar.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Bebida: {formatCurrency(totalDrinksExpensesCurrentPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en bebida pagados actualmente.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700">
+            Bebida: {formatCurrency(totalDrinksExpensesToPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos en bebida estimados a pagar.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700 text-lg">
+            TOTAL GASTOS: {formatCurrency(costsCurrentPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos pagados actualmente.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-red-700 text-lg">
+            TOTAL GASTOS: {formatCurrency(costsToPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de gastos estimados a pagar.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Wallet className="h-4 w-4" />
+          <AlertTitle className="text-green-500">
+            {formatCurrency(totalClientsCurrentPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Cantidad total real de dinero pagado hasta la fecha por los
+            comparsista.
+          </AlertDescription>
+        </Alert>
         <Alert>
           <Wallet className="h-4 w-4" />
           <AlertTitle className="text-green-500">
@@ -136,44 +296,11 @@ export default function DashboardResume({
         <Alert>
           <Wallet className="h-4 w-4" />
           <AlertTitle className="text-green-500">
-            {formatCurrency(totalClientsCurrentPaid)}
+            {formatCurrency(yearWork.previousYearWorkAmount)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
-            Cantidad total real de dinero pagada hasta la fecha por los
-            comparsista.
-          </AlertDescription>
-        </Alert>
-        <Alert>
-          <CopyMinus className="h-4 w-4" />
-          <AlertTitle className="text-red-700">
-            {formatCurrency(costsToPaid)} (Varios:{" "}
-            {formatCurrency(totalVariousExpensesToPaid)}, Plástico:{" "}
-            {formatCurrency(totalPlasticExpensesToPaid)}, Sillas y mesas:{" "}
-            {formatCurrency(totalChairsExpensesToPaid)}, Comidas:{" "}
-            {formatCurrency(totalFoodsToPaid)}, Aperitivos y postres:{" "}
-            {formatCurrency(totalAppetizersExpensesToPaid)}, Trajes:{" "}
-            {formatCurrency(totalSuitsToPaid)}, Bebida:{" "}
-            {formatCurrency(totalDrinksExpensesToPaid)})
-          </AlertTitle>
-          <AlertDescription className="text-sm text-muted-foreground">
-            Cantidad total estimada de todos los gastos de la comparsa.
-          </AlertDescription>
-        </Alert>
-        <Alert>
-          <CopyMinus className="h-4 w-4" />
-          <AlertTitle className="text-red-700">
-            {formatCurrency(costsCurrentPaid)} (Varios:{" "}
-            {formatCurrency(totalVariousExpensesCurrentPaid)}, Plástico:{" "}
-            {formatCurrency(totalPlasticExpensesCurrentPaid)}, Sillas y mesas:{" "}
-            {formatCurrency(totalChairsExpensesCurrentPaid)}, Comidas:{" "}
-            {formatCurrency(totalFoodsCurrentPaid)}, Aperitivos y postres:{" "}
-            {formatCurrency(totalAppetizersExpensesCurrentPaid)}, Trajes:{" "}
-            {formatCurrency(totalSuitsCurrentPaid)}, Bebida:{" "}
-            {formatCurrency(totalDrinksExpensesCurrentPaid)})
-          </AlertTitle>
-          <AlertDescription className="text-sm text-muted-foreground">
-            Cantidad total real pagada hasta la fecha de todos los gastos de la
-            comparsa.
+            Cantidad total de dinero sobrante o disponible del año anterior al
+            actual.
           </AlertDescription>
         </Alert>
         <Alert>
@@ -187,18 +314,23 @@ export default function DashboardResume({
           </AlertDescription>
         </Alert>
         <Alert>
-          <Calculator className="h-4 w-4" />
-          <AlertTitle className="text-gray-700">
-            {formatCurrency(currentTotalAccount)}
+          <Wallet className="h-4 w-4" />
+          <AlertTitle className="text-green-500">
+            {formatCurrency(currentCommissionHelp)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
-            Total real en cuenta, calculado a partir del dinero ingresado por
-            los comparsistas ({formatCurrency(totalClientsCurrentPaid)}), más el
-            dinero disponible del año anterior (
-            {formatCurrency(yearWork.previousYearWorkAmount)}), restando los
-            costes actualmente pagados ({formatCurrency(costsCurrentPaid)}) y el
-            efectivo que se saca para la barra (
-            {formatCurrency(barCashInitialAmount)}).
+            Cantidad de dinero que se ha recibido de subvención de la comisión
+            de fiestas.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Wallet className="h-4 w-4" />
+          <AlertTitle className="text-green-500">
+            {formatCurrency(yearWork.commissionHelp)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Cantidad de dinero que se estima recibir como subvención la comisión
+            de fiestas.
           </AlertDescription>
         </Alert>
         <Alert>
@@ -207,19 +339,28 @@ export default function DashboardResume({
             {formatCurrency(totalSalesBenefits)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
-            Cantidad de dinero que hemos obtenido de beneficio de todas las
-            ventas realizadas.
+            Cantidad de dinero que se ha obtenido obtenido de beneficio de todas
+            las ventas realizadas.
           </AlertDescription>
         </Alert>
         <Alert>
-          <Calculator className="h-4 w-4" />
-          <AlertTitle className="text-gray-700">
-            {formatCurrency(currentTotalAccountWithCash)}
+          <Wallet className="h-4 w-4" />
+          <AlertTitle className="text-green-500">
+            {formatCurrency(totalSalesBenefits)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
-            Total real acumulado, calculado a partir del total real en cuenta (
-            {formatCurrency(currentTotalAccount)}) más todo el efectivo
-            disponible en caja ({formatCurrency(yearWork.cash)}).
+            Cantidad de dinero que se ha obtenido obtenido de beneficio de todas
+            las ventas realizadas.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Wallet className="h-4 w-4" />
+          <AlertTitle className="text-green-500">
+            {formatCurrency(currentAwardsReward)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Cantidad de dinero que hemos recibido por parte de los premios
+            ganados.
           </AlertDescription>
         </Alert>
         <Alert>
@@ -228,27 +369,42 @@ export default function DashboardResume({
             {formatCurrency(yearWork.awardsReward)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
-            Cantidad de dinero que hemos recibido por parte de los premios
-            ganados.
+            Cantidad de dinero que se estima recibir por premios ganados.
           </AlertDescription>
         </Alert>
-        <div />
         <Alert>
-          <Wallet className="h-4 w-4" />
-          <AlertTitle className="text-green-500">
-            {formatCurrency(yearWork.commissionHelp)}
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-green-500 text-lg">
+            TOTAL INGRESOS: {formatCurrency(totalCurrentReceipt)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
-            Cantidad de dinero que nos dará de subvención la comisión de
-            fiestas.
+            Total de ingresos cobrados actualmente.
           </AlertDescription>
         </Alert>
-        <div />
+        <Alert>
+          <CopyMinus className="h-4 w-4" />
+          <AlertTitle className="text-green-500 text-lg">
+            TOTAL INGRESOS: {formatCurrency(totalEstimatedToReceipt)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total de ingresos estimados a cobrar.
+          </AlertDescription>
+        </Alert>
+        <Separator className="col-span-2" />
         <Separator className="col-span-2" />
         <Alert>
           <Calculator className="h-4 w-4" />
           <AlertTitle className="text-gray-700">
-            {formatCurrency(totalToPaid)}
+            {formatCurrency(totalCurrentReceipt - costsCurrentPaid)}
+          </AlertTitle>
+          <AlertDescription className="text-sm text-muted-foreground">
+            Total real calculado.
+          </AlertDescription>
+        </Alert>
+        <Alert>
+          <Calculator className="h-4 w-4" />
+          <AlertTitle className="text-gray-700">
+            {formatCurrency(totalEstimatedToReceipt - costsToPaid)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Total estimado calculado.

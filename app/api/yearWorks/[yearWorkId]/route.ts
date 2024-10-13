@@ -12,8 +12,10 @@ export async function PATCH(
 
     const {
       awardsReward,
-      cash,
+      awardsRewardPaid,
+      comments,
       commissionHelp,
+      commissionHelpPaid,
       firstPartyDay,
       lastPartyDay,
       newClientPrice,
@@ -40,8 +42,7 @@ export async function PATCH(
       (!unitFoodPrice && unitFoodPrice !== 0) ||
       !previousYearWorkAmount ||
       (!awardsReward && awardsReward !== 0) ||
-      !commissionHelp ||
-      (!cash && cash !== 0)
+      !commissionHelp
     ) {
       return NextResponse.json(
         {
@@ -77,8 +78,10 @@ export async function PATCH(
       },
       data: {
         awardsReward,
-        cash,
+        awardsRewardPaid,
+        comments,
         commissionHelp,
+        commissionHelpPaid,
         firstPartyDay,
         lastPartyDay,
         newClientPrice,

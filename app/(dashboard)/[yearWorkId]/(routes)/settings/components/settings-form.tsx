@@ -20,6 +20,7 @@ import type { YearWork } from "@prisma/client";
 import DateFormField from "../../../../../../components/form/date-form-field";
 import NumberFormField from "../../../../../../components/form/number-form-field";
 import type { SettingsFormValues } from "./settings-form.types";
+import CheckboxFormField from "@/components/form/checkbox-form-field";
 
 interface Props {
   readonly initialData: YearWork;
@@ -34,8 +35,10 @@ export default function SettingsForm({ initialData }: Props) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       awardsReward: initialData.awardsReward,
-      cash: initialData.cash,
+      awardsRewardPaid: initialData.awardsRewardPaid,
+      comments: initialData.comments,
       commissionHelp: initialData.commissionHelp,
+      commissionHelpPaid: initialData.commissionHelpPaid,
       firstPartyDay: initialData.firstPartyDay,
       lastPartyDay: initialData.lastPartyDay,
       newClientPrice: initialData.newClientPrice,
@@ -203,6 +206,12 @@ export default function SettingsForm({ initialData }: Props) {
               name="awardsReward"
               showCurrency
             />
+            <CheckboxFormField
+              form={form}
+              label="Premios pagados"
+              loading={loading}
+              name="awardsRewardPaid"
+            />
             <NumberFormField
               form={form}
               input={{
@@ -214,15 +223,20 @@ export default function SettingsForm({ initialData }: Props) {
               name="commissionHelp"
               showCurrency
             />
-            <NumberFormField
+            <CheckboxFormField
+              form={form}
+              label="Ayuda comisión pagada"
+              loading={loading}
+              name="commissionHelpPaid"
+            />
+            <TextFormField
               form={form}
               input={{
-                placeholder: "Cantidad de efectivo actual en caja",
+                placeholder: "Comentarios generales del año",
               }}
-              label="Efectivo año actual"
+              label="Comentarios"
               loading={loading}
-              name="cash"
-              showCurrency
+              name="comments"
             />
           </div>
           <Button type="submit" disabled={loading} className="ml-auto">

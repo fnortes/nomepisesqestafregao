@@ -53,8 +53,10 @@ export async function POST(req: NextRequest) {
       unitFoodPrice = 10, // Por defecto el precio por comida extra para los comparsistas o no comparsistas es de 10€
       previousYearWorkAmount = 0, // Por defecto la cantidad de dinero sobrante del año anterior es cero.
       awardsReward = 0, // Por defecto la cantidad de dinero obtenida de premios es cero.
+      awardsRewardPaid = false, // Por defecto la cantidad de dinero obtenida de premios no se ha pagado.
+      comments = null, // Por defecto los comentarios del año están vacíos.
       commissionHelp = 0, // Por defecto la cantidad de dinero recibida de la comisión es cero.
-      cash = 0, // Por defecto la cantidad de dinero en efectivo en caja para el año actual es cero.
+      commissionHelpPaid = false, // Por defecto la cantidad de dinero recibida de la comisión no se ha pagado.
       lastPartyDay = new Date(), // Por defecto el último día de fiestas es la fecha actual.
       firstPartyDay = new Date(), // Por defecto el primer día de fiestas es la fecha actual.
       priceTypes: PriceType[] = [],
@@ -103,8 +105,8 @@ export async function POST(req: NextRequest) {
         unitFoodPrice = yearWorkFromRestore.unitFoodPrice;
         previousYearWorkAmount = yearWorkFromRestore.previousYearWorkAmount;
         awardsReward = yearWorkFromRestore.awardsReward;
+        comments = yearWorkFromRestore.comments;
         commissionHelp = yearWorkFromRestore.commissionHelp;
-        cash = yearWorkFromRestore.cash;
 
         // Se obtiene de BD el listado de todos los clientes del año anterior.
         clients = await prismadb.client.findMany({
@@ -191,8 +193,10 @@ export async function POST(req: NextRequest) {
     const yearWork = await prismadb.yearWork.create({
       data: {
         awardsReward,
-        cash,
+        awardsRewardPaid,
+        comments,
         commissionHelp,
+        commissionHelpPaid,
         firstPartyDay,
         lastPartyDay,
         newClientPrice,
