@@ -8,6 +8,7 @@ import {
   Expense,
   Food,
   PriceType,
+  Suit,
   Turn,
 } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -64,6 +65,7 @@ export async function POST(req: NextRequest) {
       turns: (Turn & { barGroup: BarGroup })[] = [],
       expenses: Expense[] = [],
       foods: Food[] = [],
+      suits: Suit[] = [],
       clients: (Client & {
         priceType: PriceType;
         barGroups: (ClientsOnBarGroups & { barGroup: BarGroup })[];
@@ -186,6 +188,13 @@ export async function POST(req: NextRequest) {
             yearWorkId: yearFromRestore,
           },
         });
+
+        // Se obtiene de BD el listado de trajes del año anterior.
+        suits = await prismadb.suit.findMany({
+          where: {
+            yearWorkId: yearFromRestore,
+          },
+        });
       }
     }
 
@@ -277,19 +286,22 @@ export async function POST(req: NextRequest) {
     let newFoods: Food[] = [];
     if (foods.length > 0) {
       newFoods = await prismadb.$transaction(
-        foods.map(({ createdAt, id, updatedAt, yearWorkId, ...restOfFood }) => {
-          const date = restOfFood.date;
-          date.setFullYear(restOfFood.date.getFullYear() + 1);
+        foods.map(
+          ({ createdAt, id, updatedAt, yearWorkId, paid, ...restOfFood }) => {
+            const date = restOfFood.date;
+            date.setFullYear(restOfFood.date.getFullYear() + 1);
 
-          // Se monta la nueva comida a crear, cambiando el año y la fecha calculada a un año más.
-          return prismadb.food.create({
-            data: {
-              ...restOfFood,
-              yearWorkId: yearWork.id,
-              date,
-            },
-          });
-        })
+            // Se monta la nueva comida a crear, cambiando el año y la fecha calculada a un año más.
+            return prismadb.food.create({
+              data: {
+                ...restOfFood,
+                yearWorkId: yearWork.id,
+                date,
+                paid: 0,
+              },
+            });
+          }
+        )
       );
     }
 
@@ -378,6 +390,26 @@ export async function POST(req: NextRequest) {
             units: 0,
             previousYearWorkUnits: units,
             estimatedUnits: units,
+          })
+        ),
+      });
+    }
+
+    // Si hay trajes que copia del año pasado.
+    if (suits.length > 0) {
+      await prismadb.suit.createMany({
+        data: suits.map(
+          ({
+            createdAt,
+            id,
+            paid,
+            updatedAt,
+            yearWorkId,
+            ...restOfExpense
+          }) => ({
+            ...restOfExpense,
+            yearWorkId: yearWork.id,
+            paid: 0,
           })
         ),
       });

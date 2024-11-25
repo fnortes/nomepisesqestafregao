@@ -75,7 +75,7 @@ model BarGroup {
   updatedAt     DateTime              @updatedAt
   name          String                
   yearWorkId    String
-  yearWork      YearWork              @relation("YearWorkToBarGroup", fields: [yearWorkId], references: [id])
+  yearWork      YearWork              @relation("YearWorkToBarGroup", fields: [yearWorkId], references: [id], onDelete: Cascade)
   clients       ClientsOnBarGroups[]
   turns         Turn[]                @relation("BarGroupToTurn")
 
@@ -89,7 +89,7 @@ model Turn {
   startDate     DateTime              @default(now())
   endDate       DateTime              @default(now())
   barGroupId    String
-  barGroup      BarGroup              @relation("BarGroupToTurn", fields: [barGroupId], references: [id])
+  barGroup      BarGroup              @relation("BarGroupToTurn", fields: [barGroupId], references: [id], onDelete: Cascade)
 
   @@index([barGroupId])
 }
@@ -111,7 +111,7 @@ model PriceType {
   paradeWater             Boolean   @default(false)
   drinkTickets            Boolean   @default(false)
   yearWorkId              String
-  yearWork                YearWork  @relation("YearWorkToPriceType", fields: [yearWorkId], references: [id])
+  yearWork                YearWork  @relation("YearWorkToPriceType", fields: [yearWorkId], references: [id], onDelete: Cascade)
   clients                 Client[]  @relation("PriceTypeToClient")
 
   @@index([yearWorkId])
@@ -120,7 +120,7 @@ model PriceType {
 model Client {
   id                     String                @id @default(uuid())
   yearWorkId             String
-  yearWork               YearWork              @relation("YearWorkToClient", fields: [yearWorkId], references: [id])
+  yearWork               YearWork              @relation("YearWorkToClient", fields: [yearWorkId], references: [id], onDelete: Cascade)
   createdAt              DateTime              @default(now())
   updatedAt              DateTime              @updatedAt
   firstName               String
@@ -187,7 +187,7 @@ model ExpenseCategory {
 model Expense {
   id                        String          @id @default(uuid())
   yearWorkId                String
-  yearWork                  YearWork        @relation("YearWorkToExpense", fields: [yearWorkId], references: [id])
+  yearWork                  YearWork        @relation("YearWorkToExpense", fields: [yearWorkId], references: [id], onDelete: Cascade)
   expenseCategoryId         String
   expenseCategory           ExpenseCategory @relation("ExpenseCategoryToExpense", fields: [expenseCategoryId], references: [id])
   createdAt                 DateTime        @default(now())
@@ -209,7 +209,7 @@ model Expense {
 model Food {
   id             String             @id @default(uuid())
   yearWorkId     String
-  yearWork       YearWork           @relation("YearWorkToFood", fields: [yearWorkId], references: [id])
+  yearWork       YearWork           @relation("YearWorkToFood", fields: [yearWorkId], references: [id], onDelete: Cascade)
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
   title          String
@@ -245,7 +245,7 @@ enum SuitGroup {
 model Suit {
   id             String             @id @default(uuid())
   yearWorkId     String
-  yearWork       YearWork           @relation("YearWorkToSuit", fields: [yearWorkId], references: [id])
+  yearWork       YearWork           @relation("YearWorkToSuit", fields: [yearWorkId], references: [id], onDelete: Cascade)
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
   ageGroup       AgeGroup           @default(ADULT)
@@ -275,7 +275,7 @@ model SaleCategory {
 model Sale {
   id                        String          @id @default(uuid())
   yearWorkId                String
-  yearWork                  YearWork        @relation("YearWorkToSale", fields: [yearWorkId], references: [id])
+  yearWork                  YearWork        @relation("YearWorkToSale", fields: [yearWorkId], references: [id], onDelete: Cascade)
   saleCategoryId            String
   saleCategory              SaleCategory    @relation("SaleCategoryToSale", fields: [saleCategoryId], references: [id])
   createdAt                 DateTime        @default(now())

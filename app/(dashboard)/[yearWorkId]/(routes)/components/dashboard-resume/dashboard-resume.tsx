@@ -191,7 +191,7 @@ export default function DashboardResume({
         <Alert>
           <CopyMinus className="h-4 w-4" />
           <AlertTitle className="text-red-700">
-            Comidas: {formatCurrency(totalChairsExpensesToPaid)}
+            Comidas: {formatCurrency(totalFoodsToPaid)}
           </AlertTitle>
           <AlertDescription className="text-sm text-muted-foreground">
             Total de gastos en comidas estimados a pagar.
