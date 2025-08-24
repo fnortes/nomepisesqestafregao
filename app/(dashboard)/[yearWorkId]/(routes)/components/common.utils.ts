@@ -143,6 +143,7 @@ export const calculateTotalFoodsToPaid = (
   foods
     .map((food) => {
       const total = countClientsByFood(clients, food.id);
+
       return total * food.price;
     })
     .reduce((a, b) => a + b, 0);

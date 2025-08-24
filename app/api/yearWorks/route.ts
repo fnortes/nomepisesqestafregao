@@ -1,4 +1,3 @@
-import { auth } from "@clerk/nextjs";
 import {
   AgeGroup,
   BarGroup,
@@ -17,14 +16,9 @@ import prismadb from "@/lib/prismadb";
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = auth();
     const body = await req.json();
 
     const { year, yearFromRestore } = body;
-
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
 
     if (!year) {
       return new NextResponse("Year is required", { status: 400 });

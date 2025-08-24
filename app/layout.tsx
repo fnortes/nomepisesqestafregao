@@ -1,4 +1,3 @@
-import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
@@ -24,14 +23,12 @@ export default async function RootLayout({
   const workYears = await prismadb.yearWork.findMany();
 
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={inter.className}>
-          <ToastProvider />
-          <ModalProvider workYears={workYears} />
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={inter.className}>
+        <ToastProvider />
+        <ModalProvider workYears={workYears} />
+        {children}
+      </body>
+    </html>
   );
 }

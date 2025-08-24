@@ -1,5 +1,4 @@
 import prismadb from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
@@ -7,15 +6,10 @@ export async function PATCH(
   { params }: { params: { yearWorkId: string; turnId: string } }
 ) {
   try {
-    const { userId } = auth();
     const body = await req.json();
 
     const { startDate, endDate, barGroupId } = body;
     const { yearWorkId, turnId } = params;
-
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
 
     if (!startDate || !endDate || !barGroupId || !yearWorkId) {
       return new NextResponse(
@@ -82,13 +76,7 @@ export async function DELETE(
   { params }: { params: { yearWorkId: string; turnId: string } }
 ) {
   try {
-    const { userId } = auth();
-
     const { turnId } = params;
-
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
 
     if (!turnId) {
       return new NextResponse(

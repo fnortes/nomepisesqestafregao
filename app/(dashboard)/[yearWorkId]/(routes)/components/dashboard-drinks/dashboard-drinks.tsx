@@ -96,7 +96,7 @@ export default function DashboardDrinks({
               {formatCurrency(totalCost)}
             </AlertTitle>
             <AlertDescription className="text-sm text-muted-foreground">
-              Total a pagar del pedido de aperitivos y postres.
+              Total a pagar del pedido de bebida.
             </AlertDescription>
           </Alert>
           <Alert>

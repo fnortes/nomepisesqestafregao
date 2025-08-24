@@ -1,5 +1,4 @@
 import prismadb from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
@@ -7,7 +6,6 @@ export async function PATCH(
   { params }: { params: { yearWorkId: string; priceTypeId: string } }
 ) {
   try {
-    const { userId } = auth();
     const body = await req.json();
 
     const {
@@ -25,10 +23,6 @@ export async function PATCH(
       teenPrice,
     } = body;
     const { yearWorkId, priceTypeId } = params;
-
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
 
     if (!name || !yearWorkId) {
       return new NextResponse(
@@ -102,13 +96,7 @@ export async function DELETE(
   { params }: { params: { yearWorkId: string; priceTypeId: string } }
 ) {
   try {
-    const { userId } = auth();
-
     const { priceTypeId } = params;
-
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
 
     if (!priceTypeId) {
       return new NextResponse("No se ha especificado el ID del tipo de cuota", {
