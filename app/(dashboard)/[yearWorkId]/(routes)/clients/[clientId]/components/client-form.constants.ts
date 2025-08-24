@@ -43,6 +43,7 @@ export const shirtSizeOptionsData: CommonFormFieldData = [
   { value: ShirtSize.A_8, label: SHIRT_SIZE_LITERALS[ShirtSize.A_8] },
   { value: ShirtSize.A_9, label: SHIRT_SIZE_LITERALS[ShirtSize.A_9] },
   { value: ShirtSize.A_12, label: SHIRT_SIZE_LITERALS[ShirtSize.A_12] },
+  { value: ShirtSize.A_14, label: SHIRT_SIZE_LITERALS[ShirtSize.A_14] },
   { value: ShirtSize.A_16, label: SHIRT_SIZE_LITERALS[ShirtSize.A_16] },
   { value: ShirtSize.S, label: SHIRT_SIZE_LITERALS[ShirtSize.S] },
   { value: ShirtSize.M, label: SHIRT_SIZE_LITERALS[ShirtSize.M] },
